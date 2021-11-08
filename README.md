@@ -1,6 +1,6 @@
 
 # [Insert App Name Here and Link to the deployed URL](https://www.heroku.com/)
-## [Insert Team Name Here]
+## [WAGL]
 ### Purpose and Functionality
 Describe the purpose and functionality of your application (~50 words) 
 
