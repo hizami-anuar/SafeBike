@@ -11,6 +11,7 @@ require('dotenv').config();
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const sessionRouter = require('./routes/session');
+const blockagesRouter = require('./routes/blockages');
 
 mongoose.connect('mongodb://localhost:27017/test');
 
@@ -41,6 +42,7 @@ app.use(express.static(path.join(__dirname, isProduction ? 'dist' : 'public')));
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/session', sessionRouter);
+app.use('/api/blockages', blockagesRouter);
 
 // Catch all other routes into a meaningful error message
 app.all('*', (req, res) => {
