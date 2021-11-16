@@ -8,106 +8,36 @@
         </form>
 
         <form>
+          <span>
+            <label>Latitude: </label>
+            <input type="number" class="small-input" v-model="blockageFormData.location.latitude">
+            &nbsp;
+            <label>Longitude: </label>
+            <input type="number" class="small-input" v-model="blockageFormData.location.longitude">
+          </span>
+          <span>
+            <label>Description: </label>
+            <input type="text" v-model="blockageFormData.description">
+          </span>
+          <span>
+            <label>Status: </label>
+            <input type="text" v-model="blockageFormData.status">
+          </span>
           <input type="submit" v-on:click.prevent="createBlockage" value="Create Blockage">
         </form>
 
-        <form id="create-user">
-          <h3>Create User</h3>
-          <div>
-            <label for="username">Username:</label>
-            <input id="username" name="username">
+        <form 
+          v-for="blockage in blockages"
+          :key="blockage._id">
+          <div class="item">
+            <p>_id: {{ blockage._id }}</p>
+            <p>location: {{ blockage.location.coordinates }}</p>
+            <p>time: {{ blockage.time }}</p>
+            <p>reporter: {{ blockage.reporter }}</p>
+            <p>description: {{ blockage.description }}</p>
+            <p>status: {{ blockage.status }}</p>
+            <input type="submit" v-on:click.prevent="deleteBlockage(blockage._id)" value="Delete">
           </div>
-          <div>
-            <label for="password">Password:</label>
-            <input id="password" name="password">
-          </div>
-          <input type="submit" value="Create User">
-        </form>
-
-        <form id="delete-user">
-          <h3>Delete User</h3>
-          <input type="submit" value="Delete User">
-        </form>
-
-        <form id="change-username">
-          <h3>Change Username</h3>
-          <div>
-            <label for="username">New Username:</label>
-            <input id="username" name="username">
-          </div>
-          <input type="submit" value="Change Username">
-        </form>
-
-        <form id="change-password">
-          <h3>Change Password</h3>
-          <div>
-            <label for="password">New Password:</label>
-            <input id="password" name="password">
-          </div>
-          <input type="submit" value="Change Password">
-        </form>
-
-        <form id="sign-in">
-          <h3>Sign In</h3>
-          <div>
-            <label for="username">Username:</label>
-            <input id="username" name="username">
-          </div>
-          <div>
-            <label for="password">Password:</label>
-            <input id="password" name="password">
-          </div>
-          <input type="submit" value="Sign In">
-        </form>
-
-        <form id="sign-out">
-          <h3>Sign Out</h3>
-          <input type="submit" value="Sign out">
-        </form>
-
-        <form id="view-all-freets">
-            <h3>View All Freets</h3>
-            <input type="submit" value="View All Freets">
-          </form>
-
-        <form id="view-freets-by-author">
-          <h3>View Freets By Author</h3>
-          <div>
-            <label for="author">Author:</label>
-            <input id="author" name="author">
-          </div>
-          <input type="submit" value="View Freets By Author">
-        </form>
-
-        <form id="create-freet">
-          <h3>Create Freet</h3>
-          <div>
-            <label for="content">Content:</label>
-            <textarea id="content" name="content"></textarea>
-          </div>
-          <input type="submit" value="Create Freet">
-        </form>
-
-        <form id="edit-freet">
-          <h3>Edit Freet</h3>
-          <div>
-            <label for="id">ID:</label>
-            <input id="id" name="id">
-          </div>
-          <div>
-            <label for="content">Content:</label>
-            <textarea id="content" name="content"></textarea>
-          </div>
-          <input type="submit" value="Edit Freet">
-        </form>
-
-        <form id="delete-freet">
-          <h3>Delete Freet</h3>
-          <div>
-            <label for="id">ID:</label>
-            <input id="id" name="id">
-          </div>
-          <input type="submit" value="Delete Freet">
         </form>
       </div>
     </section>
@@ -125,6 +55,19 @@ import axios from 'axios';
 
 export default {
   name: 'Debug',
+  data() {
+    return {
+      blockages: [],
+      blockageFormData: {
+        description: "",
+        status: "",
+        location: {
+          latitude: 0,
+          longitude: 0,
+        }
+      },
+    }
+  },
   methods: {
     showObject(obj) {
       const pre = document.getElementById("response");
@@ -150,6 +93,7 @@ export default {
     getBlockages() {
       axios.get("/api/blockages")
         .then((response) => {
+          this.blockages = response.data.blockages;
           this.showResponse(response);
         }).catch((error) => {
           this.showResponse(error);
@@ -157,9 +101,20 @@ export default {
     },
 
     createBlockage() {
-      axios.post("/api/blockages")
+      axios.post("/api/blockages", { data: this.blockageFormData })
         .then((response) => {
           this.showResponse(response);
+          this.getBlockages();
+        }).catch((error) => {
+          this.showResponse(error);
+        })
+    },
+
+    deleteBlockage(id) {
+      axios.delete(`/api/blockages/${id}`)
+        .then((response) => {
+          this.showResponse(response);
+          this.getBlockages();
         }).catch((error) => {
           this.showResponse(error);
         })
@@ -194,7 +149,7 @@ body {
   display: flex;
 }
 
-main {
+.two-col {
   --light-border: 1px solid lightgray;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background: rgba(0,0,0,.8);
@@ -254,6 +209,10 @@ input[type="submit"] {
   font-weight: bold;
 }
 
+.small-input {
+  width: 100px;
+}
+
 .scrollbox {
   box-shadow: 0 0 0 1px #fff; /* add border but border is broken */
   padding: 3%;
@@ -263,6 +222,15 @@ input[type="submit"] {
 .teletype {
   text-align: left;
   font-family: 'Courier New', Courier, monospace;
+}
+
+.item {
+  text-align: left;
+}
+
+p {
+  padding: 0px;
+  margin: 0px;
 }
 
 input:hover:not(:focus) {

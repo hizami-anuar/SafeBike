@@ -27,7 +27,8 @@ const blockageSchema = new mongoose.Schema({
     type: pointSchema,
     required: true
   },
-  reporter: Number,
+  time: Number,
+  reporter: String,
   description: String,
   status: String
 })
