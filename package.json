@@ -30,11 +30,11 @@
     "morgan": "~1.9.0",
     "nodemon": "^2.0.4",
     "vue": "^2.6.10",
-    "vue-router": "^3.5.2",
+    "vue-router": "^3.5.3",
     "vue-template-compiler": "^2.6.10"
   },
   "devDependencies": {
-    "@vue/cli-plugin-router": "^4.5.14"
+    "@vue/cli-plugin-router": "^4.5.15"
   },
   "eslintConfig": {
     "root": true,
