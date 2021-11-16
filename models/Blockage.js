@@ -1,5 +1,6 @@
-let data = [];
+const mongoose = require("mongoose");
 
+// THIS COMMENT IS WRONG, update later
 /**
  * @typedef Blockage
  * @prop {number[]} location // [longitude, latitude] of location
@@ -9,41 +10,26 @@ let data = [];
  * @prop {string} status // status of blockage
  */
 
-/**
- * @class Blockage
- * 
- * Stores all Blockages. Note that all methods are static.
- * Wherever you import this class, you will be accessing the same data.
- */
-class Blockage {
-
-  /**
-   * Get all blockages from the collection
-   * 
-   * @returns {Blockage[]} - the list of blockages
-   */
-  static getAll() {
-    return data;
+const pointSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true
+  },
+  coordinates: {
+    type: [Number],
+    required: true
   }
+});
 
-  /**
-   * Add a Blockage to the collection.
-   * 
-   * @param {string} content - text of the freet, with length > 0 and <= 140
-   * @param {number} userID - unique ID of the user who wrote this freet
-   * @return {User} - the newly created user
-   */
-  static addOne(location, time, reporter, description, status) {
-    const blockage = {
-        "location": location,
-        "time": time,
-        "reporter": reporter,
-        "description": description,
-        "status": status,
-    }; 
-    data.push(blockage);
-    return data;
-  }
-}
+const blockageSchema = new mongoose.Schema({
+  location: {
+    type: pointSchema,
+    required: true
+  },
+  reporter: Number,
+  description: String,
+  status: String
+})
 
-module.exports = Blockage;
+module.exports = mongoose.model('Blockage', blockageSchema);
