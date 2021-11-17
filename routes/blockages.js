@@ -39,21 +39,44 @@ router.post('/',
   const description = req.body.data.description;
   const status = req.body.data.status;
   const location = { type: 'Point', coordinates: [latitude, longitude] };
-  await Blockages.create({
+  const blockage = {
     location: location,
     time: time,
     reporter: reporter,
     description: description,
     status: status,
-  });
+  }
+  await Blockages.create(blockage);
   res.status(200).json("done").end();
 });
+
+router.patch('/:id',
+  async (req, res) => {
+    const id = req.params.id;
+    const latitude = req.body.data.location.latitude;
+    const longitude = req.body.data.location.longitude;
+    const time = Date.now();
+    const reporter = "696969";
+    const description = req.body.data.description;
+    const status = req.body.data.status;
+    const location = { type: 'Point', coordinates: [latitude, longitude] };
+    const blockage = {
+      location: location,
+      time: time,
+      reporter: reporter,
+      description: description,
+      status: status,
+    }
+    response = await Blockages.findOneAndUpdate({ _id: id }, blockage);
+    res.status(200).json( response ).end();
+  }
+)
 
 router.delete('/:id',
   async (req, res) => {
     const id = req.params.id;
-    await Blockages.deleteOne({ _id: id });
-    res.status(200).json("deleted").end();
+    blockage = await Blockages.findOneAndDelete({ _id: id });
+    res.status(200).json(blockage).end();
   }
 )
 

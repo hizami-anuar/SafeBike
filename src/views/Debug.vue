@@ -37,6 +37,22 @@
             <p>description: {{ blockage.description }}</p>
             <p>status: {{ blockage.status }}</p>
             <input type="submit" v-on:click.prevent="deleteBlockage(blockage._id)" value="Delete">
+            <span>
+              <label>Latitude: </label>
+              <input type="number" class="small-input" v-model="editFormData[blockage._id].location.latitude">
+              &nbsp;
+              <label>Longitude: </label>
+              <input type="number" class="small-input" v-model="editFormData[blockage._id].location.longitude">
+            </span>
+            <span>
+              <label>Description: </label>
+              <input type="text" v-model="editFormData[blockage._id].description">
+            </span>
+            <span>
+              <label>Status: </label>
+              <input type="text" v-model="editFormData[blockage._id].status">
+            </span>
+            <input type="submit" v-on:click.prevent="editBlockage(blockage._id)" value="Edit Blockage">
           </div>
         </form>
       </div>
@@ -66,6 +82,9 @@ export default {
           longitude: 0,
         }
       },
+      editFormData: {
+
+      }
     }
   },
   methods: {
@@ -91,9 +110,21 @@ export default {
     },
 
     getBlockages() {
-      axios.get("/api/blockages")
+      axios.get(`/api/blockages`)
         .then((response) => {
           this.blockages = response.data.blockages;
+          this.blockages.forEach((blockage) => {
+            const id = blockage._id;
+            this.editFormData[id] = this.editFormData[id] || 
+            {
+              description: "",
+              status: "",
+              location: {
+                latitude: 0,
+                longitude: 0,
+              }
+            };
+          }); 
           this.showResponse(response);
         }).catch((error) => {
           this.showResponse(error);
@@ -101,7 +132,17 @@ export default {
     },
 
     createBlockage() {
-      axios.post("/api/blockages", { data: this.blockageFormData })
+      axios.post(`/api/blockages`, { data: this.blockageFormData })
+        .then((response) => {
+          this.showResponse(response);
+          this.getBlockages();
+        }).catch((error) => {
+          this.showResponse(error);
+        })
+    },
+
+    editBlockage(id) {
+      axios.patch(`/api/blockages/${id}`, { data: this.editFormData[id] })
         .then((response) => {
           this.showResponse(response);
           this.getBlockages();
@@ -113,6 +154,7 @@ export default {
     deleteBlockage(id) {
       axios.delete(`/api/blockages/${id}`)
         .then((response) => {
+          console.log(response);
           this.showResponse(response);
           this.getBlockages();
         }).catch((error) => {
