@@ -15,16 +15,16 @@ const router = express.Router();
  * @return {User} - the found User
  * @throws {400} - if the userID is invalid
  */
-router.get('/',  
-    [
-        validateThat.userIDExists,
-    ],
-    async (req, res) => {
+router.get('/',
+  [
+    validateThat.userIDExists,
+  ],
+  async (req, res) => {
     const id = parseInt(req.query.id, 10);
     const user = await Users.findById(id);
     delete user.password
     res.status(200).json(user).end();
-});
+  });
 
 
 /**
@@ -37,22 +37,22 @@ router.get('/',
  * @return {User} - the created User
  * @throws {400} - if username is already taken
  */
- router.post('/', 
- [
- validateThat.usernameDoesNotAlreadyExist, 
- validateThat.validUsername,
- validateThat.validPassword,
- ], 
- async (req, res) => {
- const user = await Users.create({
-     username: req.body.username,
-     password: req.body.password
- });
- req.session.username = user.username;
- req.session.userID = user._id;
- delete user.password
- res.status(200).json(user).end();
-});
+router.post('/',
+  [
+    validateThat.usernameDoesNotAlreadyExist,
+    validateThat.validUsername,
+    validateThat.validPassword,
+  ],
+  async (req, res) => {
+    const user = await Users.create({
+      username: req.body.username,
+      password: req.body.password
+    });
+    req.session.username = user.username;
+    req.session.userID = user._id;
+    delete user.password
+    res.status(200).json(user).end();
+  });
 
 /**
  * Update a username.
@@ -64,20 +64,20 @@ router.get('/',
  * @throws {403} - if user is not logged in
  * @throws {400} - if username is not formatted correctly - ie there is whitespace or special characters
  */
-router.put('/:username?/edit', 
-    [
-        validateThat.userIsLoggedIn,
-        validateThat.validUsername,
-        validateThat.usernameDoesNotAlreadyExist,
-    ], 
-async (req, res) => {
+router.put('/:username?/edit',
+  [
+    validateThat.userIsLoggedIn,
+    validateThat.validUsername,
+    validateThat.usernameDoesNotAlreadyExist,
+  ],
+  async (req, res) => {
     const username = req.body.username
     const user = await Users.findByIdAndUpdate(req.session.userID, {
-        username: req.body.username
+      username: req.body.username
     });
     req.session.username = username;
     res.status(200).json(user).end();
-});
+  });
 
 /**
  * Update a user's password.
@@ -89,14 +89,14 @@ async (req, res) => {
  * @throws {403} - if user is not logged in
  * @throws {400} - if password is not formatted correctly - ie there is whitespace
  */
- router.put('/',
-    [
-        validateThat.userIsLoggedIn,
-        validateThat.validPassword,
-    ], 
-async (req, res) => {
+router.put('/',
+  [
+    validateThat.userIsLoggedIn,
+    validateThat.validPassword,
+  ],
+  async (req, res) => {
     const user = await Users.findByIdAndUpdate(req.session.userID, {
-        password: req.body.password
+      password: req.body.password
     });
     delete user.password
     res.status(200).json(user).end();
@@ -111,13 +111,13 @@ async (req, res) => {
  * @throws {404} - if user does not exist
  */
 router.delete('/', [
-    validateThat.userIsLoggedIn
-  ], async (req, res) => {
-    const user = await Users.findByIdAndRemove(req.session.userID);
-    req.session.username = undefined;
-    req.session.userID = undefined;
-    res.status(200).json(user).end();
-  });
+  validateThat.userIsLoggedIn
+], async (req, res) => {
+  const user = await Users.findByIdAndRemove(req.session.userID);
+  req.session.username = undefined;
+  req.session.userID = undefined;
+  res.status(200).json(user).end();
+});
 
 
 module.exports = router;
