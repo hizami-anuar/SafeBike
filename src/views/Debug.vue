@@ -26,35 +26,10 @@
           <input type="submit" v-on:click.prevent="createBlockage" value="Create Blockage">
         </form>
 
-        <form 
+        <DebugBlockageItem
           v-for="blockage in blockages"
-          :key="blockage._id">
-          <div class="item">
-            <p>_id: {{ blockage._id }}</p>
-            <p>location: {{ blockage.location.coordinates }}</p>
-            <p>time: {{ blockage.time }}</p>
-            <p>reporter: {{ blockage.reporter }}</p>
-            <p>description: {{ blockage.description }}</p>
-            <p>status: {{ blockage.status }}</p>
-            <input type="submit" v-on:click.prevent="deleteBlockage(blockage._id)" value="Delete">
-            <span>
-              <label>Latitude: </label>
-              <input type="number" class="small-input" v-model="editFormData[blockage._id].location.latitude">
-              &nbsp;
-              <label>Longitude: </label>
-              <input type="number" class="small-input" v-model="editFormData[blockage._id].location.longitude">
-            </span>
-            <span>
-              <label>Description: </label>
-              <input type="text" v-model="editFormData[blockage._id].description">
-            </span>
-            <span>
-              <label>Status: </label>
-              <input type="text" v-model="editFormData[blockage._id].status">
-            </span>
-            <input type="submit" v-on:click.prevent="editBlockage(blockage._id)" value="Edit Blockage">
-          </div>
-        </form>
+          :key="blockage._id"
+          :blockage="blockage"/>
       </div>
     </section>
     <section>
@@ -68,9 +43,12 @@
 
 <script>
 import axios from 'axios';
+import { eventBus } from "../main";
+import DebugBlockageItem from '../components/DebugBlockageItem';
 
 export default {
   name: 'Debug',
+  components: { DebugBlockageItem },
   data() {
     return {
       blockages: [],
@@ -82,11 +60,19 @@ export default {
           longitude: 0,
         }
       },
-      editFormData: {
-
-      }
+      eventListeners: [
+          {name: 'edit-blockage', func: this.editBlockage},
+          {name: 'delete-blockage', func: this.deleteBlockage},
+        ]
     }
   },
+  created() {
+    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
+  },
+  beforeDestroy: function() {
+    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
+  },
+  
   methods: {
     showObject(obj) {
       const pre = document.getElementById("response");
@@ -141,8 +127,11 @@ export default {
         })
     },
 
-    editBlockage(id) {
-      axios.patch(`/api/blockages/${id}`, { data: this.editFormData[id] })
+    editBlockage(data) {
+      const id = data.id;
+      const blockageData = data.data;
+
+      axios.patch(`/api/blockages/${id}`, { data: blockageData })
         .then((response) => {
           this.showResponse(response);
           this.getBlockages();
@@ -151,7 +140,9 @@ export default {
         })
     },
 
-    deleteBlockage(id) {
+    deleteBlockage(data) {
+      const id = data.id;
+
       axios.delete(`/api/blockages/${id}`)
         .then((response) => {
           console.log(response);
@@ -161,12 +152,11 @@ export default {
           this.showResponse(error);
         })
     },
-    
   }
 }
 </script>
 
-<style scoped>
+<style>
 * {
   box-sizing: border-box;
 }

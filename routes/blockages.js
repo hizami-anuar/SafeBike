@@ -31,7 +31,6 @@ router.get('/',
  */
 router.post('/', 
   async (req, res) => {
-  console.log(req);
   const latitude = req.body.data.location.latitude;
   const longitude = req.body.data.location.longitude;
   const time = Date.now();
@@ -53,6 +52,7 @@ router.post('/',
 router.patch('/:id',
   async (req, res) => {
     const id = req.params.id;
+    
     const latitude = req.body.data.location.latitude;
     const longitude = req.body.data.location.longitude;
     const time = Date.now();
@@ -60,14 +60,15 @@ router.patch('/:id',
     const description = req.body.data.description;
     const status = req.body.data.status;
     const location = { type: 'Point', coordinates: [latitude, longitude] };
-    const blockage = {
+    const updates = {
       location: location,
       time: time,
       reporter: reporter,
       description: description,
       status: status,
     }
-    response = await Blockages.findOneAndUpdate({ _id: id }, blockage);
+    Object.keys(updates).forEach(key => updates[key] === undefined ? delete updates[key] : {});
+    response = await Blockages.findOneAndUpdate({ _id: id }, updates);
     res.status(200).json( response ).end();
   }
 )
