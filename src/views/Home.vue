@@ -1,6 +1,6 @@
 <template>
-<<<<<<< HEAD
   <main>
+    <Map/>
     <div class="home">
       <!-- Hello world -->
       Double click on the map to create a new blockage.
@@ -8,12 +8,6 @@
     <CreateBlockage/>
     <Blockage/>
   </main>
-=======
-  <div class="home">
-    <p> Hello World! </p>
-    <Map />
-  </div>
->>>>>>> ddd11a6f5edcef2db141b8559736b6f38bcf042c
 </template>
 
 <script>
@@ -24,14 +18,8 @@ import Blockage from '@/components/Blockage.vue';
 // import App from '../App.vue';
 
 export default {
-<<<<<<< HEAD
   name: 'Home',
-  components: { CreateBlockage, Blockage}
-=======
-  name: "Home",
-  components: { Map },
-  methods: {}
->>>>>>> ddd11a6f5edcef2db141b8559736b6f38bcf042c
+  components: { CreateBlockage, Blockage, Map}
 }
 </script>
 

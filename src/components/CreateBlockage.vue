@@ -5,19 +5,19 @@
         <!-- <div class="textboxes"> -->
             <h2>Status</h2>
             <!-- <textarea v-model="status" placeholder="Enter status here"/> -->
-            <span>Status Selected: {{ picked }}</span>
+            <span>Status Selected: {{ status }}</span>
             <br>
             <div class="checkboxes">
             <span>
-                <input type="radio" id="unblocked" value="Unblocked" v-model="picked">
+                <input type="radio" id="unblocked" value="Unblocked" v-model="status">
                 <label for="unblocked">Unblocked</label>
             </span>
             <span>
-                <input type="radio" id="unsafe" value="Unsafe" v-model="picked">
+                <input type="radio" id="unsafe" value="Unsafe" v-model="status">
                 <label for="unsafe">Unsafe</label>
             </span>
             <span>
-                <input type="radio" id="blocked" value="Blocked" v-model="picked">
+                <input type="radio" id="blocked" value="Blocked" v-model="status">
                 <label for="blocked">Blocked</label>
             </span>
             </div>
@@ -27,7 +27,7 @@
         <!-- </div> -->
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
         <!-- <textarea v-on:keydown.enter='onEnter' id='creator-textbox' class="creator-textbox" v-model="content" placeholder="Click here to begin writing..." /> -->
-        <button :disabled='picked.length === 0' class="post-button" v-on:click="createBlockage">Submit</button>
+        <button :disabled='status.length === 0' class="post-button" v-on:click="createBlockage">Submit</button>
     </form>
 </template>
 
@@ -44,7 +44,6 @@ export default {
             errorMessage: '',
             details: '',
             status: '',
-            picked: '',
         }
     },
     emits: [
@@ -69,18 +68,26 @@ export default {
          * list of freets.
          */
         createBlockage () {
-            // let fields = { content: this.content };
-            // axios.post(`/api/freets/`, fields).then(() => {
-            //     this.errorMessage = '';
-            //     this.$emit('created-freet');
-            //     this.content = '';
-                
-            // }).catch(err => {
-            //     console.log(err.response || err);
-            //     this.errorMessage = err.response.data.error 
-            //                         || err.response.data.message 
-            //                         || "An unknown error occurred when posting this Freet.";
-            // });
+            let fields = { 
+                status: this.status, 
+                description: this.description,
+                location: this.location,
+            };
+            axios.post(`/api/blockages/`, fields).then(() => {
+                this.errorMessage = '';
+                this.$emit('created-blockage');
+                this.description = '';
+                this.status = '';
+                this.location = {
+                    latitude: 0,
+                    longitude: 0,
+                }; 
+            }).catch(err => {
+                console.log(err.response || err);
+                this.errorMessage = err.response.data.error 
+                                    || err.response.data.message 
+                                    || "An unknown error occurred when posting this Blockage.";
+            });
         },
 
     }
