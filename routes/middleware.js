@@ -1,4 +1,5 @@
 const Users = require('../models/User');
+const Blockages = require('../models/Blockage');
 
 // Checks that the username in the request body does not already exist
 const usernameDoesNotAlreadyExist = async (req, res, next) => {
@@ -121,6 +122,17 @@ const userIsNotLoggedIn = (req, res, next) => {
   next();
 };
 
+const userHasPermission = async (req, res, next) => {
+  const blockage = await Blockages.findOne({ _id: req.params.id });
+  if (blockage.reporter != req.session.userID) {
+    res.status(400).json({
+      error: 'You do not have permission to edit or delete this blockage!'
+    }).end();
+    return;
+  };
+  next()
+}
+
 
 module.exports = Object.freeze({
   usernameDoesNotAlreadyExist,
@@ -132,4 +144,5 @@ module.exports = Object.freeze({
   userIDExists,
   followingUserIDExists,
   userIsNotLoggedIn,
+  userHasPermission,
 });

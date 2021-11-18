@@ -59,6 +59,7 @@ router.post("/",
 router.patch("/:id", 
   [
     validateThat.userIsLoggedIn,
+    validateThat.userHasPermission,
   ], 
   async (req, res) => {
     const id = req.params.id;
@@ -84,10 +85,14 @@ router.patch("/:id",
     res.status(200).json(response).end();
   });
 
-router.delete("/:id", async (req, res) => {
-  const id = req.params.id;
-  blockage = await Blockages.findOneAndDelete({ _id: id });
-  res.status(200).json(blockage).end();
-});
+router.delete("/:id", [
+    validateThat.userIsLoggedIn,
+    validateThat.userHasPermission,
+  ], 
+    async (req, res) => {
+    const id = req.params.id;
+    blockage = await Blockages.findOneAndDelete({ _id: id });
+    res.status(200).json(blockage).end();
+  });
 
 module.exports = router;
