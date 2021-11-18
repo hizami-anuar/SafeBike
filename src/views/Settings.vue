@@ -161,7 +161,7 @@ export default {
     changeUsername() {
       // Prevent webpage reload
       axios
-        .put("/api/users/" + this.newUsername)
+        .put("/api/users/" + this.username, {username: this.newUsername})
         .then(() => {
           // Propogates up to the root that the username has changed
           eventBus.$emit('set-logged-in', this.newUsername);

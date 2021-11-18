@@ -22,7 +22,6 @@
 
 <script>
 import { eventBus } from "../main";
-import axios from 'axios';
 
 export default {
     name: 'Login',
@@ -41,26 +40,12 @@ export default {
          * log-in was successful, a message is emitted to the parent Profile component
          * with the username of the user. 
          */
-        login() {
-            
+        login() { 
             const fields = { 
                 username : this.username, 
                 password : this.password
             };
-
-            axios.post('/api/session', fields)
-            .then((response) => {
-            console.log(response);
-            console.log('logged in!');
-            eventBus.$emit('set-logged-in', this.username);
-            this.$router.push({ name: "Home"});
-
-            }).catch((error) => {
-                console.log(error);
-                this.errorMessage = error.response.data.error 
-                                    || error.response.data.message
-                                    || "An unknown error occurred when logging in.";
-            })
+            eventBus.$emit('login', fields);
         }
     }
 }
