@@ -19,10 +19,10 @@ router.post('/', [
     validateThat.validUsername,
     validateThat.validPassword,
     validateThat.validCredentials,
-  ], (req, res) => {
-    const user = Users.findOneUsername(req.body.username);
+  ], async (req, res) => {
+    const user = await Users.findOne({ username: req.body.username });
     req.session.username = req.body.username;
-    req.session.userID = user.userID;
+    req.session.userID = user._id;
     res.status(200).json({ username: req.session.username, userID: user.userID, following: user.following });
   });
 
