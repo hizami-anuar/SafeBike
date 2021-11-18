@@ -3,8 +3,8 @@
         <!-- The Error Label if one occurs -->
         <h1>Blockage</h1>
         <!-- <div class="textboxes"> -->
-            <span>Time: {{  date  }}</span>
-            <span>Location: {{  location  }}</span>
+            <span>{{  date  }}</span>
+            <span>Location: {{ longitude }}, {{latitude}}</span>
             <div v-if='editing'>
                 <h2>Status</h2>
             <div class="checkboxes">
@@ -57,7 +57,8 @@ export default {
             details: this.blockageData.description,
             status: this.blockageData.status,
             time: this.blockageData.time,
-            location: this.blockageData.location.coordinates,
+            longitude: Math.round(this.blockageData.location.coordinates[0], 4),
+            latitude: Math.round(this.blockageData.location.coordinates[1], 4),
             editing: false,
             newStatus: '',
             newDetails: '',
@@ -194,7 +195,7 @@ button:hover:enabled {
 
     /* height: 100px; */
     /* max-width: 500px; */
-    width: 50%;
+    width: 70%;
     border: 2px solid rgb(81, 138, 235);
     border-radius: 15px;
     color: black;
