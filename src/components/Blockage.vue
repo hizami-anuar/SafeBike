@@ -3,8 +3,7 @@
         <!-- The Error Label if one occurs -->
         <h1>Blockage</h1>
         <!-- <div class="textboxes"> -->
-            <span>Date: {{  date  }}</span>
-            <span>Time: {{  time  }}</span>
+            <span>Time: {{  date  }}</span>
             <div v-if='editing'>
                 <h2>Status</h2>
                             <div class="checkboxes">
@@ -23,7 +22,8 @@
             </div>
                 <h2>Details</h2>
                 <textarea placeholder="hi" v-model='newDetails'/>
-                <button v-on:click="submitEditted">Submit</button>
+                <button v-on:click="submitEditted">Done</button>
+                <button v-on:click="cancelEdit">Cancel</button>
             </div>
             <div v-else>
                 <span>Status: {{  status  }}</span>
@@ -37,31 +37,42 @@
 </template>
 
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 
 
 export default {
-    name: 'CreateBlockage',
+    name: 'Blockage',
     components: {
+    },
+    props: {
+        /** @type {Blockage} A list of freet ids to display */
+        blockageData: Object,
     },
     data () {
         return {
             errorMessage: '',
-            details: 'details here',
-            status: 'Unblocked',
-            date: "Nov 9 2021",
-            time: "9:30:00",
+            details: this.blockageData.description,
+            status: this.blockageData.status,
+            time: this.blockageData.time,
             editing: false,
             newStatus: '',
             newDetails: '',
+            id: '',
+            date: '',
         }
     },
     mounted() {
         this.newDetails = this.details;
         this.newStatus = this.status;
+        var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
+        date.setUTCSeconds(this.time/1000);
+        this.date = date;
+    },
+    computed() {
     },
     emits: [
         // 'created-freet'
+        'refresh-blockages',
     ],
     methods: {
         statusChecked( checked ) {
@@ -79,7 +90,10 @@ export default {
             this.editing = true;
             console.log('hi');
         },
-        
+        cancelEdit() {
+            this.editing = false;
+            console.log('edit canceled');
+        },
         // submit the editted blockage
         submitEditted() {
             // request to submit editted blockage
@@ -92,21 +106,16 @@ export default {
          * for the parent element to update its view as necessary, such as by reloading the
          * list of freets.
          */
-        deleteBlockage () {
-            // let fields = { content: this.content };
-            // axios.post(`/api/freets/`, fields).then(() => {
-            //     this.errorMessage = '';
-            //     this.$emit('created-freet');
-            //     this.content = '';
-                
-            // }).catch(err => {
-            //     console.log(err.response || err);
-            //     this.errorMessage = err.response.data.error 
-            //                         || err.response.data.message 
-            //                         || "An unknown error occurred when posting this Freet.";
-            // });
+        deleteBlockage() {
+            axios.delete(`/api/blockages/${this.blockageData._id}`)
+            .then((response) => {
+            console.log(response);
+            console.log('deleted');
+            this.$emit('refresh-blockages');
+            }).catch((error) => {
+            console.log(error);
+            })
         },
-
     }
 }
 </script>

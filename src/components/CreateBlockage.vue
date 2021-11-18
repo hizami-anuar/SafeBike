@@ -23,7 +23,7 @@
             </div>
             <!-- {{checkedStatus}} -->
             <h2>Details (optional)</h2>
-            <textarea v-model="details" placeholder="Details about the blockage here"/>
+            <textarea v-model="description" placeholder="Details about the blockage here"/>
         <!-- </div> -->
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
         <!-- <textarea v-on:keydown.enter='onEnter' id='creator-textbox' class="creator-textbox" v-model="content" placeholder="Click here to begin writing..." /> -->
@@ -42,8 +42,10 @@ export default {
     data () {
         return {
             errorMessage: '',
-            details: '',
             status: '',
+            description: '',
+            latitude: 18.2208,
+            longitude: -66.5901,
         }
     },
     emits: [
@@ -71,17 +73,21 @@ export default {
             let fields = { 
                 status: this.status, 
                 description: this.description,
-                location: this.location,
+                location: {
+                    latitude: this.latitude,
+                    longitude: this.longitude,
+                }
             };
-            axios.post(`/api/blockages/`, fields).then(() => {
+            axios.post(`/api/blockages/`, {data:fields}).then(() => {
                 this.errorMessage = '';
                 this.$emit('created-blockage');
                 this.description = '';
                 this.status = '';
                 this.location = {
-                    latitude: 0,
-                    longitude: 0,
+                    latitude: 18.2208,
+                    longitude: -66.5901,
                 }; 
+                console.log('posted blockcage!')
             }).catch(err => {
                 console.log(err.response || err);
                 this.errorMessage = err.response.data.error 

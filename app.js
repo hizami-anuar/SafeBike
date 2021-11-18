@@ -1,52 +1,57 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const handlebars = require('express-handlebars');
-const session = require('express-session');
-const history = require('connect-history-api-fallback');
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const handlebars = require("express-handlebars");
+const session = require("express-session");
+const history = require("connect-history-api-fallback");
 const mongoose = require("mongoose");
-require('dotenv').config();
+require("dotenv").config();
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const sessionRouter = require('./routes/session');
-const blockagesRouter = require('./routes/blockages');
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const sessionRouter = require("./routes/session");
+const blockagesRouter = require("./routes/blockages");
 
-mongoose.connect('mongodb://localhost:27017/test');
+// mongoose.connect('mongodb://localhost:27017/test');
+mongoose.connect(
+  "mongodb+srv://admin:admin@cluster0.ftqe9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+);
 
 const app = express();
 
 // production flag
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = process.env.NODE_ENV === "production";
 
 // Use handlebars as template engine
-app.engine('html', handlebars({extname: '.html', defaultLayout: false}));
-app.set('view engine', 'html');
-app.set('views', isProduction ? './dist' : './public');
+app.engine("html", handlebars({ extname: ".html", defaultLayout: false }));
+app.set("view engine", "html");
+app.set("views", isProduction ? "./dist" : "./public");
 
 // Set up user session
-app.use(session({
-    secret: 'URL-shortener',
+app.use(
+  session({
+    secret: "URL-shortener",
     resave: true,
-    saveUninitialized: true
-  }));
+    saveUninitialized: true,
+  })
+);
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(history());
-app.use(express.static(path.join(__dirname, isProduction ? 'dist' : 'public')));
+app.use(express.static(path.join(__dirname, isProduction ? "dist" : "public")));
 
-app.use('/', indexRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/session', sessionRouter);
-app.use('/api/blockages', blockagesRouter);
+app.use("/", indexRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/session", sessionRouter);
+app.use("/api/blockages", blockagesRouter);
 
 // Catch all other routes into a meaningful error message
-app.all('*', (req, res) => {
-    const errorMessage = `
+app.all("*", (req, res) => {
+  const errorMessage = `
       Cannot find the resource <b>${req.url}</b>
       <br>
       Please use only supported routes below
@@ -71,8 +76,8 @@ app.all('*', (req, res) => {
       <br>
       DELETE /api/users -- Delete the logged in user on the server
     `;
-  
-    res.status(404).send(errorMessage);
-  });
+
+  res.status(404).send(errorMessage);
+});
 
 module.exports = app;
