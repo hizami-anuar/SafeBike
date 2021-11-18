@@ -14,7 +14,7 @@
         v-for="(m, index) in displayMarkers"
         :position="m.location"
         :clickable="true"
-        :draggable="true"
+        :draggable="false"
         @click="onMarkerClick(m.position)"
       />
     </GmapMap>
@@ -33,14 +33,10 @@ import CreateBlockage from '@/components/CreateBlockage.vue';
 export default {
   name: 'Map',
   components: { CreateBlockage },
-  props: { /* blockages etc. */ },
+  props: ['blockages'],
   data: function () {
     return {
       center: {lat:10, lng:10},
-      markers: [
-        {location:{lat:10, lng:10}},
-        {location:null},
-      ],
       createBlockageMenu: {
         active: false,
         location: null,  // {lat, lng}
@@ -49,8 +45,13 @@ export default {
   },
   computed: {
     displayMarkers: function() {
-      return [...this.markers, this.createBlockageMenu]
-        .filter(x => x.location !== null);
+      let markers = this.blockages.map(b => {
+        const [lat, lng] = b.location.coordinates;
+        return {location: {lat, lng}};
+      });
+      markers = [...markers, this.createBlockageMenu].filter(x => x.location !== null);
+      console.log(markers)
+      return markers;
     },
   },
   methods: {
@@ -64,12 +65,14 @@ export default {
         location: {
           lat: event.latLng.lat(),
           lng: event.latLng.lng(),
-        }
+        },
       };
     },
     closeCreateBlockageMenu: function() {
-      this.createBlockageMenu.active = false;
-
+      this.createBlockageMenu = {
+        active: false,
+        location: null,
+      };
     },
   }
 }

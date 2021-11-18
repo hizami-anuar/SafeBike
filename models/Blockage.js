@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
-// THIS COMMENT IS WRONG, update later
+// THIS COMMENT IS likely still WRONG, update later
 /**
  * @typedef Blockage
- * @prop {number[]} location // [longitude, latitude] of location
+ * @prop {number[]} location // [latitude, longitude] of location
  * @prop {number} time // current time represented by milliseconds
  * @prop {string} reporter // the username of the reporter
  * @prop {string} description // description of blockage

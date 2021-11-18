@@ -1,9 +1,12 @@
 <template>
   <main>
-    <Map/>
+    <Map
+      :blockages='blockages'
+    />
     <Blockages
-      v-bind:blockages='this.blockages'
-      @refresh-blockages='refreshBlockages'/>
+      :blockages='blockages'
+      @refresh-blockages='refreshBlockages'
+    />
   </main>
 </template>
 
@@ -24,7 +27,7 @@ export default {
     }
   }, 
   mounted() {
-    this.blockages = this.getAllBlockages();
+    this.getAllBlockages();
     eventBus.$on('refresh-blockages', this.refreshBlockages);
   },
   methods: {
