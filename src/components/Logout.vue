@@ -1,71 +1,68 @@
 <template>
-<div>
+  <div>
     <nav class="header">
 
-        <!-- Information on the right side of the navigation bar -->
-        <div class='header-right'>
-            <h1 v-if='loggedIn' class='username'>Welcome, {{user.username}}</h1>
-                <img v-if='loggedIn' v-on:click.prevent="popupClicked=!popupClicked" src="@/assets/profile.png" class='account-icon'/>
-            
-                <div v-else class='guest-view'>
-                    <router-link v-if='onRegister || (!onLogIn && !onRegister)' to='/login' class='account-info'> 
-                        <button class='login-button'>Login</button>
-                    </router-link>
-                    <router-link v-if='onLogIn || (!onLogIn && !onRegister)' to='/signup' class='account-info'> 
-                        <button class='signup-button'>Signup</button>
-                    </router-link>
-                </div>
-            </div>
-
-        </nav>      
-        <div v-if='loggedIn && popupClicked' class="popup">
-            <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
-            <router-link v-if='loggedIn' to='/settings' >   
-                <button class="submit-button" v-on:click="popupClicked=false">Settings</button>
+  <!-- Information on the right side of the navigation bar -->
+      <div class='header-right'>
+        <h1 v-if='loggedIn' class='username'>Welcome, {{user.username}}</h1>
+        <img v-if='loggedIn' v-on:click.prevent="popupClicked=!popupClicked" src="@/assets/profile.png" class='account-icon'/>
+          
+        <div v-else class='guest-view'>
+            <router-link v-if='onRegister || (!onLogin && !onRegister)' to='/login' class='account-info'> 
+                <button class='login-button'>Login</button>
+            </router-link>
+            <router-link v-if='onLogin || (!onLogin && !onRegister)' to='/signup' class='account-info'> 
+                <button class='signup-button'>Signup</button>
             </router-link>
         </div>
-        </div>
+      </div>
+
+    </nav>      
+    <div v-if='loggedIn && popupClicked' class="popup">
+      <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
+      <router-link v-if='loggedIn' to='/settings' >   
+          <button class="submit-button" v-on:click="popupClicked=false">Settings</button>
+      </router-link>
+    </div>
+  </div>
 </template>
 
 <script>
 import { eventBus } from "../main";
 import axios from "axios";
 export default {
-    name: 'Logout',
-    props: {
-        loggedIn: Boolean,
-        user: Object,
-    },
-    data() {
-        return {
-            popupClicked:false,
-        }
-    }, 
-    computed: {
-        onLogin() {
-            return this.$route.name == 'Login'
-        },
-        onRegister() {
-            return this.$route.name == 'Signup'
-        }
-    },
-    methods: {
-        logout() {
-            axios.delete('/api/session')
-            .then((response) => {
-                console.log(response);
-                eventBus.$emit("set-logged-out");
-                this.logoutError = '';
-                this.$router.push({name: 'Login'});
-            }).catch((error) => {
-                console.log(error);
-                this.logoutError = error.response.data.error 
-                                    || error.response.data.message 
-                                    || "An unknown error occurred when logging you out.";
-            })
-        },
-
+  name: 'Logout',
+  props: {
+    loggedIn: Boolean,
+    user: Object,
+  },
+  data() {
+    return {
+      popupClicked:false,
     }
+  }, 
+  computed: {
+    onLogin() {
+      return this.$route.name == 'Login'
+    },
+    onRegister() {
+      return this.$route.name == 'Signup'
+    }
+  },
+  methods: {
+    logout() {
+      axios.delete('/api/session')
+        .then((response) => {
+          eventBus.$emit("logout-event", response);
+          this.logoutError = '';
+          this.$router.push({name: 'Login'});
+        }).catch((error) => {
+          this.logoutError = error.response.data.error 
+                              || error.response.data.message 
+                              || "An unknown error occurred when logging you out.";
+        })
+    },
+  }
 }
 </script>
 

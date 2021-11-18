@@ -9,8 +9,8 @@
       <router-link class='link' to="/debug">Debug</router-link>
       </div>
       <Logout
-        v-bind:loggedIn='loggedIn'
-        v-bind:user='user'/>
+        :loggedIn='loggedIn'
+        :user='user'/>
     </div>
     <router-view/>
   </div>
@@ -30,7 +30,7 @@ export default {
       loginError: "",
       logoutError: "",
       // username: "",
-      user: "",
+      user: undefined,
     }
   }, 
   mounted() {
@@ -49,56 +49,19 @@ export default {
       return ;
     }).catch((err) => console.log(err));
 
-    eventBus.$on('set-logged-in',  this.setLoggedIn);
-    eventBus.$on('set-logged-out', this.setLoggedOut);
+    eventBus.$on('login-event',  this.handleLogin);
+    eventBus.$on('logout-event', this.handleLogout);
     eventBus.$on('login', this.login);
   }, 
   methods: {
-    setLoggedIn(username) {
+    handleLogin(response) {
       this.loggedIn = true;
-      this.username = username;
+      this.user = response.data;
     },
-    setLoggedOut() {
+    handleLogout(/*response*/) {
       this.loggedIn = false;
-      this.username = '';
+      this.user = undefined;
     },
-
-    /**
-         * Sends a request to the API server with the given username and password. If the
-         * log-in was successful, a message is emitted to the parent Profile component
-         * with the username of the user. 
-         */
-        login(fields) {
-            axios.post('/api/session', fields)
-            .then((response) => {
-            console.log(response);
-            console.log('logged in!');
-            this.$router.push({ name: "Home"});
-            this.loggedIn = true;
-            this.user = response.data;
-
-            }).catch((error) => {
-                console.log(error);
-                this.loginError = error.response.data.error 
-                                    || error.response.data.message
-                                    || "An unknown error occurred when logging in.";
-            })
-        },
-
-        logout() {
-            axios.delete('/api/session')
-            .then((response) => {
-                console.log(response);
-                eventBus.$emit("set-logged-out");
-                this.logoutError = '';
-                this.$router.push({name: 'Login'});
-            }).catch((error) => {
-                console.log(error);
-                this.logoutError = error.response.data.error 
-                                    || error.response.data.message 
-                                    || "An unknown error occurred when logging you out.";
-            })
-        },
   }
 }
 </script>

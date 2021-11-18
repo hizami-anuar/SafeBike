@@ -108,9 +108,9 @@ export default {
       // They confirmed, so we continue
       axios
         .delete('/api/users/')
-        .then(() => {
+        .then((response) => {
           this.deleteAccountError = '';
-          eventBus.$emit('set-logged-out');
+          eventBus.$emit('logout-event', response);
           this.$router.push({ name: "Home"});
         })
         .catch((err) => {
@@ -141,7 +141,7 @@ export default {
       }
 
       axios
-        .put("api/users/", { password: data["password"] })
+        .put(`api/users/password`, { password: data["password"] })
         .then(() => {
           this.passwordError = '';
           this.passwordSuccess = 'Successfully updated password';
@@ -161,15 +161,14 @@ export default {
     changeUsername() {
       // Prevent webpage reload
       axios
-        .put("/api/users/" + this.username, {username: this.newUsername})
-        .then(() => {
+        .put(`/api/users/username`, {username: this.newUsername})
+        .then((response) => {
           // Propogates up to the root that the username has changed
-          eventBus.$emit('set-logged-in', this.newUsername);
+          eventBus.$emit('login-event', response);
           this.usernameError = '';
           this.usernameSuccess = 'Successfully changed username to: ' + this.newUsername;
         })
         .catch((err) => {
-          console.log(err.response || err);
           this.usernameSuccess = '';
           this.usernameError = err.response.data.error 
                                || err.response.data.message 
