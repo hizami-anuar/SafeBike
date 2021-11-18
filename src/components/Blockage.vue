@@ -1,6 +1,8 @@
 <template>
     <form action="" class="blockage-creator" @submit.prevent=''>
         <h1>{{  newStatus.toUpperCase()  }}</h1>
+            <span>{{ longitude }}°, {{ latitude }}°</span>
+            <span>{{  date  }}</span>
             <div v-if='editing'>
             <div class="checkboxes">
             <span>
@@ -26,11 +28,14 @@
             <div v-else>
                 <span class="description" v-if='description.length!==0'>{{  description }}</span>
             </div>
-            <span>{{ longitude }}°, {{ latitude }}°</span>
-            <span>{{  date  }}</span>
             <div class="edit-delete-buttons">
-                <button :disabled="editing" v-on:click="editBlockage">Edit</button>
-                <button v-on:click="deleteBlockage">Delete</button>
+                <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
+                    <img v-if="!editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
+                    <!-- Edit -->
+                <!-- </button> -->
+                <img v-if="!editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+
+                <!-- <button v-on:click="deleteBlockage">Delete</button> -->
             </div>
             
     </form>
@@ -138,6 +143,12 @@ h1, h2 {
 h1 {
     font-size: 20px;
 }
+.icon {
+    height: 25px;
+    margin-right: 10px;
+    margin-left: -2px;
+    cursor: pointer;
+}
 button {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     margin-right: 10px;
@@ -170,7 +181,9 @@ button:hover:enabled {
 .edit-delete-buttons {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    width: 100%;
+    justify-content: flex-end;
+    margin-right: -20px;
 }
 
 .edit-mode-buttons {
@@ -198,6 +211,7 @@ button:hover:enabled {
     align-items: flex-start;
     margin-left: 30%;
 }
+
 .blockage-creator {
     display: flex;
     flex-direction: column;
@@ -212,8 +226,8 @@ button:hover:enabled {
     color: black;
     font-size: 15px;
     margin: 10px auto 10px auto;
-    padding: 20px;
-    padding-right: 12px;
+    /* padding: 20px; */
+    /* padding-right: 12px; */
 }
 
 .feed-icon {
@@ -222,8 +236,8 @@ button:hover:enabled {
 }
 
 textarea {
-    width: 70%;
-    resize: none;
+    width: 90%;
+    /* resize: none; */
     padding: 8px;
     margin: 0 8px 0 8px;
     border-radius: 5px;
