@@ -22,18 +22,20 @@
             </span>
             </div>
                 <h2>Details</h2>
-                <textarea placeholder="hi" v-model='newDetails'/>
-                <button v-on:click="submitEditted">Done</button>
-                <button v-on:click="cancelEdit">Cancel</button>
+                <textarea placeholder="New description here" v-model='newDetails'/>
+                <div class='edit-mode-buttons'>
+                <button class='cancel-button' v-on:click="cancelEdit">Cancel</button>
+                <button class='done-button' v-on:click="submitEditted">Done</button>
+                </div>
             </div>
             <div v-else>
                 <span>Status: {{  status  }}</span>
-                <br>
-                <span>Details: {{  details }}</span>
+                <span v-if='details.length!==0'>Details: {{  details }}</span>
             </div>
-
-            <button :disabled="editing" v-on:click="editBlockage">Edit</button>
-            <button v-on:click="deleteBlockage">Delete</button>
+            <div class="edit-delete-buttons">
+                <button :disabled="editing" v-on:click="editBlockage">Edit</button>
+                <button v-on:click="deleteBlockage">Delete</button>
+            </div>
     </form>
 </template>
 
@@ -80,14 +82,6 @@ export default {
         statusChecked( checked ) {
             this.checkedStatus = checked;
         },
-        // onEnter(e) {
-        //     if (e.shiftKey) return;
-        //     if (this.content.length == 0) return;
-
-        //     e.preventDefault();
-        //     this.createFreet();
-        //     this.content = '';
-        // },
         editBlockage() {
             this.editing = true;
             console.log('hi');
@@ -140,6 +134,50 @@ export default {
 <style scoped>
 h1, h2 {
     color: rgb(69, 38, 118);
+}
+h1 {
+    font-size: 20px;
+}
+
+button {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    background-color: rgb(208, 252, 255);
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(94, 36, 133);
+}
+
+button:hover:enabled {
+    background-color: rgb(255, 254, 204);
+}
+
+.edit-delete-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.edit-mode-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.done-button {
+    width: 40%;
+    margin-top: 10px;
+}
+
+.cancel-button {
+    width: 40%;
+    margin-top: 10px;
+    background: none;
+    color: rgb(131, 33, 131);
+    font-weight: bold;
+    border: 3px rgb(171, 93, 216) solid;
 }
 
 .checkboxes {
