@@ -79,5 +79,7 @@ export default {
 .map {
   width: 500px;
   height: 300px;
+  border: 5px solid rgb(182, 130, 255);
+  border-radius: 3px;
 }
 </style>
