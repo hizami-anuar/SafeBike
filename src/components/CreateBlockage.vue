@@ -40,12 +40,15 @@ import axios from 'axios';
 export default {
   name: 'CreateBlockage',
   components: {},
+  props: ['location'],
   data () {
     return {
       errorMessage: '',
-      details: '',
       status: '',
-    }
+      description: '',
+      latitude: 18.2208,
+      longitude: -66.5901,
+  }
   },
   emits: [
   ],
@@ -53,50 +56,42 @@ export default {
     statusChecked( checked ) {
       this.checkedStatus = checked;
     },
-    data () {
-        return {
-            errorMessage: '',
-            status: '',
-            description: '',
-            latitude: 18.2208,
-            longitude: -66.5901,
-        }
-    },
-    methods : {
-        /**
-         * Makes an API request to create a new Freet. If successful, triggers the callback 
-         * for the parent element to update its view as necessary, such as by reloading the
-         * list of freets.
-         */
-        createBlockage () {
-            let fields = { 
-                status: this.status, 
-                description: this.description,
-                location: {
-                    latitude: this.latitude,
-                    longitude: this.longitude,
-                }
-            };
-            axios.post(`/api/blockages/`, {data:fields}).then(() => {
-                this.errorMessage = '';
-                this.$emit('created-blockage');
-                this.description = '';
-                this.status = '';
-                this.location = {
-                    latitude: 18.2208,
-                    longitude: -66.5901,
-                }; 
-                console.log('posted blockcage!')
-            }).catch(err => {
-                console.log(err.response || err);
-                this.errorMessage = err.response.data.error 
-                                    || err.response.data.message 
-                                    || "An unknown error occurred when posting this Blockage.";
-            });
-        },
-    }
+    // onEnter(e) {
+    //   if (e.shiftKey) return;
+    //   if (this.content.length == 0) return;
 
-    }
+    //   e.preventDefault();
+    //   this.createFreet();
+    //   this.content = '';
+    // },
+
+    /**
+     * Makes an API request to create a new Freet. If successful, triggers the callback 
+     * for the parent element to update its view as necessary, such as by reloading the
+     * list of freets.
+     */
+    createBlockage () {
+      let fields = { 
+        status: this.status, 
+        description: this.details,
+        location: {
+          latitude: this.location.lat,
+          longitude: this.location.lng,
+        },
+      };
+      axios.post(`/api/blockages/`, {data: fields}).then(() => {
+        this.errorMessage = '';
+        this.$emit('created-blockage');
+        this.details = '';
+        this.status = '';
+      }).catch(err => {
+        console.log(err.response || err);
+        this.errorMessage = err.response.data.error 
+                  || err.response.data.message 
+                  || "An unknown error occurred when posting this Blockage.";
+      });
+    },
+  }
 }
 </script>
 

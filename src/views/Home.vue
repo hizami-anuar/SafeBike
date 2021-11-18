@@ -1,10 +1,6 @@
 <template>
   <main>
     <Map/>
-    <div class="home">
-      <!-- Hello world -->
-      Double click on the map to create a new blockage.
-    </div>
     <Blockages
       v-bind:blockages='this.blockages'
       @refresh-blockages='refreshBlockages'/>
