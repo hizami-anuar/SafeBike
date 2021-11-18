@@ -29,8 +29,7 @@ router.get("/", async (req, res) => {
  * @return {Freet} - the created freet
  * @throws {400} - if freet is empty string or longer than 140 chars
  */
-router.post('/', 
-  async (req, res) => {
+router.post("/", async (req, res) => {
   const latitude = req.body.data.location.latitude;
   const longitude = req.body.data.location.longitude;
   const time = Date.now();
@@ -49,29 +48,32 @@ router.post('/',
   res.status(200).json("done").end();
 });
 
-router.patch('/:id',
-  async (req, res) => {
-    const id = req.params.id;
-    
-    const latitude = req.body.data.location.latitude;
-    const longitude = req.body.data.location.longitude;
-    const time = Date.now();
-    const reporter = "abcdef1234567890";
-    const description = req.body.data.description;
-    const status = req.body.data.status;
-    const location = { type: 'Point', coordinates: [latitude, longitude] };
-    const updates = {
-      location: location,
-      time: time,
-      reporter: reporter,
-      description: description,
-      status: status,
-    }
-    Object.keys(updates).forEach(key => updates[key] === undefined ? delete updates[key] : {});
-    response = await Blockages.findOneAndUpdate({ _id: id }, updates);
-    res.status(200).json( response ).end();
-  }
-)
+router.patch("/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const latitude = req.body.data.location.latitude;
+  const longitude = req.body.data.location.longitude;
+  const time = Date.now();
+  const reporter = "abcdef1234567890";
+  const description = req.body.data.description;
+  const status = req.body.data.status;
+  const location = { type: "Point", coordinates: [latitude, longitude] };
+  const updates = {
+    location: location,
+    time: time,
+    reporter: reporter,
+    description: description,
+    status: status,
+  };
+  Object.keys(updates).forEach((key) =>
+    updates[key] === undefined ? delete updates[key] : {}
+  );
+  response = await Blockages.findOneAndUpdate({ _id: id }, updates);
+  res
+    .status(200)
+    .json(response)
+    .end();
+});
 
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
