@@ -1,4 +1,5 @@
 <template>
+  <div>
     <form action="" class="blockage-creator" @submit.prevent=''>
         <!-- The Error Label if one occurs -->
         <h1>Report Blockage</h1>
@@ -28,16 +29,29 @@
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
         <!-- <textarea v-on:keydown.enter='onEnter' id='creator-textbox' class="creator-textbox" v-model="content" placeholder="Click here to begin writing..." /> -->
         <button :disabled='status.length === 0' class="post-button" v-on:click="createBlockage">Submit</button>
+      <!-- The Error Label if one occurs -->
     </form>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 
-
 export default {
-    name: 'CreateBlockage',
-    components: {
+  name: 'CreateBlockage',
+  components: {},
+  data () {
+    return {
+      errorMessage: '',
+      details: '',
+      status: '',
+    }
+  },
+  emits: [
+  ],
+  methods: {
+    statusChecked( checked ) {
+      this.checkedStatus = checked;
     },
     data () {
         return {
@@ -48,22 +62,7 @@ export default {
             longitude: -66.5901,
         }
     },
-    emits: [
-        // 'created-freet'
-    ],
-    methods: {
-        statusChecked( checked ) {
-            this.checkedStatus = checked;
-        },
-        // onEnter(e) {
-        //     if (e.shiftKey) return;
-        //     if (this.content.length == 0) return;
-
-        //     e.preventDefault();
-        //     this.createFreet();
-        //     this.content = '';
-        // },
-
+    methods : {
         /**
          * Makes an API request to create a new Freet. If successful, triggers the callback 
          * for the parent element to update its view as necessary, such as by reloading the
@@ -95,6 +94,7 @@ export default {
                                     || "An unknown error occurred when posting this Blockage.";
             });
         },
+    }
 
     }
 }
@@ -102,80 +102,80 @@ export default {
 
 <style scoped>
 h1, h2 {
-    color: rgb(69, 38, 118);
+  color: rgb(69, 38, 118);
 }
 
 .checkboxes {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* width: 100%; */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* width: 100%; */
 }
 .blockage-creator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgb(186, 186, 235);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(186, 186, 235);
 
-    /* height: 100px; */
-    /* max-width: 500px; */
-    width: 50%;
-    border: 2px solid rgb(81, 138, 235);
-    border-radius: 15px;
-    color: black;
-    font-size: 15px;
-    margin: 10px auto 10px auto;
-    padding: 20px;
-    padding-right: 12px;
+  /* height: 100px; */
+  /* max-width: 500px; */
+  width: 50%;
+  border: 2px solid rgb(81, 138, 235);
+  border-radius: 15px;
+  color: black;
+  font-size: 15px;
+  margin: 10px auto 10px auto;
+  padding: 20px;
+  padding-right: 12px;
 }
 
 .feed-icon {
- width: 30px;
- margin-right: 10px;
+  width: 30px;
+  margin-right: 10px;
 }
 
 textarea {
-    width: 70%;
-    /* vertical-align: top; */
-    resize: none;
-    padding: 8px;
-    margin: 0 8px 0 8px;
-    border-radius: 5px;
-    border: none;
+  width: 70%;
+  /* vertical-align: top; */
+  resize: none;
+  padding: 8px;
+  margin: 0 8px 0 8px;
+  border-radius: 5px;
+  border: none;
 }
 
 .textboxes {
-    display: flex;
+  display: flex;
 }
 
 .post-button {
-    /* vertical-align: top; */
-    font-size: 25px;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    border-radius: 10px;
-    height: 60%;
-    margin-top: 4%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    background-color: rgb(68, 169, 223);
-    color: white;
-    padding: 10px;
-    /* margin-left: 3px; */
+  /* vertical-align: top; */
+  font-size: 25px;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  height: 60%;
+  margin-top: 4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  background-color: rgb(68, 169, 223);
+  color: white;
+  padding: 10px;
+  /* margin-left: 3px; */
 }
 
 .post-button:disabled {
-    background-color: rgb(148, 148, 148);
-    color: rgb(235, 235, 235);
+  background-color: rgb(148, 148, 148);
+  color: rgb(235, 235, 235);
 }
 
 .post-button:hover:enabled {
-    background-color: rgb(249, 199, 138);
+  background-color: rgb(249, 199, 138);
 }
 
 .error{
-    color: red;
+  color: red;
 }
 </style>

@@ -5,28 +5,23 @@
       <!-- Hello world -->
       Double click on the map to create a new blockage.
     </div>
-    <CreateBlockage/>
     <Blockages
       v-bind:blockages='this.blockages'
       @refresh-blockages='refreshBlockages'/>
-    <!-- <Blockage/> -->
   </main>
 </template>
 
 <script>
 import Map from '../components/Map.vue';
 
-import CreateBlockage from '@/components/CreateBlockage.vue';
-// import Blockage from '@/components/Blockage.vue';
 import Blockages from '@/components/Blockages.vue';
-// import App from '../App.vue';
 import { eventBus } from "../main";
 
 import axios from 'axios';
 
 export default {
   name: 'Home',
-  components: { CreateBlockage, Map, Blockages},
+  components: { Map, Blockages},
   data () {
     return {
       blockages: [],
@@ -54,7 +49,7 @@ export default {
 </script>
 
 <style scoped>
-.home {
+main {
   display: flex;
   flex-direction: column;
   align-items: center;
