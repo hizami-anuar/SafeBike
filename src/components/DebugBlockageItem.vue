@@ -5,6 +5,7 @@
       <p>location: {{ blockage.location.coordinates }}</p>
       <p>time: {{ blockage.time }}</p>
       <p>reporter: {{ blockage.reporter }}</p>
+      <p>reporterUsername: {{ blockage.reporterUsername }}</p>
       <p>description: {{ blockage.description }}</p>
       <p>status: {{ blockage.status }}</p>
       <input type="submit" v-on:click.prevent="deleteBlockage" value="Delete">

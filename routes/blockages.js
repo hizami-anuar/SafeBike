@@ -15,11 +15,11 @@ const router = express.Router();
  * @return {Blockage[]} - list of blockages
  */
 router.get("/", async (req, res) => {
-  let query = req.query;
+  const query = req.query;
   const blockages = await Blockages.find(query);
   await Promise.all(blockages.map(async (blockage) => {
-    let user = await Users.findOne({_id: blockage.reporter});
-    blockage.reporter = user.username;
+    const user = await Users.findOne({_id: blockage.reporter});
+    blockage._doc.reporterUsername = user.username;
   }));
   res.status(200).json({ blockages: blockages }).end();
 });
