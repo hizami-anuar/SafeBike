@@ -122,10 +122,11 @@ const userIsNotLoggedIn = (req, res, next) => {
   next();
 };
 
+// Checks that the user has permission to edit/delete a blockage
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
   if (blockage.reporter != req.session.userID) {
-    res.status(400).json({
+    res.status(403).json({
       error: 'You do not have permission to edit or delete this blockage!'
     }).end();
     return;

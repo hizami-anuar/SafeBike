@@ -34,6 +34,8 @@ then you will find the application at `localhost:8080` in the browser
   - routes:
     - blockages.js
     - middleware.js
+  - router:
+    - index.js
 - **Ben Bitdiddle**:
   - src
     - HomePage.vue
