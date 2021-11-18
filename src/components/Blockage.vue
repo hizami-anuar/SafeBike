@@ -98,7 +98,7 @@ export default {
             }
 
             // request to submit editted blockage
-            axios.patch(`/api/blockages/${this.blockageData._id}`, { data: updatedBlockageData })
+            axios.patch(`/api/blockages/${this.blockageData._id}`, updatedBlockageData)
                 .then((response) => {
                     console.log(response);
                     console.log('edited blockage');
