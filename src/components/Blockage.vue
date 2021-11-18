@@ -1,10 +1,7 @@
 <template>
     <form action="" class="blockage-creator" @submit.prevent=''>
-        <h1>Blockage</h1>
-            <span>{{  date  }}</span>
-            <span>Location: {{ longitude }}, {{ latitude }}</span>
+        <h1>{{  newStatus.toUpperCase()  }}</h1>
             <div v-if='editing'>
-                <h2>Status</h2>
             <div class="checkboxes">
             <span>
                 <input type="radio" id="unblocked" value="Unblocked" v-model="newStatus">
@@ -27,13 +24,15 @@
                 </div>
             </div>
             <div v-else>
-                <span>Status: {{  status  }}</span>
-                <span v-if='description.length!==0'>Description: {{  description }}</span>
+                <span class="description" v-if='description.length!==0'>{{  description }}</span>
             </div>
+            <span>{{ longitude }}°, {{ latitude }}°</span>
+            <span>{{  date  }}</span>
             <div class="edit-delete-buttons">
                 <button :disabled="editing" v-on:click="editBlockage">Edit</button>
                 <button v-on:click="deleteBlockage">Delete</button>
             </div>
+            
     </form>
 </template>
 
@@ -82,6 +81,7 @@ export default {
         // cancel edit blockage mode
         cancelEdit() {
             this.editing = false;
+            this.newStatus = this.status;
         },
         // submit the editted blockage
         submitEditted() {
@@ -89,7 +89,10 @@ export default {
 
             // updated blockage info: right now can't edit location (to do?)
             let updatedBlockageData = {
-                location: this.location,
+                location: {
+                    longitude: this.longitude,
+                    latitude: this.latitude,
+                },
                 description: this.newDescription,
                 status: this.newStatus
             }
@@ -145,10 +148,23 @@ button {
     font-size: 17px;
     font-weight: bold;
     color: rgb(94, 36, 133);
+    cursor: pointer;
+}
+
+button:disabled {
+    color: grey;
+    background-color: rgb(216, 216, 245);
+    cursor: not-allowed;
 }
 
 button:hover:enabled {
     background-color: rgb(255, 254, 204);
+}
+
+.description {
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
 }
 
 .edit-delete-buttons {
@@ -180,6 +196,7 @@ button:hover:enabled {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-left: 30%;
 }
 .blockage-creator {
     display: flex;
@@ -190,7 +207,7 @@ button:hover:enabled {
     /* height: 100px; */
     /* max-width: 500px; */
     width: 70%;
-    border: 2px solid rgb(81, 138, 235);
+    border: 3px solid rgb(111, 79, 199);
     border-radius: 15px;
     color: black;
     font-size: 15px;
