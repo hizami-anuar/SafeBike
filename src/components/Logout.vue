@@ -1,0 +1,191 @@
+<template>
+<div>
+    <nav class="header">
+
+        <!-- Information on the right side of the navigation bar -->
+        <div class='header-right'>
+            <h1 v-if='loggedIn' class='username'>Welcome, {{username}}</h1>
+                <img v-if='loggedIn' v-on:click="popupClicked=!popupClicked" src="@/assets/profile.png" class='account-icon'/>
+            
+                <div v-else class='guest-view'>
+                    <router-link v-if='onRegister || (!onLogIn && !onRegister)' to='/login' class='account-info'> 
+                        <button class='login-button'>Login</button>
+                    </router-link>
+                    <router-link v-if='onLogIn || (!onLogIn && !onRegister)' to='/signup' class='account-info'> 
+                        <button class='signup-button'>Signup</button>
+                    </router-link>
+                </div>
+            </div>
+
+        </nav>      
+        <div v-if='loggedIn && popupClicked' class="popup">
+            <button class='submit-button' :onclick='logout'>Logout</button>
+            <router-link v-if='loggedIn' to='/settings' >   
+                <button class="submit-button" v-on:click="popupClicked=false">Settings</button>
+            </router-link>
+        </div>
+        </div>
+</template>
+
+<script>
+import { eventBus } from "../main";
+import axios from "axios";
+export default {
+    name: 'Logout',
+    props: {
+        loggedIn: Boolean,
+        username: String
+    },
+    data() {
+        return {
+            popupClicked:false,
+        }
+    }, 
+    computed: {
+        onLogin() {
+            return this.$route.name == 'Login'
+        },
+        onRegister() {
+            return this.$route.name == 'Signup'
+        }
+    },
+    methods: {
+        logout() {
+            axios.delete('/api/session')
+            .then((response) => {
+                console.log(response);
+                eventBus.$emit("set-logged-out");
+                this.logoutError = '';
+                this.$router.push({name: 'Login'});
+            }).catch((error) => {
+                console.log(error);
+                this.logoutError = error.response.data.error 
+                                    || error.response.data.message 
+                                    || "An unknown error occurred when logging you out.";
+            })
+        },
+
+    }
+}
+</script>
+
+<style scoped>
+
+.header {
+    background-color: #474973;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login-button {
+    padding: 7px 20px;
+    font-size: 20px;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-weight: bold; 
+    border-radius: 5px;
+    background-color: purple;
+    border: 3px white solid;
+    color: white;
+}
+
+.login-button:hover {
+    background-color: yellow;
+    color: purple;
+}
+
+.signup-button {
+    padding: 10px 20px;
+    font-size: 20px;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-weight: bold; 
+    border-radius: 5px;
+    background-color: purple;
+    color: white;
+    border: none;
+}
+
+.signup-button:hover {
+    background-color: yellow;
+}
+
+.submit-button {
+  background: none;
+  background-color: rgb(109, 47, 180);
+  border: none;
+  padding: 5px;
+  color: white;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+    background-color: rgb(250, 255, 177);
+    color: purple;
+}
+
+button:disabled {
+    background-color: rgb(148, 148, 148);
+    color: rgb(235, 235, 235);
+}
+
+.popup {
+    position: relative;
+    width: 100%;
+    /* left: 88%; */
+    background-color: rgb(230, 204, 247);
+    z-index: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    
+}
+
+
+.header-right {
+    justify-content: flex-end;
+    margin-right: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.guest-view a{
+    font-size: 2em;
+    color: purple;
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    Color: white;
+}
+.username {
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    margin-left: 15px;
+    
+}
+.account-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.account-info {
+    width: 15%;
+    margin: 5px;
+}
+
+</style>

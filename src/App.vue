@@ -6,10 +6,44 @@
       <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
       <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>Account</router-link> 
       <router-link class='link' to="/debug">Debug</router-link>
+      <Logout
+        v-bind:loggedIn='loggedIn'
+        v-bind:username='username'/>
     </div>
     <router-view/>
   </div>
 </template>
+
+<script>
+import { eventBus } from "@/main";
+import Logout from '@/components/Logout.vue';
+
+export default {
+  name: 'App',
+  components: { Logout},
+  data() {
+    return {
+      loggedIn: false,
+      username: "",
+    }
+  }, 
+  mounted() {
+    // Register some eventBus listeners
+    eventBus.$on('set-logged-in',  this.setLoggedIn);
+    eventBus.$on('set-logged-out', this.setLoggedOut);
+  }, 
+  methods: {
+    setLoggedIn(username) {
+      this.loggedIn = true;
+      this.username = username;
+    },
+    setLoggedOut() {
+      this.loggedIn = false;
+      this.username = '';
+    }
+  }
+}
+</script>
 
 <style>
 
@@ -17,6 +51,12 @@ html, body {
   margin: 0px;
   padding: 0px;
   background-color: rgb(255, 249, 213);
+}
+button{
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+button:enabled {
+  cursor: pointer;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
