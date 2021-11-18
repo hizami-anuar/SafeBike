@@ -24,7 +24,7 @@
             </div>
             <!-- {{checkedStatus}} -->
             <h2>Details (optional)</h2>
-            <textarea v-model="description" placeholder="Details about blockage..."/>
+            <textarea v-model="details" placeholder="Details about blockage..."/>
         <!-- </div> -->
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
         <!-- <textarea v-on:keydown.enter='onEnter' id='creator-textbox' class="creator-textbox" v-model="content" placeholder="Click here to begin writing..." /> -->
@@ -36,6 +36,7 @@
 
 <script>
 import axios from 'axios';
+import { eventBus } from "../main";
 
 export default {
   name: 'CreateBlockage',
@@ -45,9 +46,7 @@ export default {
     return {
       errorMessage: '',
       status: '',
-      description: '',
-      latitude: 18.2208,
-      longitude: -66.5901,
+      details: '',
   }
   },
   emits: [
@@ -82,6 +81,7 @@ export default {
       axios.post(`/api/blockages/`, {data: fields}).then(() => {
         this.errorMessage = '';
         this.$emit('created-blockage');
+        eventBus.$emit('refresh-blockages');
         this.details = '';
         this.status = '';
       }).catch(err => {
