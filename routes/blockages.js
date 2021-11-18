@@ -8,7 +8,8 @@ const validateThat = require("./middleware");
 const router = express.Router();
 
 /**
- * List all blockages
+ * List all blockages.
+ * Allows query by specific properties of blockage (i.e. reporter).
  *
  * @name GET /api/blockages
  *
@@ -29,9 +30,11 @@ router.get("/", async (req, res) => {
  *
  * @name POST /api/blockages
  *
- * @param {string} content - content of freet
- * @return {Freet} - the created freet
- * @throws {400} - if freet is empty string or longer than 140 chars
+ * @param {Object} location - object with latitude/longitude values
+ * @param {string} description - description of blockage
+ * @param {string} status - status of blockage
+ * @return {Blockage} - the created blockage
+ * @throws {403} - if user is not logged in
  */
 router.post("/", 
   [
@@ -53,9 +56,20 @@ router.post("/",
       status: status,
     };
     await Blockages.create(blockage);
-    res.status(200).json("done").end();
+    res.status(200).json(blockage).end();
   });
 
+/**
+ * Update a blockage.
+ *
+ * @name PATCH /api/blockages/:id
+ *
+ * @param {Object} location - object with latitude/longitude values
+ * @param {string} description - description of blockage
+ * @param {string} status - status of blockage
+ * @return {Blockage} - the updated blockage
+ * @throws {403} - if user is not logged in or does not have permission
+ */
 router.patch("/:id", 
   [
     validateThat.userIsLoggedIn,
@@ -85,6 +99,14 @@ router.patch("/:id",
     res.status(200).json(response).end();
   });
 
+/**
+ * Delete a blockage.
+ *
+ * @name DELETE /api/blockages/:id
+ *
+ * @return {Blockage} - the deleted blockage
+ * @throws {403} - if user is not logged in or does not have permission
+ */
 router.delete("/:id", [
     validateThat.userIsLoggedIn,
     validateThat.userHasPermission,

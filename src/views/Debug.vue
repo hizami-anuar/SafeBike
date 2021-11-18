@@ -2,63 +2,71 @@
   <main class="two-col">
     <section id="operations-container">
       <h2>Operations:</h2>
+      <span>
+        <button class="button-mode" v-on:click="mode='users'">Users</button>
+        <button class="button-mode" v-on:click="mode='blockages'">Blockages</button>
+      </span>
       <div class="scrollbox">
-        <form>
-          <span>
-            <label>Username: </label>
-            <input type="text" v-model="registrationFormData.username">
-          </span>
-          <span>
-            <label>Password: </label>
-            <input type="text" v-model="registrationFormData.password">
-          </span>
-          <input type="submit" v-on:click.prevent="createAccount" value="Create Account">
-        </form>
+        <template v-if="mode=='users'">
+          <form>
+            <span>
+              <label>Username: </label>
+              <input type="text" v-model="registrationFormData.username">
+            </span>
+            <span>
+              <label>Password: </label>
+              <input type="text" v-model="registrationFormData.password">
+            </span>
+            <input type="submit" v-on:click.prevent="createAccount" value="Create Account">
+          </form>
 
-        <form>
-          <span>
-            <label>Username: </label>
-            <input type="text" v-model="loginFormData.username">
-          </span>
-          <span>
-            <label>Password: </label>
-            <input type="text" v-model="loginFormData.password">
-          </span>
-          <input type="submit" v-on:click.prevent="login" value="Login">
-        </form>
+          <form>
+            <span>
+              <label>Username: </label>
+              <input type="text" v-model="loginFormData.username">
+            </span>
+            <span>
+              <label>Password: </label>
+              <input type="text" v-model="loginFormData.password">
+            </span>
+            <input type="submit" v-on:click.prevent="login" value="Login">
+          </form>
 
-        <form>
-          <input type="submit" v-on:click.prevent="logout" value="Logout">
-        </form>
+          <form>
+            <input type="submit" v-on:click.prevent="logout" value="Logout">
+          </form>
+        </template>
+        
+        <template v-else-if="mode=='blockages'">
+          <form>
+            <input type="submit" v-on:click.prevent="getBlockages" value="Get Blockages">
+          </form>
 
-        <form>
-          <input type="submit" v-on:click.prevent="getBlockages" value="Get Blockages">
-        </form>
 
+          <form>
+            <span>
+              <label>Latitude: </label>
+              <input type="number" class="small-input" v-model="blockageFormData.location.latitude">
+              &nbsp;
+              <label>Longitude: </label>
+              <input type="number" class="small-input" v-model="blockageFormData.location.longitude">
+            </span>
+            <span>
+              <label>Description: </label>
+              <input type="text" v-model="blockageFormData.description">
+            </span>
+            <span>
+              <label>Status: </label>
+              <input type="text" v-model="blockageFormData.status">
+            </span>
+            <input type="submit" v-on:click.prevent="createBlockage" value="Create Blockage">
+          </form>
 
-        <form>
-          <span>
-            <label>Latitude: </label>
-            <input type="number" class="small-input" v-model="blockageFormData.location.latitude">
-            &nbsp;
-            <label>Longitude: </label>
-            <input type="number" class="small-input" v-model="blockageFormData.location.longitude">
-          </span>
-          <span>
-            <label>Description: </label>
-            <input type="text" v-model="blockageFormData.description">
-          </span>
-          <span>
-            <label>Status: </label>
-            <input type="text" v-model="blockageFormData.status">
-          </span>
-          <input type="submit" v-on:click.prevent="createBlockage" value="Create Blockage">
-        </form>
-
-        <DebugBlockageItem
-          v-for="blockage in blockages"
-          :key="blockage._id"
-          :blockage="blockage"/>
+          <DebugBlockageItem
+            v-for="blockage in blockages"
+            :key="blockage._id"
+            :blockage="blockage"/>
+        </template>
       </div>
     </section>
     <section>
@@ -80,6 +88,7 @@ export default {
   components: { DebugBlockageItem },
   data() {
     return {
+      mode: 'users',
       blockages: [],
       blockageFormData: {
         description: "",
@@ -357,6 +366,11 @@ input[type="submit"]:hover {
 
 .flashing {
   animation: flash 0.3s;
+}
+
+.button-mode {
+  width: 50%;
+  height: 50px;
 }
 
 </style>>

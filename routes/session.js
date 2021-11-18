@@ -50,11 +50,11 @@ router.post('/', [
 router.get('/', [
   validateThat.userIsLoggedIn,
   ], (req, res) => {
-    const user = Users.findOneUserID(req.session.userID);
+    //const user = await Users.findOne({_id: req.session.id});
     res.status(200).json({
         username: req.session.username,
         userID: req.session.userID,
-        following: user.following
+        //following: user.following
     });
   });
 
