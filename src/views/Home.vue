@@ -1,8 +1,6 @@
 <template>
   <main>
     <Map/>
-    <div class="home">
-    </div>
     <Blockages
       v-bind:blockages='this.blockages'
       @refresh-blockages='refreshBlockages'/>
