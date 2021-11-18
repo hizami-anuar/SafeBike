@@ -4,8 +4,33 @@
       <h2>Operations:</h2>
       <div class="scrollbox">
         <form>
+          <span>
+            <label>Username: </label>
+            <input type="text" v-model="registrationFormData.username">
+          </span>
+          <span>
+            <label>Password: </label>
+            <input type="text" v-model="registrationFormData.password">
+          </span>
+          <input type="submit" v-on:click.prevent="createAccount" value="Create Account">
+        </form>
+
+        <form>
+          <span>
+            <label>Username: </label>
+            <input type="text" v-model="loginFormData.username">
+          </span>
+          <span>
+            <label>Password: </label>
+            <input type="text" v-model="loginFormData.password">
+          </span>
+          <input type="submit" v-on:click.prevent="login" value="Login">
+        </form>
+
+        <form>
           <input type="submit" v-on:click.prevent="getBlockages" value="Get Blockages">
         </form>
+
 
         <form>
           <span>
@@ -60,6 +85,14 @@ export default {
           longitude: 0,
         }
       },
+      loginFormData: {
+        username: "",
+        password: "",
+      },
+      registrationFormData: {
+        username: "",
+        password: "",
+      },
       eventListeners: [
           {name: 'edit-blockage', func: this.editBlockage},
           {name: 'delete-blockage', func: this.deleteBlockage},
@@ -72,7 +105,7 @@ export default {
   beforeDestroy: function() {
     this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
-  
+
   methods: {
     showObject(obj) {
       const pre = document.getElementById("response");
@@ -152,6 +185,26 @@ export default {
           this.showResponse(error);
         })
     },
+
+    createAccount() {
+      axios.post('/api/users', this.registrationFormData)
+        .then((response) => {
+          console.log(response);
+          this.showResponse(response);
+        }).catch((error) => {
+          this.showResponse(error);
+        })
+    },
+
+    login() {
+      axios.post('/api/session', this.loginFormData)
+        .then((response) => {
+          console.log(response);
+          this.showResponse(response);
+        }).catch((error) => {
+          this.showResponse(error);
+        })
+    },
   }
 }
 </script>
@@ -190,6 +243,7 @@ body {
   flex-grow: 1;
   display: flex;
   flex-wrap: wrap;
+  overflow-y: scroll;
 }
 
 main > * {

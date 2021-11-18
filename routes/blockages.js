@@ -15,11 +15,9 @@ const router = express.Router();
  * @return {Blockage[]} - list of blockages
  */
 router.get("/", async (req, res) => {
-  const blockages = await Blockages.find();
-  res
-    .status(200)
-    .json({ blockages: blockages })
-    .end();
+  let query = req.query;
+  const blockages = await Blockages.find(query);
+  res.status(200).json({ blockages: blockages }).end();
 });
 
 /**
@@ -47,10 +45,7 @@ router.post("/", async (req, res) => {
     status: status,
   };
   await Blockages.create(blockage);
-  res
-    .status(200)
-    .json("done")
-    .end();
+  res.status(200).json("done").end();
 });
 
 router.patch("/:id", async (req, res) => {
@@ -83,10 +78,7 @@ router.patch("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
   blockage = await Blockages.findOneAndDelete({ _id: id });
-  res
-    .status(200)
-    .json(blockage)
-    .end();
+  res.status(200).json(blockage).end();
 });
 
 module.exports = router;

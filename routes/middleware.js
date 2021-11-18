@@ -1,8 +1,10 @@
 const Users = require('../models/User');
 
 // Checks that the username in the request body does not already exist
-const usernameDoesNotAlreadyExist = (req, res, next) => {
-  if (Users.findOneUsername(req.body.username) !== undefined) {
+const usernameDoesNotAlreadyExist = async (req, res, next) => {
+  let user = await Users.findOne({username: req.body.username});
+  console.log(user);
+  if (user != null) {
     res.status(400).json({
       error: `Username ${req.body.username} already exists.`,
     }).end();
@@ -53,9 +55,9 @@ const validPassword = (req, res, next) => {
 };
 
 // Checks that username/password correspond to a user
-const validCredentials = (req, res, next) => {
-  const user = Users.findOneUsername(req.body.username);
-  if (user === undefined || !(user.password === req.body.password)) {
+const validCredentials = async (req, res, next) => {
+  const user = await Users.findOne({ username: req.body.username });
+  if (user == null || !(user.password === req.body.password)) {
     res.status(403).json({
       error: `Username password combination not recognized.`,
     }).end();
@@ -66,7 +68,7 @@ const validCredentials = (req, res, next) => {
 
 // Checks that the username in the parameters exists
 const usernameExists = (req, res, next) => {
-  if (Users.findOneUsername(req.params.username) === undefined) {
+  if (Users.findOne({username: req.params.username}) === undefined) {
     res.status(404).json({
       error: `Username ${req.params.username} does not exist.`,
     }).end();
@@ -88,8 +90,8 @@ const userIsLoggedIn = (req, res, next) => {
 
 // Checks that the user id in query exists
 const userIDExists = (req, res, next) => {
-  const id = parseInt(req.query.id, 10);
-  if (Users.findOneUserID(id) === undefined) {
+  const id = req.query.id;
+  if (Users.findOne({_id: id}) === undefined) {
     res.status(404).json({
       error: `User with ID ${req.query.id} does not exist.`,
     }).end();
