@@ -76,7 +76,6 @@ export default {
     computed() {
     },
     emits: [
-        // 'created-freet'
         'refresh-blockages',
     ],
     methods: {
@@ -139,7 +138,6 @@ h1, h2 {
 h1 {
     font-size: 20px;
 }
-
 button {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     margin-right: 10px;
@@ -147,7 +145,7 @@ button {
     border-radius: 4px;
     padding: 4px 10px;
     background-color: rgb(208, 252, 255);
-    font-size: 15px;
+    font-size: 17px;
     font-weight: bold;
     color: rgb(94, 36, 133);
 }
@@ -185,7 +183,6 @@ button:hover:enabled {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    /* width: 100%; */
 }
 .blockage-creator {
     display: flex;

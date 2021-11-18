@@ -26,7 +26,7 @@
             <textarea v-model="details" placeholder="Details about blockage..."/>
         <!-- </div> -->
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
-        <button :disabled='status.length === 0' class="post-button" v-on:click="createBlockage">Submit</button>
+        <button :disabled='status.length === 0' class="post-button" v-on:click="createBlockage">SUBMIT</button>
       <!-- The Error Label if one occurs -->
     </form>
   </div>
@@ -130,7 +130,6 @@ textarea {
 }
 
 .post-button {
-  /* vertical-align: top; */
   font-size: 25px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: bold;
@@ -140,12 +139,10 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50%;
   background-color: rgb(88, 44, 192);
   color: white;
-  padding: 10px;
+  padding: 10px 15px;
   border: none;
-  /* margin-left: 3px; */
 }
 
 .post-button:disabled {
