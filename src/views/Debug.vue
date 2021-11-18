@@ -28,6 +28,10 @@
         </form>
 
         <form>
+          <input type="submit" v-on:click.prevent="logout" value="Logout">
+        </form>
+
+        <form>
           <input type="submit" v-on:click.prevent="getBlockages" value="Get Blockages">
         </form>
 
@@ -151,7 +155,7 @@ export default {
     },
 
     createBlockage() {
-      axios.post(`/api/blockages`, { data: this.blockageFormData })
+      axios.post(`/api/blockages`, this.blockageFormData)
         .then((response) => {
           this.showResponse(response);
           this.getBlockages();
@@ -164,7 +168,7 @@ export default {
       const id = data.id;
       const blockageData = data.data;
 
-      axios.patch(`/api/blockages/${id}`, { data: blockageData })
+      axios.patch(`/api/blockages/${id}`, blockageData)
         .then((response) => {
           this.showResponse(response);
           this.getBlockages();
@@ -205,6 +209,17 @@ export default {
           this.showResponse(error);
         })
     },
+
+    logout() {
+      axios.delete('/api/session')
+        .then((response) => {
+          console.log(response);
+          this.showResponse(response);
+        }).catch((error) => {
+          this.showResponse(error);
+        })
+    },
+
   }
 }
 </script>

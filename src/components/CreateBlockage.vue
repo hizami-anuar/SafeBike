@@ -58,7 +58,7 @@ export default {
           longitude: this.location.lng,
         },
       };
-      axios.post(`/api/blockages/`, {data: fields}).then(() => {
+      axios.post(`/api/blockages/`, fields).then(() => {
         this.errorMessage = '';
         this.$emit('created-blockage'); // tells map to close the report blockage window
         eventBus.$emit('refresh-blockages'); // refresh the list of blockages
