@@ -29,7 +29,6 @@
 
 <script>
 import CreateBlockage from '@/components/CreateBlockage.vue';
-import { eventBus } from "../main";
 
 export default {
   name: 'Map',
@@ -70,7 +69,7 @@ export default {
     },
     closeCreateBlockageMenu: function() {
       this.createBlockageMenu.active = false;
-      eventBus.$emit('refresh-blockages');
+
     },
   }
 }

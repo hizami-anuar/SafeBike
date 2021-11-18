@@ -1,33 +1,27 @@
 <template>
   <div>
     <form action="" class="blockage-creator" @submit.prevent=''>
-        <!-- The Error Label if one occurs -->
         <h1>Report Blockage</h1>
-        <!-- <div class="textboxes"> -->
             <h2>Status</h2>
-            <!-- <textarea v-model="status" placeholder="Enter status here"/> -->
-            <span>Status Selected: {{ status }}</span>
-            <br>
+            <span v-if='status.length!==0'>Status: {{ status }}</span>
             <div class="checkboxes">
             <span>
-                <input type="radio" id="unblocked" value="Unblocked" v-model="status">
+                <input type="radio" id="unblocked" value="UNBLOCKED" v-model="status">
                 <label for="unblocked">Unblocked</label>
             </span>
             <span>
-                <input type="radio" id="unsafe" value="Unsafe" v-model="status">
+                <input type="radio" id="unsafe" value="UNSAFE" v-model="status">
                 <label for="unsafe">Unsafe</label>
             </span>
             <span>
-                <input type="radio" id="blocked" value="Blocked" v-model="status">
+                <input type="radio" id="blocked" value="BLOCKED" v-model="status">
                 <label for="blocked">Blocked</label>
             </span>
             </div>
-            <h2>Details (optional)</h2>
-            <textarea v-model="details" placeholder="Details about blockage..."/>
-        <!-- </div> -->
+            <h2>Description</h2>
+            <textarea v-model="description" placeholder="Details about the blockage..."/>
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
         <button :disabled='status.length === 0' class="post-button" v-on:click="createBlockage">SUBMIT</button>
-      <!-- The Error Label if one occurs -->
     </form>
   </div>
 </template>
@@ -44,16 +38,16 @@ export default {
     return {
       errorMessage: '',
       status: '',
-      details: '',
+      description: '',
   }
   },
   emits: [
   ],
   methods: {
     /**
-     * Makes an API request to create a new Freet. If successful, triggers the callback 
+     * Makes an API request to create a new Blockage. If successful, triggers the callback 
      * for the parent element to update its view as necessary, such as by reloading the
-     * list of freets.
+     * list of blockages.
      */
     createBlockage () {
       let fields = { 
@@ -66,9 +60,11 @@ export default {
       };
       axios.post(`/api/blockages/`, {data: fields}).then(() => {
         this.errorMessage = '';
-        this.$emit('created-blockage');
-        eventBus.$emit('refresh-blockages');
-        this.details = '';
+        this.$emit('created-blockage'); // tells map to close the report blockage window
+        eventBus.$emit('refresh-blockages'); // refresh the list of blockages
+
+        // reset description and status of the create blockage
+        this.description = '';
         this.status = '';
       }).catch(err => {
         console.log(err.response || err);
@@ -90,7 +86,6 @@ h1, h2 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* width: 100%; */
 }
 .blockage-creator {
   display: flex;
@@ -117,7 +112,6 @@ h1, h2 {
 
 textarea {
   width: 70%;
-  /* vertical-align: top; */
   resize: none;
   padding: 8px;
   margin: 0 8px 0 8px;

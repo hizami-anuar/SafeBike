@@ -1,11 +1,10 @@
 <template>
   <div>
     <div v-if='this.blockages.length === 0'>
-      <p>Sorry, no blocakges to show :( </p>
+      <p>Sorry, no blockages to show :( </p>
     </div>
     <div v-else>
       <Blockage
-        
         v-for='blockage in blockages'
         v-bind:key='blockage._id'
         v-bind:blockageData='blockage'
@@ -19,31 +18,22 @@
 import Blockage from '@/components/Blockage.vue';
 
 export default {
-  name: 'Blockages',
-  components: {
-    Blockage
-  },
-  props: {
-    /** @type {Blockage[]} A list of freet ids to display */
-    blockages: Array,
-  },
-  data() {
-    return {
-    }
-  },
+    name: 'Blockages',
+    components: {
+        Blockage
+    },
+    props: {
+        /** @type {Blockage[]} A list of Blockage items to display */
+        blockages: Array,
+    },
     emits: [
         'refresh-blockages',
     ],
-  computed: {
-  },
-  mounted() {
-  },
-  methods: {
-    refreshBlockagesEvent() {
-      this.$emit('refresh-blockages');
+    methods: {
+        // refresh the list of blockages
+        refreshBlockagesEvent() {
+        this.$emit('refresh-blockages');
+        }
     }
-  }
-
-
 }
 </script>

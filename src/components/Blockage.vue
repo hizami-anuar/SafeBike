@@ -1,10 +1,8 @@
 <template>
     <form action="" class="blockage-creator" @submit.prevent=''>
-        <!-- The Error Label if one occurs -->
         <h1>Blockage</h1>
-        <!-- <div class="textboxes"> -->
             <span>{{  date  }}</span>
-            <span>Location: {{ longitude }}, {{latitude}}</span>
+            <span>Location: {{ longitude }}, {{ latitude }}</span>
             <div v-if='editing'>
                 <h2>Status</h2>
             <div class="checkboxes">
@@ -21,8 +19,8 @@
                 <label for="blocked">Blocked</label>
             </span>
             </div>
-                <h2>Details</h2>
-                <textarea placeholder="New description here" v-model='newDetails'/>
+                <h2>Description</h2>
+                <textarea placeholder="New description here" v-model='newDescription'/>
                 <div class='edit-mode-buttons'>
                 <button class='cancel-button' v-on:click="cancelEdit">Cancel</button>
                 <button class='done-button' v-on:click="submitEditted">Done</button>
@@ -30,7 +28,7 @@
             </div>
             <div v-else>
                 <span>Status: {{  status  }}</span>
-                <span v-if='details.length!==0'>Details: {{  details }}</span>
+                <span v-if='description.length!==0'>Description: {{  description }}</span>
             </div>
             <div class="edit-delete-buttons">
                 <button :disabled="editing" v-on:click="editBlockage">Edit</button>
@@ -48,80 +46,79 @@ export default {
     components: {
     },
     props: {
-        /** @type {Blockage} A list of freet ids to display */
+        /** @type {Blockage} The blockage object to display */
         blockageData: Object,
     },
     data () {
         return {
             errorMessage: '',
-            details: this.blockageData.description,
-            status: this.blockageData.status,
-            time: this.blockageData.time,
-            longitude: this.blockageData.location.coordinates[0].toFixed(2),
-            latitude: this.blockageData.location.coordinates[1].toFixed(2),
-            editing: false,
-            newStatus: '',
-            newDetails: '',
-            id: '',
-            date: '',
+            description: this.blockageData.description, 
+            status: this.blockageData.status, 
+            longitude: this.blockageData.location.coordinates[0].toFixed(2), // round longitude to 2 decimals
+            latitude: this.blockageData.location.coordinates[1].toFixed(2), // round latitude to 2 decimals
+            editing: false, // whether we're in editing mode or not
+            newStatus: '', // updated status for editing mode
+            newDescription: '', // updated description for edidting mode
+            date: '', // formated time for displaying (human readable) 
         }
     },
     mounted() {
-        this.newDetails = this.details;
+        // updated description and status starts off same as current to display initially
+        this.newDescription = this.description;
         this.newStatus = this.status;
+        // convert from unix epoch time to human readable date
         var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-        date.setUTCSeconds(this.time/1000);
+        date.setUTCSeconds(this.blockageData.time/1000);
         this.date = date;
-    },
-    computed() {
     },
     emits: [
         'refresh-blockages',
     ],
     methods: {
-        statusChecked( checked ) {
-            this.checkedStatus = checked;
-        },
+        // enter edit blockage mode
         editBlockage() {
             this.editing = true;
-            console.log('hi');
         },
+        // cancel edit blockage mode
         cancelEdit() {
             this.editing = false;
-            console.log('edit canceled');
         },
         // submit the editted blockage
         submitEditted() {
-            // request to submit editted blockage
-            this.editing = false;
+            this.editing = false; // exit blockage mode
+
+            // updated blockage info: right now can't edit location (to do?)
             let updatedBlockageData = {
                 location: this.location,
-                description: this.newDetails,
+                description: this.newDescription,
                 status: this.newStatus
             }
 
+            // request to submit editted blockage
             axios.patch(`/api/blockages/${this.blockageData._id}`, { data: updatedBlockageData })
                 .then((response) => {
                     console.log(response);
                     console.log('edited blockage');
                     this.$emit('refresh-blockages');
-                    this.details = this.newDetails;
+
+                    // update the description and status displayed to the new ones
+                    this.description = this.newDescription;
                     this.status = this.newStatus;
                 }).catch((error) => {
                     console.log(error);
                 });
         },
         /**
-         * Makes an API request to create a new Freet. If successful, triggers the callback 
+         * Makes an API request to delete blcoakge. If successful, triggers the callback 
          * for the parent element to update its view as necessary, such as by reloading the
-         * list of freets.
+         * list of blockages.
          */
         deleteBlockage() {
             console.log('deleting blockage?');
             axios.delete(`/api/blockages/${this.blockageData._id}`)
             .then((response) => {
                 console.log(response);
-                console.log('deleted');
+                console.log('deleted blockage');
                 this.$emit('refresh-blockages');
             }).catch((error) => {
                 console.log(error);
@@ -209,7 +206,6 @@ button:hover:enabled {
 
 textarea {
     width: 70%;
-    /* vertical-align: top; */
     resize: none;
     padding: 8px;
     margin: 0 8px 0 8px;
@@ -222,7 +218,6 @@ textarea {
 }
 
 .post-button {
-    /* vertical-align: top; */
     font-size: 25px;
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-weight: bold;
@@ -236,7 +231,6 @@ textarea {
     background-color: rgb(68, 169, 223);
     color: white;
     padding: 10px;
-    /* margin-left: 3px; */
 }
 
 .post-button:disabled {

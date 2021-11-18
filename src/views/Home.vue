@@ -20,7 +20,7 @@ export default {
   components: { Map, Blockages},
   data () {
     return {
-      blockages: [],
+      blockages: [], // list of blockage objects to display 
     }
   }, 
   mounted() {
@@ -28,17 +28,17 @@ export default {
     eventBus.$on('refresh-blockages', this.refreshBlockages);
   },
   methods: {
+    // fetch list of all blockages
     getAllBlockages() {
       axios.get(`/api/blockages`)
         .then((response) => {
           this.blockages = response.data.blockages;
-          console.log(this.blockages);
         }).catch((error) => {
           this.console.log(error);
         });
     },
     refreshBlockages() {
-      this.getAllBlockages();
+      this.getAllBlockages(); // refresh list of blockages when edit, delete or post
     }
   }
 }
