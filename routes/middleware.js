@@ -1,37 +1,30 @@
 const Users = require('../models/User');
 const Blockages = require('../models/Blockage');
 
+const sendError = (res, status, error) => {
+  res.status(status).json({error: error}).end();
+}
+
 // Checks that the username in the request body does not already exist
 const usernameDoesNotAlreadyExist = async (req, res, next) => {
   let user = await Users.findOne({username: req.body.username});
   if (user != null) {
-    res.status(400).json({
-      error: `Username ${req.body.username} already exists.`,
-    }).end();
-    return;
+    return sendError(res, 400, `Username ${req.body.username} already exists.`);
   }
   next();
 };
 
 // Checks that the username is formatted properly
-//  User is not empty
-//  User contains no whitespace
+//  Username is not empty
+//  Username contains no whitespace
+//  Username is at most 15 characters
 const validUsername = (req, res, next) => {
   if (!req.body.username || req.body.username.length === 0) {
-    res.status(400).json({
-      error: `username cannot be empty string.`,
-    }).end();
-    return;
+    return sendError(res, 400, `Username cannot be empty string.`);
   } else if (/\s/g.test(req.body.username)) {
-    res.status(400).json({
-      error: `username cannot contain whitespace.`,
-    }).end();
-    return;
+    return sendError(res, 400, `Username cannot contain whitespace.`);
   } else if (req.body.username.length > 15) {
-    res.status(400).json({
-      error: `username must be 1-15 characters long.`,
-    }).end();
-    return;
+    return sendError(res, 400, `Username must be 1-15 characters long.`);
   }
   next();
 };
@@ -41,15 +34,9 @@ const validUsername = (req, res, next) => {
 //  Password contains no whitespace
 const validPassword = (req, res, next) => {
   if (!req.body.password || req.body.password.length === 0) {
-    res.status(400).json({
-      error: `password cannot be empty string.`,
-    }).end();
-    return;
+    return sendError(res, 400, `Password cannot be empty string.`);
   } else if (/\s/g.test(req.body.username)) {
-    res.status(400).json({
-      error: `password cannot contain whitespace.`,
-    }).end();
-    return;
+    return sendError(res, 400, `Password cannot contain whitespace.`);
   }
   next();
 };
@@ -58,10 +45,7 @@ const validPassword = (req, res, next) => {
 const validCredentials = async (req, res, next) => {
   const user = await Users.findOne({ username: req.body.username });
   if (user == null || !(user.password === req.body.password)) {
-    res.status(403).json({
-      error: `Username password combination not recognized.`,
-    }).end();
-    return;
+    return sendError(res, 403, `Username/Password combination not recognized.`);
   }
   next();
 };
@@ -69,10 +53,7 @@ const validCredentials = async (req, res, next) => {
 // Checks that the username in the parameters exists
 const usernameExists = (req, res, next) => {
   if (Users.findOne({username: req.params.username}) === undefined) {
-    res.status(404).json({
-      error: `Username ${req.params.username} does not exist.`,
-    }).end();
-    return;
+    return sendError(res, 404, `Username ${req.params.username} does not exist.`);
   }
   next()
 };
@@ -80,22 +61,15 @@ const usernameExists = (req, res, next) => {
 // Checks that the username is set in session, i.e., user logged in
 const userIsLoggedIn = (req, res, next) => {
   if (req.session.username == undefined) {
-    res.status(403).json({
-      error: 'You must be logged in in order to perform this action!'
-    }).end();
-    return;
+    return sendError(res, 403, 'You must be logged in in order to perform this action!');
   }
   next();
 };
 
 // Checks that the user id in query exists
 const userIDExists = (req, res, next) => {
-  const id = req.query.id;
-  if (Users.findOne({_id: id}) === undefined) {
-    res.status(404).json({
-      error: `User with ID ${req.query.id} does not exist.`,
-    }).end();
-    return;
+  if (Users.findOne({_id: req.query.id}) === undefined) {
+    return sendError(res, 404, `User with ID ${req.query.id} does not exist.`);
   }
   next();
 };
@@ -103,10 +77,7 @@ const userIDExists = (req, res, next) => {
 // Checks that the user id to perform following actions with exists
 const followingUserIDExists = (req, res, next) => {
   if (Users.findOneUserID({ _id: req.params.followingUserID }) === undefined) {
-    res.status(404).json({
-      error: `User with ID ${req.params.followingUserID} does not exist.`,
-    }).end();
-    return;
+    return sendError(res, 404, `User with ID ${req.params.followingUserID} does not exist.`);
   }
   next();
 };
@@ -114,10 +85,7 @@ const followingUserIDExists = (req, res, next) => {
 // Checks that the username is set in session, i.e., user logged in
 const userIsNotLoggedIn = (req, res, next) => {
   if (req.session.username != undefined) {
-    res.status(400).json({
-      error: 'You are already logged in!'
-    }).end();
-    return;
+    return sendError(res, 400, 'You are already logged in!');
   }
   next();
 };
@@ -126,14 +94,10 @@ const userIsNotLoggedIn = (req, res, next) => {
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
   if (blockage.reporter != req.session.userID) {
-    res.status(403).json({
-      error: 'You do not have permission to edit or delete this blockage!'
-    }).end();
-    return;
-  };
+    return sendError(res, 403, 'You do not have permission to edit or delete this blockage!');
+  }
   next()
 }
-
 
 module.exports = Object.freeze({
   usernameDoesNotAlreadyExist,
