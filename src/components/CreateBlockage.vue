@@ -22,12 +22,10 @@
                 <label for="blocked">Blocked</label>
             </span>
             </div>
-            <!-- {{checkedStatus}} -->
             <h2>Details (optional)</h2>
             <textarea v-model="description" placeholder="Details about blockage..."/>
         <!-- </div> -->
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
-        <!-- <textarea v-on:keydown.enter='onEnter' id='creator-textbox' class="creator-textbox" v-model="content" placeholder="Click here to begin writing..." /> -->
         <button :disabled='status.length === 0' class="post-button" v-on:click="createBlockage">Submit</button>
       <!-- The Error Label if one occurs -->
     </form>
@@ -53,18 +51,6 @@ export default {
   emits: [
   ],
   methods: {
-    statusChecked( checked ) {
-      this.checkedStatus = checked;
-    },
-    // onEnter(e) {
-    //   if (e.shiftKey) return;
-    //   if (this.content.length == 0) return;
-
-    //   e.preventDefault();
-    //   this.createFreet();
-    //   this.content = '';
-    // },
-
     /**
      * Makes an API request to create a new Freet. If successful, triggers the callback 
      * for the parent element to update its view as necessary, such as by reloading the
@@ -73,7 +59,7 @@ export default {
     createBlockage () {
       let fields = { 
         status: this.status, 
-        description: this.details,
+        description: this.description,
         location: {
           latitude: this.location.lat,
           longitude: this.location.lng,
