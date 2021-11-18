@@ -1,11 +1,13 @@
 <template>
   <div id="app">
     <div id="nav">
+      <div id='navbar'>
       <img class='logo' src="@/assets/navlogo.png"/>
       <h1>SafeBike</h1>
       <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
       <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>Account</router-link> 
       <router-link class='link' to="/debug">Debug</router-link>
+      </div>
       <Logout
         v-bind:loggedIn='loggedIn'
         v-bind:username='username'/>
@@ -52,6 +54,13 @@ html, body {
   padding: 0px;
   background-color: rgb(255, 249, 213);
 }
+
+#navbar {
+  display: flex;
+  flex-direction: row;
+  height: 70px;
+  align-items: center;
+}
 button{
   font-family: Avenir, Helvetica, Arial, sans-serif;
 }
@@ -76,7 +85,7 @@ h1 {
   /* padding: 30px; */
   display: flex;
   height: 70px;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   background-color: rgb(227, 214, 255);
 }

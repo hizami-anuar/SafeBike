@@ -1,5 +1,5 @@
 <template>
-    <section class='sign-up-form' v-on:submit.prevent='signup'>
+    <section class='sign-up-form'>
         <h2>Login</h2>
         <form action="">
             <strong class='error' v-if='this.errorMessage.length > 0'>{{this.errorMessage}}</strong> <br/>
@@ -10,7 +10,7 @@
             <label for="fpassword">Password</label> <br/>
             <input v-model='password' type="password" id="fpassword" name="fpassword"> <br/><br/>
             <!-- The Create Account Button -->
-            <button :onclick="login" :disabled="username.length === 0 || password.length === 0">Log In</button>
+            <button v-on:click="login" :disabled="username.length === 0 || password.length === 0">Log In</button>
         </form>
         <!-- The link for toggling between signing in and signing up -->
         <span class='message'>

@@ -2,19 +2,19 @@
     <section class='sign-up-form' v-on:submit.prevent='signup'>
         <h2 class='message'>Sign Up</h2>
         <form action="">
-            <strong class='error' v-if='this.errorMessage.length > 0'>{{this.errorMessage}}</strong> <br/>
+            <strong class='error' v-if='this.errorMessage.length > 0'>{{this.errorMessage}}</strong> 
 
             <!-- The Username and its label -->
             <label for="fusername">Username</label> <br/>
-            <input v-model='username' type="text" class="textbox" id="fusername" name="fusername"> <br/><br/>
+            <input v-model='username' type="text" class="textbox" id="fusername" name="fusername">
 
             <!-- The first Password field -->
             <label for="fpassword textbox">Password</label> <br/>
-            <input v-model='password' type="password" class="textbox" id="fpassword" name="fpassword"> <br/><br/>
+            <input v-model='password' type="password" class="textbox" id="fpassword" name="fpassword"> 
 
             <!-- The second Password field -->
             <label for="fpassword-confirm textbox">Confirm Password</label> <br/>
-            <input v-model='passwordConfirm' type="password" class="textbox" id="fpassword-confirm" name="fpassword-confirm"> <br/><br/>
+            <input v-model='passwordConfirm' type="password" class="textbox" id="fpassword-confirm" name="fpassword-confirm"> 
 
             <!-- The Create Account Button -->
             <button :click="signup" :disabled="username.length === 0 || password.length === 0 || passwordConfirm.length === 0">Create Account</button>
@@ -140,15 +140,15 @@ button:hover:enabled {
     border: none;
     padding: 5px 15px;
     border-radius: 5px;
-    margin-top: -22px;
+    margin-top: -20px;
     font-size: 20px;
-    margin-bottom: -20px;
+    margin-bottom: 25px;
 }
 
 h2{
     color: rgb(79, 0, 128);
     font-size: 48px;
-    margin-bottom: -12px;
+    margin-bottom: 0px;
 }
 .toggle-option{
     font-weight: bold;
