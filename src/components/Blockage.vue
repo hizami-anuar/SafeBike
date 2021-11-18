@@ -4,9 +4,10 @@
         <h1>Blockage</h1>
         <!-- <div class="textboxes"> -->
             <span>Time: {{  date  }}</span>
+            <span>Location: {{  location  }}</span>
             <div v-if='editing'>
                 <h2>Status</h2>
-                            <div class="checkboxes">
+            <div class="checkboxes">
             <span>
                 <input type="radio" id="unblocked" value="Unblocked" v-model="newStatus">
                 <label for="unblocked">Unblocked</label>
@@ -54,6 +55,7 @@ export default {
             details: this.blockageData.description,
             status: this.blockageData.status,
             time: this.blockageData.time,
+            location: this.blockageData.location.coordinates,
             editing: false,
             newStatus: '',
             newDetails: '',
@@ -98,8 +100,22 @@ export default {
         submitEditted() {
             // request to submit editted blockage
             this.editing = false;
-            // new status: this.newStatus
-            // new details: this.newDetails
+            let updatedBlockageData = {
+                location: this.location,
+                description: this.newDetails,
+                status: this.newStatus
+            }
+
+            axios.patch(`/api/blockages/${this.blockageData._id}`, { data: updatedBlockageData })
+                .then((response) => {
+                    console.log(response);
+                    console.log('edited blockage');
+                    this.$emit('refresh-blockages');
+                    this.details = this.newDetails;
+                    this.status = this.newStatus;
+                }).catch((error) => {
+                    console.log(error);
+                });
         },
         /**
          * Makes an API request to create a new Freet. If successful, triggers the callback 
@@ -110,11 +126,11 @@ export default {
             console.log('deleting blockage?');
             axios.delete(`/api/blockages/${this.blockageData._id}`)
             .then((response) => {
-            console.log(response);
-            console.log('deleted');
-            this.$emit('refresh-blockages');
+                console.log(response);
+                console.log('deleted');
+                this.$emit('refresh-blockages');
             }).catch((error) => {
-            console.log(error);
+                console.log(error);
             })
         },
     }

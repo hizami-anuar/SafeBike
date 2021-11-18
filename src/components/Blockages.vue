@@ -37,31 +37,8 @@ export default {
   computed: {
   },
   mounted() {
-    console.log(this.blockages);
   },
   methods: {
-    /**
-     * Makes an API call to get the data for all of the freets in the list Freets 
-     */
-    // refreshBlockageData() {
-    //   // Remove Stale / Deleted Freets
-    // //   this.blockageData = this.blockageData.filter(d => d && this.freets.includes(d.id));
-    // //   // Get updated information on given freets
-    // //   this.blockageData.forEach((id, index) => {
-    // //     axios.get(`/api/freets/id/${id}`).then((res) => {
-    // //       this.freetData[index] = res.data;
-    // //     }).catch((err) => {
-    // //       console.log(err);
-    // //     });
-    // //   });
-    //     axios.get(`/api/blockages`)
-    //     .then((response) => {
-    //       this.blockageData = response.data.blockages;
-    //     }).catch((error) => {
-    //       this.console.log(error);
-    //     });
-    // },
-
     refreshBlockagesEvent() {
       this.$emit('refresh-blockages');
     }
