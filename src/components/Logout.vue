@@ -72,7 +72,7 @@ export default {
 <style scoped>
 
 .header {
-    background-color: #474973;
+    /* background-color: #474973; */
     height: 70px;
     display: flex;
     justify-content: space-between;
@@ -85,14 +85,15 @@ export default {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-weight: bold; 
     border-radius: 5px;
-    background-color: purple;
-    border: 3px white solid;
-    color: white;
+    /* background-color: none; */
+    background: none;
+    border: 3px rgb(81, 22, 121) solid;
+    color: rgb(81, 22, 121);
 }
 
 .login-button:hover {
-    background-color: yellow;
-    color: purple;
+    background-color: rgb(252, 252, 188);
+    color: rgb(81, 22, 121);
 }
 
 .signup-button {
@@ -101,13 +102,14 @@ export default {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-weight: bold; 
     border-radius: 5px;
-    background-color: purple;
+    background-color: rgb(81, 22, 121);
     color: white;
     border: none;
 }
 
 .signup-button:hover {
-    background-color: yellow;
+    background-color: rgb(252, 252, 188);
+    color: rgb(81, 22, 121);
 }
 
 .submit-button {
@@ -124,7 +126,7 @@ export default {
 
 .submit-button:hover {
     background-color: rgb(250, 255, 177);
-    color: purple;
+    color: rgb(81, 22, 121);
 }
 
 button:disabled {
@@ -133,15 +135,16 @@ button:disabled {
 }
 
 .popup {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    width: 21%;
+    /* top: 100%; */
     /* left: 88%; */
-    background-color: rgb(230, 204, 247);
+    background-color: rgb(229, 198, 250);
     z-index: 1;
     padding: 10px;
     display: flex;
     flex-direction: column;
-    border-radius: 4px;
+    border-radius: 2px;
     
 }
 
@@ -156,14 +159,17 @@ button:disabled {
 
 .guest-view a{
     font-size: 2em;
-    color: purple;
+    color: rgb(81, 22, 121);
     text-decoration: none;
     width: 100%;
     text-align: center;
 }
 
 h1 {
-    Color: white;
+    Color: rgb(59, 14, 123);
+    font-style: italic;
+    font-weight: normal;
+    font-size: 22px;
 }
 .username {
     margin-left: auto;
