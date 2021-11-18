@@ -3,7 +3,6 @@ const Users = require('../models/User');
 // Checks that the username in the request body does not already exist
 const usernameDoesNotAlreadyExist = async (req, res, next) => {
   let user = await Users.findOne({username: req.body.username});
-  console.log(user);
   if (user != null) {
     res.status(400).json({
       error: `Username ${req.body.username} already exists.`,
@@ -102,8 +101,7 @@ const userIDExists = (req, res, next) => {
 
 // Checks that the user id to perform following actions with exists
 const followingUserIDExists = (req, res, next) => {
-  const id = parseInt(req.params.followingUserID, 10);
-  if (Users.findOneUserID(id) === undefined) {
+  if (Users.findOneUserID({ _id: req.params.followingUserID }) === undefined) {
     res.status(404).json({
       error: `User with ID ${req.params.followingUserID} does not exist.`,
     }).end();
