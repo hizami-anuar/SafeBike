@@ -141,9 +141,10 @@ textarea {
   align-items: center;
   justify-content: center;
   width: 50%;
-  background-color: rgb(68, 169, 223);
+  background-color: rgb(88, 44, 192);
   color: white;
   padding: 10px;
+  border: none;
   /* margin-left: 3px; */
 }
 
@@ -154,6 +155,7 @@ textarea {
 
 .post-button:hover:enabled {
   background-color: rgb(249, 199, 138);
+  color: rgb(102, 29, 138);
 }
 
 .error{
