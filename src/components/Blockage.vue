@@ -145,6 +145,7 @@ h1 {
 }
 .icon {
     height: 25px;
+    width: 25px;
     margin-right: 10px;
     margin-left: -2px;
     cursor: pointer;
