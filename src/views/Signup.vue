@@ -17,7 +17,7 @@
             <input v-model='passwordConfirm' type="password" class="textbox" id="fpassword-confirm" name="fpassword-confirm"> 
 
             <!-- The Create Account Button -->
-            <button :click="signup" :disabled="username.length === 0 || password.length === 0 || passwordConfirm.length === 0">Create Account</button>
+            <button v-on:click.prevent="signup" :disabled="username.length === 0 || password.length === 0 || passwordConfirm.length === 0">Create Account</button>
         </form>
         <!-- The link for toggling between signing in and signing up -->
         <span class='message'>

@@ -4,8 +4,8 @@
 
         <!-- Information on the right side of the navigation bar -->
         <div class='header-right'>
-            <h1 v-if='loggedIn' class='username'>Welcome, {{username}}</h1>
-                <img v-if='loggedIn' v-on:click="popupClicked=!popupClicked" src="@/assets/profile.png" class='account-icon'/>
+            <h1 v-if='loggedIn' class='username'>Welcome, {{user.username}}</h1>
+                <img v-if='loggedIn' v-on:click.prevent="popupClicked=!popupClicked" src="@/assets/profile.png" class='account-icon'/>
             
                 <div v-else class='guest-view'>
                     <router-link v-if='onRegister || (!onLogIn && !onRegister)' to='/login' class='account-info'> 
@@ -19,9 +19,9 @@
 
         </nav>      
         <div v-if='loggedIn && popupClicked' class="popup">
-            <button class='submit-button' :onclick='logout'>Logout</button>
+            <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
             <router-link v-if='loggedIn' to='/settings' >   
-                <button class="submit-button" v-on:click="popupClicked=false">Settings</button>
+                <button class="submit-button" v-on:click.prevent="popupClicked=false">Settings</button>
             </router-link>
         </div>
         </div>
@@ -34,7 +34,7 @@ export default {
     name: 'Logout',
     props: {
         loggedIn: Boolean,
-        username: String
+        user: Object,
     },
     data() {
         return {

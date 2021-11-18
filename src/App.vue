@@ -10,7 +10,7 @@
       </div>
       <Logout
         v-bind:loggedIn='loggedIn'
-        v-bind:username='username'/>
+        v-bind:user='user'/>
     </div>
     <router-view/>
   </div>
@@ -19,6 +19,7 @@
 <script>
 import { eventBus } from "@/main";
 import Logout from '@/components/Logout.vue';
+import axios from 'axios';
 
 export default {
   name: 'App',
@@ -26,11 +27,26 @@ export default {
   data() {
     return {
       loggedIn: false,
-      username: "",
+      // username: "",
+      user: "",
     }
   }, 
   mounted() {
     // Register some eventBus listeners
+
+        // Check if the user is already logged in.
+    axios.get('/api/session/').then((res) => {
+      // const currentUsername = res.data.username;
+      // const currentUserId = res.data.id;
+      // Empty username means not already logged in, which is assumed
+      // if (currentUsername === "") return;
+      // Update the data fields to reflect that we are already logged in.
+      this.loggedIn = true;
+      // this.username = currentUsername;
+      this.user = res.data;
+      return ;
+    }).catch((err) => console.log(err));
+
     eventBus.$on('set-logged-in',  this.setLoggedIn);
     eventBus.$on('set-logged-out', this.setLoggedOut);
   }, 
