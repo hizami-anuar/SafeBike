@@ -32,7 +32,7 @@
             </div>
 
             <button :disabled="editing" v-on:click="editBlockage">Edit</button>
-            <button v:on-click="deleteBlockage">Delete</button>
+            <button v-on:click="deleteBlockage">Delete</button>
     </form>
 </template>
 
@@ -107,6 +107,7 @@ export default {
          * list of freets.
          */
         deleteBlockage() {
+            console.log('deleting blockage?');
             axios.delete(`/api/blockages/${this.blockageData._id}`)
             .then((response) => {
             console.log(response);

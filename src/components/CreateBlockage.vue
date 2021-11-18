@@ -24,7 +24,7 @@
             </div>
             <!-- {{checkedStatus}} -->
             <h2>Details (optional)</h2>
-            <textarea v-model="description" placeholder="Details about the blockage here"/>
+            <textarea v-model="description" placeholder="Details about blockage..."/>
         <!-- </div> -->
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
         <!-- <textarea v-on:keydown.enter='onEnter' id='creator-textbox' class="creator-textbox" v-model="content" placeholder="Click here to begin writing..." /> -->

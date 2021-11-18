@@ -62,7 +62,7 @@ export default {
     //     });
     // },
 
-    refreshBlockageEvent() {
+    refreshBlockagesEvent() {
       this.$emit('refresh-blockages');
     }
   }
