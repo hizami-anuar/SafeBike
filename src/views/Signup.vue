@@ -79,6 +79,9 @@ export default {
         username: this.username,
         password: this.password,
       }
+
+        // Validate the field inputs before proceeding. If invalid, gives an error message
+        if (!this.validate(this.username, this.password, this.passwordConfirm)) return;
       axios.post('/api/users', fields)
         .then((response) => {
           eventBus.$emit('login-event', response);

@@ -19,7 +19,7 @@
         :blockage="b"
         :marker="m"
         :active="active === b._id"
-        @open-marker="id => active = id"
+        @open-marker="clickBlockageMarker"
         @close-marker="active = null"
       />
       <GmapMarker
@@ -42,6 +42,7 @@
 <script>
 import CreateBlockage from '@/components/CreateBlockage.vue';
 import MapMarker from '@/components/MapMarker.vue';
+import { eventBus } from "../main";
 
 export default {
   name: 'Map',
@@ -74,6 +75,10 @@ export default {
     },
   },
   methods: {
+    clickBlockageMarker (id) {
+      this.active = id;
+      this.closeCreateBlockageMenu();
+    },
     onMarkerClick: function(pos) {
       console.log(this.center, pos);
       this.center = pos;
@@ -86,6 +91,7 @@ export default {
           lng: event.latLng.lng(),
         },
       };
+      eventBus.$emit('close-marker');
     },
     closeCreateBlockageMenu: function() {
       this.createBlockageMenu = {
