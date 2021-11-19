@@ -55,7 +55,7 @@ router.post("/",
  *
  * @name PUT /api/users/username
  *
- * @param {string} newUsername - the new username
+ * @param {string} username - the new username
  * @return {User} - the updated User
  * @throws {403} - if user is not logged in
  * @throws {400} - if username is not formatted correctly - ie there is whitespace or special characters
