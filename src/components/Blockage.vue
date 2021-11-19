@@ -2,7 +2,7 @@
     <form action="" class="blockage-creator" @submit.prevent=''>
         <div class='reporter'>
             <div class='profile'>{{reporterUsername[0].toUpperCase()}}</div>
-            <span>@{{reporterUsername}}</span>
+            <span class='username'>@{{reporterUsername}}</span>
         </div>
         <h1>{{  newStatus.toUpperCase()  }}</h1>
             <span>{{ longitude }}°, {{ latitude }}°</span>
@@ -120,6 +120,11 @@ export default {
                     // update the description and status displayed to the new ones
                     this.description = this.newDescription;
                     this.status = this.newStatus;
+
+                    //update the frontend time
+                    var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                    date.setUTCSeconds(Date.now()/1000);
+                    this.date = date;
                 }).catch((error) => {
                     console.log(error);
                 });
@@ -152,6 +157,10 @@ h1 {
     font-size: 20px;
 }
 
+.username {
+    font-weight: bold;
+    font-size: 20px;
+}
 .reporter {
     display: flex;
     flex-direction: row;
