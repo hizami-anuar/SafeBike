@@ -26,6 +26,7 @@
     "express": "~4.16.0",
     "express-handlebars": "^5.3.4",
     "express-session": "^1.17.1",
+    "i": "^0.3.7",
     "mongoose": "^6.0.13",
     "morgan": "~1.9.0",
     "nodemon": "^2.0.4",
@@ -33,11 +34,12 @@
     "vue": "^2.6.10",
     "vue-router": "^3.5.3",
     "vue-template-compiler": "^2.6.10",
-    "vue2-google-maps": "^0.10.7"
+    "vue2-google-maps": "^0.10.7",
+    "webpack-dev-server": "^4.5.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-router": "^4.5.15",
-    "webpack": "^4.0.0"
+    "webpack": "^4.46.0"
   },
   "eslintConfig": {
     "root": true,
