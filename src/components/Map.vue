@@ -6,6 +6,10 @@
       :zoom="zoom"
       :options="{
         disableDoubleClickZoom: true,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
+        clickableIcons: false,
       }"
       class="map"
       @dblclick="openCreateBlockageMenu"

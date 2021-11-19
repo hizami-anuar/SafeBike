@@ -4,7 +4,7 @@
       :clickable="true"
       :draggable="false"
       :position="marker.location"
-      @click="openBlockageView"
+      @click="toggleBlockageView"
     />
     <div v-if="active" ref="popup">
       <Blockage
@@ -42,7 +42,10 @@ export default {
   },
   watch: {
     active: async function (val) {
-      if (!val) return;
+      if (!val) {
+        this.popup.onRemove();
+        return;
+      }
       await this.$nextTick();
       const map = await this.map.$mapPromise;
       const {lat, lng} = this.marker.location;
@@ -61,6 +64,9 @@ export default {
     },
     closeBlockageView: function() {
       this.$emit('close-marker');
+    },
+    toggleBlockageView: function() {
+      this.active ? this.closeBlockageView() : this.openBlockageView();
     },
   },
 }
