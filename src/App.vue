@@ -12,7 +12,9 @@
         :loggedIn='loggedIn'
         :user='user'/>
     </div>
-    <router-view/>
+    <router-view
+      v-bind:loggedIn='loggedIn'
+      v-bind:user='user'/>
   </div>
 </template>
 

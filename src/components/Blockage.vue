@@ -1,5 +1,9 @@
 <template>
     <form action="" class="blockage-creator" @submit.prevent=''>
+        <div class='reporter'>
+            <div class='profile'>{{reporterUsername[0].toUpperCase()}}</div>
+            <span>@{{reporterUsername}}</span>
+        </div>
         <h1>{{  newStatus.toUpperCase()  }}</h1>
             <span>{{ longitude }}°, {{ latitude }}°</span>
             <span>{{  date  }}</span>
@@ -28,7 +32,7 @@
             <div v-else>
                 <span class="description" v-if='description.length!==0'>{{  description }}</span>
             </div>
-            <div class="edit-delete-buttons">
+            <div v-if='loggedIn && user.userID === reporterId' class="edit-delete-buttons">
                 <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
                     <img v-if="!editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
                     <!-- Edit -->
@@ -52,6 +56,8 @@ export default {
     props: {
         /** @type {Blockage} The blockage object to display */
         blockageData: Object,
+        loggedIn: Boolean,
+        user: Object
     },
     data () {
         return {
@@ -64,6 +70,8 @@ export default {
             newStatus: '', // updated status for editing mode
             newDescription: '', // updated description for edidting mode
             date: '', // formated time for displaying (human readable) 
+            reporterUsername: this.blockageData.reporterUsername,
+            reporterId: this.blockageData.reporter,
         }
     },
     mounted() {
@@ -143,6 +151,28 @@ h1, h2 {
 h1 {
     font-size: 20px;
 }
+
+.reporter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.profile {
+    background-color: rgb(90, 0, 128);
+    border-radius: 30px;
+    color: rgb(254, 254, 254);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    margin-right: 10px;
+    font-weight: bold;
+}
 .icon {
     height: 25px;
     width: 25px;
@@ -221,13 +251,13 @@ button:hover:enabled {
 
     /* height: 100px; */
     /* max-width: 500px; */
-    width: 70%;
+    width: 75%;
     border: 3px solid rgb(111, 79, 199);
     border-radius: 15px;
     color: black;
     font-size: 15px;
     margin: 10px auto 10px auto;
-    /* padding: 20px; */
+    padding: 20px;
     /* padding-right: 12px; */
 }
 

@@ -2,9 +2,12 @@
   <main>
     <Map
       :blockages='blockages'
+      :loggedIn='loggedIn'
     />
     <Blockages
       :blockages='blockages'
+      :loggedIn='loggedIn'
+      :user='user'
       @refresh-blockages='refreshBlockages'
     />
   </main>
@@ -21,6 +24,10 @@ import axios from 'axios';
 export default {
   name: 'Home',
   components: { Map, Blockages},
+  props: {
+    loggedIn: Boolean,
+    user: Object,
+  },
   data () {
     return {
       blockages: [], // list of blockage objects to display 

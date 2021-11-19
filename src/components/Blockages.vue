@@ -7,7 +7,9 @@
       <Blockage
         v-for='blockage in blockages'
         v-bind:key='blockage._id'
-        v-bind:blockageData='blockage'
+        :blockageData='blockage'
+        :loggedIn='loggedIn'
+        :user='user'
         @refresh-blockages="refreshBlockagesEvent"
       />
     </div>
@@ -25,6 +27,8 @@ export default {
     props: {
         /** @type {Blockage[]} A list of Blockage items to display */
         blockages: Array,
+        loggedIn: Boolean,
+        user: Object,
     },
     emits: [
         'refresh-blockages',

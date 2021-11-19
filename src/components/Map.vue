@@ -18,7 +18,8 @@
         @click="onMarkerClick(m.position)"
       />
     </GmapMap>
-    <p>Double click on the map to create a new blockage.</p>
+    <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
+    <p v-else>Please login in to report a new blockage</p>
     <CreateBlockage 
       v-if="createBlockageMenu.active"
       :location="createBlockageMenu.location"
@@ -33,7 +34,11 @@ import CreateBlockage from '@/components/CreateBlockage.vue';
 export default {
   name: 'Map',
   components: { CreateBlockage },
-  props: ['blockages'],
+  props: {
+      /** @type {Blockage[]} The blockage object to display */
+      blockages: Array,
+      loggedIn: Boolean,
+  },
   data: function () {
     return {
       center: {lat:10, lng:10},
