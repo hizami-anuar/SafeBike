@@ -1,6 +1,7 @@
 <template>
   <div id="map-container">
     <GmapMap
+      ref="map"
       :center="center"
       :zoom="7"
       :options="{
@@ -9,13 +10,21 @@
       class="map"
       @dblclick="openCreateBlockageMenu"
     >
-      <GmapMarker
+      <MapMarker
+        v-for="([b, m], index) in displayMarkers"
         :key="index"
-        v-for="(m, index) in displayMarkers"
-        :position="m.location"
-        :clickable="true"
+        :map="$refs.map"
+        :blockage="b"
+        :marker="m"
+        :active="active === b._id"
+        @open-marker="id => active = id"
+        @close-marker="active = null"
+      />
+      <GmapMarker
+        v-if="createBlockageMenu.active"
+        :clickable="false"
         :draggable="false"
-        @click="onMarkerClick(m.position)"
+        :position="createBlockageMenu.location"
       />
     </GmapMap>
     <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
@@ -30,18 +39,21 @@
 
 <script>
 import CreateBlockage from '@/components/CreateBlockage.vue';
+import MapMarker from '@/components/MapMarker.vue';
 
 export default {
   name: 'Map',
-  components: { CreateBlockage },
+  components: { CreateBlockage, MapMarker },
   props: {
       /** @type {Blockage[]} The blockage object to display */
       blockages: Array,
       loggedIn: Boolean,
+      // 'center' likely
   },
   data: function () {
     return {
-      center: {lat:10, lng:10},
+      center: {lat:1, lng:1},  // where the map starts
+      active: null,  // which marker is active
       createBlockageMenu: {
         active: false,
         location: null,  // {lat, lng}
@@ -49,13 +61,11 @@ export default {
     };
   },
   computed: {
-    displayMarkers: function() {
+    displayMarkers: function() {  // [(blockage, marker)]
       let markers = this.blockages.map(b => {
         const [lat, lng] = b.location.coordinates;
-        return {location: {lat, lng}};
+        return [b, {location: {lat, lng}}];
       });
-      markers = [...markers, this.createBlockageMenu].filter(x => x.location !== null);
-      console.log(markers)
       return markers;
     },
   },
