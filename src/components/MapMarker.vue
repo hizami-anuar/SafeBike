@@ -15,11 +15,9 @@ import {gmapApi} from 'vue2-google-maps';
 
 import {definePopupClass} from '@/composables/definePopupClass.js'
 
-import Blockage from '@/components/Blockage.vue';
-
 export default {
   name: 'Map',
-  components: { Blockage },
+  components: {},
   props: ['map', 'marker', 'blockage', 'active'],
   data: function () {
     return {
