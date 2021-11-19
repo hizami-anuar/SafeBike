@@ -20,7 +20,7 @@ router.get("/", async (req, res) => {
   const blockages = await Blockages.find(query);
   await Promise.all(blockages.map(async (blockage) => {
     const user = await Users.findOne({_id: blockage.reporter});
-    blockage._doc.reporterUsername = user.username;
+    blockage._doc.reporterUsername = user ? user.username : "[deleted user]";
   }));
   res.status(200).json({ blockages: blockages }).end();
 });

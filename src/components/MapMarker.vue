@@ -6,7 +6,13 @@
       :position="marker.location"
       @click="openBlockageView"
     />
-    <div v-if="active" ref="popup"> this is a popup </div>
+    <div v-if="active" class='popup' ref="popup">
+      <Blockage
+        :blockageData='blockage'
+        :loggedIn='loggedIn'
+        :user='user'
+      />
+    </div>
   </div>
 </template>
 
@@ -14,11 +20,14 @@
 import {gmapApi} from 'vue2-google-maps';
 
 import {definePopupClass} from '@/composables/definePopupClass.js'
+import { eventBus } from "../main";
+
+import Blockage from '@/components/Blockage.vue';
 
 export default {
   name: 'Map',
-  components: {},
-  props: ['map', 'marker', 'blockage', 'active'],
+  components: { Blockage },
+  props: ['loggedIn', 'user', 'map', 'marker', 'blockage', 'active'],
   data: function () {
     return {
       Popup: undefined,
@@ -50,6 +59,7 @@ export default {
   methods: {
     openBlockageView: function() {
       this.$emit('open-marker', this.blockage._id);
+      eventBus.$emit('open-marker', this.blockage._id);
     },
     closeBlockageView: function() {
       this.$emit('close-marker');
@@ -96,12 +106,13 @@ export default {
 		left: 0;
 		transform: translate(-50%, -100%);
 		/* Style the info window. */
-		background-color: white;
-		padding: 5px;
+		background-color: rgb(235, 235, 235);
+		/* padding: 5px; */
 		border-radius: 3px;
 		font-family: sans-serif;
 		overflow-y: auto;
-		max-height: 60px;
+		max-height: 200px;
+    max-width: 500px;
 		box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
 	}
 </style>
