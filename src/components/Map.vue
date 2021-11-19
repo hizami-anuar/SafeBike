@@ -3,7 +3,7 @@
     <GmapMap
       ref="map"
       :center="center"
-      :zoom="7"
+      :zoom="zoom"
       :options="{
         disableDoubleClickZoom: true,
       }"
@@ -13,6 +13,8 @@
       <MapMarker
         v-for="([b, m], index) in displayMarkers"
         :key="index"
+        :loggedIn="loggedIn"
+        :user="user"
         :map="$refs.map"
         :blockage="b"
         :marker="m"
@@ -48,11 +50,13 @@ export default {
       /** @type {Blockage[]} The blockage object to display */
       blockages: Array,
       loggedIn: Boolean,
+      user: Object,
       // 'center' likely
   },
   data: function () {
     return {
-      center: {lat:1, lng:1},  // where the map starts
+      center: {lat:42.3601, lng:-71.0942},  // where the map starts
+      zoom: 13,
       active: null,  // which marker is active
       createBlockageMenu: {
         active: false,

@@ -6,7 +6,13 @@
       :position="marker.location"
       @click="openBlockageView"
     />
-    <div v-if="active" ref="popup"> this is a popup </div>
+    <div v-if="active" ref="popup">
+      <Blockage
+        :blockageData='blockage'
+        :loggedIn='loggedIn'
+        :user='user'
+      />
+    </div>
   </div>
 </template>
 
@@ -20,7 +26,7 @@ import Blockage from '@/components/Blockage.vue';
 export default {
   name: 'Map',
   components: { Blockage },
-  props: ['map', 'marker', 'blockage', 'active'],
+  props: ['loggedIn', 'user', 'map', 'marker', 'blockage', 'active'],
   data: function () {
     return {
       Popup: undefined,

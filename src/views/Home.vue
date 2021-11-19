@@ -3,6 +3,7 @@
     <Map
       :blockages='blockages'
       :loggedIn='loggedIn'
+      :user='user'
     />
     <Blockages
       :blockages='blockages'
