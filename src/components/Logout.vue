@@ -134,6 +134,7 @@ button:disabled {
 .popup {
     position: absolute;
     width: 21%;
+    right: 33px;
     /* top: 100%; */
     /* left: 88%; */
     background-color: rgb(229, 198, 250);
