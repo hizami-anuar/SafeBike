@@ -13,9 +13,8 @@ const usersRouter = require("./routes/users");
 const sessionRouter = require("./routes/session");
 const blockagesRouter = require("./routes/blockages");
 
-// mongoose.connect('mongodb://localhost:27017/test');
 mongoose.connect(
-  "mongodb+srv://admin:admin@cluster0.ftqe9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+  process.env.MONGODB_URI
 );
 
 const app = express();
