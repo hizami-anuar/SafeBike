@@ -6,8 +6,13 @@
       :zoom="zoom"
       :options="{
         disableDoubleClickZoom: true,
+        fullscreenControl: false,
+        streetViewControl: false,
+        mapTypeControl: false,
+        clickableIcons: false,
       }"
       class="map"
+      @click="closeAllMarkerPopups"
       @dblclick="openCreateBlockageMenu"
     >
       <MapMarker
@@ -82,6 +87,9 @@ export default {
     onMarkerClick: function(pos) {
       console.log(this.center, pos);
       this.center = pos;
+    },
+    closeAllMarkerPopups: function() {
+      this.active = null;
     },
     openCreateBlockageMenu: function(event) {
       this.createBlockageMenu = {
