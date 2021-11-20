@@ -38,20 +38,16 @@ then you will find the application at `localhost:8080` in the browser
     - index.js
   - API.md
   - heuristics.md
-- **Ben Bitdiddle**:
+- **Victor Luo**:
   - src
-    - HomePage.vue
-    - Test.vue
+    - Map.vue
+    - CreateBlockage.vue
+    - MapMarker.vue
+    - Home.vue
+    - main.js
+    - definePopupClass.js
   - models:
-    - Model1.js
-    - Model2.js
-    - Users.js
-  - routes:
-    - route1.js
-    - route2.js
-    - users.js
-    - index.js
-  - Boilerplate code (main.js, babel.config.js, router.js, etc.)
+    - Blockage.js
 - **Melon Usk**:
   - src
     - HomePage.vue
