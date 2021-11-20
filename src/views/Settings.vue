@@ -51,7 +51,7 @@
     <fieldset>
       <legend>Delete Account</legend>
       <p>
-        Warning: deleting an account will delete all of your Freets. This is permanent and cannot be undone.
+        Warning: deleting an account will delete all of your blockage reports. This is permanent and cannot be undone.
       </p>
       <button class='delete-account-button' v-on:click.prevent='deleteAccount'>Delete Account</button>
     </fieldset>
@@ -103,7 +103,7 @@ export default {
      */
     deleteAccount() {
       // If they change their mind (aka not confirm) do nothing
-      if (!confirm("Deleting your account and all of your Freets is permanent and cannot be undone. Are you sure you want to delete your account?"))
+      if (!confirm("Deleting your account is permanent and cannot be undone. Are you sure you want to delete your account?"))
         return;
       // They confirmed, so we continue
       axios
