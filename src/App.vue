@@ -73,7 +73,7 @@ export default {
 html, body {
   margin: 0px;
   padding: 0px;
-  background-color: rgb(255, 249, 213);
+  background-color: #FFFDD0;
 }
 
 #navbar {

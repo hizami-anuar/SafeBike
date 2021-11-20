@@ -100,6 +100,7 @@ button:hover:enabled {
     margin-top: 2px;
     font-size: 20px;
     margin-top: -15px;
+    border: 2px rgb(111, 14, 171) solid;
 
 }
 #fpassword {
@@ -109,6 +110,7 @@ button:hover:enabled {
     margin-top: 2px;
     font-size: 20px;
     margin-top: -15px;
+    border: 2px rgb(111, 14, 171) solid;
 }
 
 textarea {

@@ -141,6 +141,7 @@ button:hover:enabled {
     margin-top: -20px;
     font-size: 20px;
     margin-bottom: 25px;
+    border: 2px rgb(111, 14, 171) solid;
 }
 
 h2{

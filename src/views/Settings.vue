@@ -1,7 +1,7 @@
 <template>
   <main class='manage-profile'>
     <h2>Welcome back, 
-      <router-link v-if='loggedIn' :to="{name: 'User', params: {username: this.username}}">@{{ this.username }}</router-link>!
+      <router-link v-if='loggedIn' :to="{name: 'User', params: {username: this.user.username}}">@{{ this.user.username }}</router-link>!
     </h2>
     
     <hr>
@@ -80,7 +80,7 @@ export default {
   name: "Settings",
   props: {
     loggedIn: Boolean,
-    username: String,
+    user: Object,
   },
   data() {
     return {
