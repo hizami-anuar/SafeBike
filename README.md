@@ -6,6 +6,8 @@
 
 Describe the purpose and functionality of your application (~50 words)
 
+The purpose of SafeBike Boston is to help bikers in the Boston area feel more certain in the routes they take, and to help local government improve the condition of bike lanes. We do this by allowing users to report blockages for others to plan around, and providing a platform for users to easily share information on which bike lanes are unsafe and in need of repair.
+
 ### Instructions to Run Locally:
 
 In command line:
@@ -48,30 +50,38 @@ then you will find the application at `localhost:8080` in the browser
     - definePopupClass.js
   - models:
     - Blockage.js
-- **Melon Usk**:
+- **Karen Gao**:
   - src
-    - HomePage.vue
-    - Test.vue
-  - models:
-    - Model1.js
-    - Model2.js
-    - Users.js
-  - routes:
-    - route1.js
-    - route2.js
-    - users.js
+    - App.vue
+    - Home.vue
+    - Blockage.vue
+    - Blockages.vue
+    - CreateBlockage.vue
+    - NavBar.vue
+    - Map.vue
+    - Account.vue
     - index.js
-- **Gill Bates**:
+    - Login.vue
+    - Logout.vue
+    - Signup.vue
+    - Settings.vue
+    - MapMarker.vue
+  - routes:
+    - blockages.js
+    - users.js
+  - app.js
+
+- **Cindy Wang**:
   - src
-    - HomePage.vue
-    - Test.vue
+    - App.vue
+    - Logout.vue
+    - main.js
   - models:
-    - Model1.js
-    - Model2.js
-    - Users.js
+    - Blockage.js
   - routes:
-    - route1.js
-    - route2.js
-    - users.js
     - index.js
-  - App.vue/router.js
+    - middleware.js
+    - session.js
+    - users.js
+  - app.js
+  - Other skeleton code files (bin/www etc.)
