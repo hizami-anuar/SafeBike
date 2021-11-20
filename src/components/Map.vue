@@ -38,7 +38,7 @@
     <br>
     <p>Click on an existing pin to view details on the blockage report</p>
     <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
-    <p v-else>Please login in to report a new blockage</p>
+    <p v-else>Please log in to report a new blockage</p>
     </div>
     <CreateBlockage 
       v-if="createBlockageMenu.active"
