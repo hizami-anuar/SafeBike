@@ -233,10 +233,7 @@ export default {
 }
 </script>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+<style scoped>
 
 /* customize scrollbar for dark theme */
 ::-webkit-scrollbar {
@@ -268,42 +265,6 @@ body {
   display: flex;
   flex-wrap: wrap;
   overflow-y: scroll;
-}
-
-main > * {
-  flex: 1 1 320px;
-  margin: 1%;
-}
-
-section {
-  display: flex;
-  flex-direction: column;
-}
-
-section .scrollbox {
-  flex: 1 0 50vh;
-}
-
-form {
-  border: var(--light-border);
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background: rgba(255,255,255,.1);
-}
-
-form > div {
-  display: flex;
-  flex-direction: column;
-}
-
-form > * {
-  margin: 0.3em 0;
-}
-
-form h3 {
-  margin-top: 0;
 }
 
 textarea {

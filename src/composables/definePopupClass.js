@@ -65,7 +65,7 @@ export async function definePopupClass() {
     var anchor = this.anchor;
     anchor.style.cursor = 'auto';
 
-    ['click', 'dblclick', 'contextmenu', 'wheel', 'mousedown', 'touchstart',
+    ['click', 'dblclick', 'contextmenu', 'mousedown', 'touchstart',
     'pointerdown']
     .forEach(function(event) {
       anchor.addEventListener(event, function(e) {

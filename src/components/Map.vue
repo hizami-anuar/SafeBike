@@ -1,6 +1,5 @@
 <template>
   <div id="map-container">
-    <div class="map-left">
     <GmapMap
       ref="map"
       :center="center"
@@ -12,7 +11,7 @@
         mapTypeControl: false,
         clickableIcons: false,
       }"
-      class="map"
+      id="map"
       @click="closeAllMarkerPopups"
       @dblclick="openCreateBlockageMenu"
     >
@@ -36,10 +35,9 @@
       />
     </GmapMap>
     <div class='instructions'>
-    <p>Click on an existing pin to view details on the blockage report</p>
-    <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
-    <p v-else>Please log in to report a new blockage</p>
-    </div>
+      <p>Click on an existing pin to view details on the blockage report</p>
+      <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
+      <p v-else>Please log in to report a new blockage</p>
     </div>
     <CreateBlockage 
       class='create-blockage'
@@ -122,10 +120,11 @@ export default {
 .instructions {
   position: fixed;
   top: 80px;
-  left: 35%;
+  left: 50%;
   padding: 6px 12px;
-  z-index: 99999;
+  z-index: 3;
   background-color: white;
+  transform: translate(-50%, 0);
 }
 .create-blockage {
   z-index: 1;
@@ -134,17 +133,11 @@ export default {
   top: 15%;
 }
 #map-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
 }
-.map {
-  width: 100vw;
-  height: 100vh;
-  margin-top: 0px;
-  /* border: 5px solid rgb(182, 130, 255); */
-  border-radius: 3px;
-  right: 0%;
-  left: 0%;
+#map {
+  width: 100%;
+  height: 100%;
 }
 </style>

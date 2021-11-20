@@ -1,20 +1,20 @@
 <template>
-  <section class='sign-up-form' v-on:submit.prevent='signup'>
+  <section class='sign-up-section' v-on:submit.prevent='signup'>
     <h2 class='message'>Sign Up</h2>
-    <form action="">
+    <form action="" class='sign-up-form'>
       <strong class='error' v-if='this.signupError.length > 0'>{{this.signupError}}</strong> 
 
       <!-- The Username and its label -->
-      <label for="fusername">Username</label> <br/>
-      <input v-model='username' type="text" class="textbox" id="fusername" name="fusername">
+      <label for="fusername">Username</label>
+      <input v-model='username' type="text" class="finput" id="fusername" name="fusername">
 
       <!-- The first Password field -->
-      <label for="fpassword textbox">Password</label> <br/>
-      <input v-model='password' type="password" class="textbox" id="fpassword" name="fpassword"> 
+      <label for="fpassword textbox">Password</label>
+      <input v-model='password' type="password" class="finput" id="fpassword" name="fpassword"> 
 
       <!-- The second Password field -->
-      <label for="fpassword-confirm textbox">Confirm Password</label> <br/>
-      <input v-model='passwordConfirm' type="password" class="textbox" id="fpassword-confirm" name="fpassword-confirm"> 
+      <label for="fpassword-confirm textbox">Confirm Password</label>
+      <input v-model='passwordConfirm' type="password" class="finput" id="fpassword-confirm" name="fpassword-confirm"> 
 
       <!-- The Create Account Button -->
       <button v-on:click.prevent="signup" :disabled="username.length === 0 || password.length === 0 || passwordConfirm.length === 0">Create Account</button>
@@ -98,66 +98,57 @@ export default {
 </script>
 
 <style scoped>
+.sign-up-section {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+  flex-direction: column;
+}
 
 .sign-up-form {
-    margin-top: 70px;
-    padding-left: 50%;
-    width: 50%;
-    display: flex;
-    align-items: center;
-    height: 500px;
+  border: var(--light-border);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(255,255,255,.1);
 }
-
 
 button {
-    padding: 15px 25px;
-    font-size: 20px;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    font-weight: bold; 
-    border-radius: 30px;
-    background-color: rgb(98, 55, 227);
-    color: white;
-    border: none;
-    /* margin-top: -20px; */
+	padding: 15px 25px;
+  margin-top: 20px;
+	font-size: 20px;
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	font-weight: bold; 
+	border-radius: 30px;
+	background-color: rgb(98, 55, 227);
+	color: white;
+	border: none;
+	/* margin-top: -10px; */
 }
 
-.message {
-    width: 500px;
-}
 
 button:disabled {
-    background-color: rgb(148, 148, 148);
-    color: rgb(235, 235, 235);
+	background-color: rgb(148, 148, 148);
+	color: rgb(235, 235, 235);
 }
 button:hover:enabled {
-    background-color: rgb(254, 247, 158);
-    color: rgb(90, 7, 131);
-    cursor: pointer;
+	background-color: rgb(254, 247, 158);
+	color: rgb(90, 7, 131);
+	cursor: pointer;
 }
 
-.textbox {
-    border: none;
-    padding: 5px 15px;
-    border-radius: 5px;
-    margin-top: -20px;
-    font-size: 20px;
-    margin-bottom: 25px;
-    border: 2px rgb(111, 14, 171) solid;
+label {
+  margin-top: 15px;
 }
 
-h2{
-    color: rgb(79, 0, 128);
-    font-size: 48px;
-    margin-bottom: 0px;
-}
-.toggle-option{
-    font-weight: bold;
-}
-.toggle-option:hover{
-    cursor: pointer;
-    text-decoration: underline;
-}
-.error{
-  color: red;
+.finput {
+	border: none;
+	padding: 5px 15px;
+	margin-top: 5px;
+	border-radius: 5px;
+	font-size: 20px;
+	border: 2px rgb(111, 14, 171) solid;
 }
 </style>
