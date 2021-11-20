@@ -1,4 +1,4 @@
-# [Insert App Name Here and Link to the deployed URL](https://www.heroku.com/)
+# [SafeBike Boston](https://safebike-boston.herokuapp.com/)
 
 ## [WAGL]
 
@@ -51,6 +51,7 @@ then you will find the application at `localhost:8080` in the browser
   - models:
     - Blockage.js
 - **Karen Gao**:
+
   - src
     - App.vue
     - Home.vue
