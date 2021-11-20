@@ -35,12 +35,14 @@
         :position="createBlockageMenu.location"
       />
     </GmapMap>
-    <br>
+    <div class='instructions'>
     <p>Click on an existing pin to view details on the blockage report</p>
     <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
     <p v-else>Please log in to report a new blockage</p>
     </div>
+    </div>
     <CreateBlockage 
+      class='create-blockage'
       v-if="createBlockageMenu.active"
       :location="createBlockageMenu.location"
       @created-blockage="closeCreateBlockageMenu"
@@ -117,15 +119,32 @@ export default {
 
 <style scoped>
 
+.instructions {
+  position: fixed;
+  top: 80px;
+  left: 35%;
+  padding: 6px 12px;
+  z-index: 99999;
+  background-color: white;
+}
+.create-blockage {
+  z-index: 1;
+  position: fixed;
+  margin-left: 20px;
+  top: 15%;
+}
 #map-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 }
 .map {
-  width: 500px;
-  height: 400px;
-  border: 5px solid rgb(182, 130, 255);
+  width: 100vw;
+  height: 100vh;
+  margin-top: 0px;
+  /* border: 5px solid rgb(182, 130, 255); */
   border-radius: 3px;
+  right: 0%;
+  left: 0%;
 }
 </style>

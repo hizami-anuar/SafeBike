@@ -259,5 +259,6 @@ legend {
   margin-left: auto;
   margin-right: auto;
   max-width: 500px;
+  margin-top: 75px;
 }
 </style>

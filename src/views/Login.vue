@@ -64,6 +64,7 @@ export default {
 <style scoped>
 
 .sign-up-form {
+    margin-top: 70px;
     padding-left: 50%;
     width: 50%;
     height: 90%;

@@ -1,11 +1,11 @@
 <template>
   <div>
     <nav class="header">
-
+        <img v-if='loggedIn' class='notification-icon' v-on:click.prevent="notificationClicked=!notificationClicked; popupClicked=false" src="@/assets/notification-bell.png"/>
   <!-- Information on the right side of the navigation bar -->
       <div class='header-right'>
         <h1 v-if='loggedIn' class='username'>Welcome, {{user.username}}</h1>
-        <img v-if='loggedIn' v-on:click.prevent="popupClicked=!popupClicked" src="@/assets/profile.png" class='account-icon'/>
+        <img v-if='loggedIn' v-on:click.prevent="popupClicked=!popupClicked; notificationClicked=false" src="@/assets/profile.png" class='account-icon'/>
           
         <div v-else class='guest-view'>
             <router-link v-if='onRegister || (!onLogin && !onRegister)' to='/login' class='account-info'> 
@@ -17,7 +17,10 @@
         </div>
       </div>
 
-    </nav>      
+    </nav>
+    <div v-if='loggedIn && notificationClicked' class="notification-popup">
+      No notifications to show :(
+    </div>      
     <div v-if='loggedIn && popupClicked' class="popup">
       <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
       <router-link v-if='loggedIn' to='/settings' >   
@@ -39,6 +42,8 @@ export default {
   data() {
     return {
       popupClicked:false,
+      notificationClicked:false,
+      numNotifications: 0, // number of new notifications
     }
   }, 
   computed: {
@@ -146,6 +151,22 @@ button:disabled {
     
 }
 
+.notification-popup {
+    position: absolute;
+    width: 21%;
+    height: 100%;
+    right: 33px;
+    /* top: 100%; */
+    /* left: 88%; */
+    background-color: rgb(229, 198, 250);
+    z-index: 1;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 2px;
+    overflow: auto;
+}
+
 
 .header-right {
     justify-content: flex-end;
@@ -185,6 +206,13 @@ h1 {
     width: 40px;
     height: 40px;
     cursor: pointer;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin-right: 10px;
 }
 
 .account-info {

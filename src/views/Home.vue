@@ -8,6 +8,7 @@
       :user='user'
     />
     <Blockage
+    class="blockage-popup"
     v-if='currBlockage'
     :key='currBlockageId'
     :blockageData='currBlockage'
@@ -92,10 +93,19 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0;
+}
+.blockage-popup {
+  position:fixed;
+  top: 20%;
+  left: 2%;
 }
 
 .map {
   margin-right: 20px;
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 .map-container {

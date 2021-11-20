@@ -109,6 +109,11 @@ h1 {
   justify-content: space-between;
   align-items: center;
   background-color: rgb(227, 214, 255);
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+  left: 0%;
+  top: 0%;
 }
 
 #nav a {
