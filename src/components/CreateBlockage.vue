@@ -95,7 +95,7 @@ h1, h2 {
 
   /* height: 100px; */
   /* max-width: 500px; */
-  width: 50%;
+  width: 250px;
   border: 2px solid rgb(81, 138, 235);
   border-radius: 15px;
   color: black;
@@ -103,6 +103,7 @@ h1, h2 {
   margin: 10px auto 10px auto;
   padding: 20px;
   padding-right: 12px;
+  margin-left: 10px;
 }
 
 .feed-icon {

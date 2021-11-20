@@ -6,7 +6,7 @@
       <h1>SafeBike</h1>
       <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
       <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>Account</router-link> 
-      <router-link class='link' to="/debug">Debug</router-link>
+      <!-- <router-link class='link' to="/debug">Debug</router-link> -->
       </div>
       <Logout
         :loggedIn='loggedIn'

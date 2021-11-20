@@ -1,5 +1,6 @@
 <template>
   <div id="map-container">
+    <div class="map-left">
     <GmapMap
       ref="map"
       :center="center"
@@ -34,8 +35,11 @@
         :position="createBlockageMenu.location"
       />
     </GmapMap>
+    <br>
+    <p>Click on an existing pin to view details on the blockage report</p>
     <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
     <p v-else>Please login in to report a new blockage</p>
+    </div>
     <CreateBlockage 
       v-if="createBlockageMenu.active"
       :location="createBlockageMenu.location"
@@ -112,9 +116,15 @@ export default {
 </script>
 
 <style scoped>
+
+#map-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
 .map {
   width: 500px;
-  height: 300px;
+  height: 400px;
   border: 5px solid rgb(182, 130, 255);
   border-radius: 3px;
 }

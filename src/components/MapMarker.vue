@@ -7,11 +7,13 @@
       @click="toggleBlockageView"
     />
     <div v-if="active" class='popup' ref="popup">
-      <Blockage
+      <h2>{{blockage.status}}</h2>
+      <p>{{blockage.description}}</p>
+      <!-- <Blockage
         :blockageData='blockage'
         :loggedIn='loggedIn'
         :user='user'
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -22,11 +24,11 @@ import {gmapApi} from 'vue2-google-maps';
 import {definePopupClass} from '@/composables/definePopupClass.js'
 import { eventBus } from "../main";
 
-import Blockage from '@/components/Blockage.vue';
+// import Blockage from '@/components/Blockage.vue';
 
 export default {
   name: 'Map',
-  components: { Blockage },
+  components: {  },
   props: ['loggedIn', 'user', 'map', 'marker', 'blockage', 'active'],
   data: function () {
     return {
@@ -75,6 +77,19 @@ export default {
 </script>
 
 <style>
+  h2 {
+    color: rgb(46, 2, 89);
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    margin-bottom: 0px;
+  }
+  p {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+  }
+  .popup {
+    padding: 0px 12px;
+    padding-bottom: 10px;
+  }
 	/* The location pointed to by the popup tip. */
 	.popup-tip-anchor {
 		height: 0;
@@ -112,7 +127,7 @@ export default {
 		left: 0;
 		transform: translate(-50%, -100%);
 		/* Style the info window. */
-		background-color: rgb(235, 235, 235);
+		background-color: rgb(255, 249, 236);
 		/* padding: 5px; */
 		border-radius: 3px;
 		font-family: sans-serif;

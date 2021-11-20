@@ -47,6 +47,7 @@
 
 <script>
 import axios from 'axios';
+import { eventBus } from "../main";
 
 
 export default {
@@ -115,7 +116,7 @@ export default {
                 .then((response) => {
                     console.log(response);
                     console.log('edited blockage');
-                    this.$emit('refresh-blockages');
+                    eventBus.$emit('refresh-blockages');
 
                     // update the description and status displayed to the new ones
                     this.description = this.newDescription;
@@ -140,6 +141,7 @@ export default {
             .then((response) => {
                 console.log(response);
                 console.log('deleted blockage');
+                eventBus.$emit('close-marker');
                 this.$emit('refresh-blockages');
             }).catch((error) => {
                 console.log(error);
@@ -152,6 +154,7 @@ export default {
 <style scoped>
 h1, h2 {
     color: rgb(69, 38, 118);
+    /* margin-top: -40px; */
 }
 h1 {
     font-size: 20px;
@@ -255,12 +258,14 @@ button:hover:enabled {
 .blockage-creator {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     background-color: rgb(186, 186, 235);
 
     /* height: 100px; */
     /* max-width: 500px; */
-    width: 75%;
+    height: fit-content;
+    width: 300px;
     border: 3px solid rgb(111, 79, 199);
     border-radius: 15px;
     color: black;
