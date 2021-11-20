@@ -1,1 +1,29 @@
-/** placeholder **/
+:root {
+  --navbar-height: 70px
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #FFFDD0;
+}
+
+h2{
+	color: rgb(79, 0, 128);
+	font-size: 48px;
+	margin-bottom: -5px;
+}
+
+.error{
+	color: red;
+}
+
+button{
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+
+button:enabled {
+  cursor: pointer;
+}

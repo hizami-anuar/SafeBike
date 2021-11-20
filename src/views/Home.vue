@@ -1,19 +1,19 @@
 <template>
   <main>
-    <div class="map-container">
-    <Map
-      class='map'
-      :blockages='blockages'
+    <div class="home-container">
+      <Map
+        class='map'
+        :blockages='blockages'
+        :loggedIn='loggedIn'
+        :user='user'
+      />
+      <Blockage
+      class="blockage-popup"
+      v-if='currBlockage'
+      :key='currBlockageId'
+      :blockageData='currBlockage'
       :loggedIn='loggedIn'
-      :user='user'
-    />
-    <Blockage
-    class="blockage-popup"
-    v-if='currBlockage'
-    :key='currBlockageId'
-    :blockageData='currBlockage'
-    :loggedIn='loggedIn'
-    :user='user'/>
+      :user='user'/>
     </div>
     <!-- <Blockages
       :blockages='blockages'
@@ -101,17 +101,8 @@ main {
   left: 2%;
 }
 
-.map {
-  margin-right: 20px;
-  margin: 0;
+.home-container {
+  width: 100%;
   height: 100%;
-  overflow: hidden;
-}
-
-.map-container {
-  display: flex;
-  flex-direction: row;
-  /* width: 80%; */
-  justify-content: space-between;
 }
 </style>

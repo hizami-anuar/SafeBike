@@ -1,14 +1,14 @@
 <template>
-	<section class='sign-up-form'>
+	<section class='sign-up-section'>
 		<h2>Login</h2>
-		<form action="">
-			<strong class='error' v-if='this.loginError.length > 0'>{{this.loginError}}</strong> <br/>
+		<form action="" class='sign-up-form'>
+			<strong class='error' v-if='this.loginError.length > 0'>{{this.loginError}}</strong> 
 			<!-- The Username and its label -->
-			<label for="fusername">Username</label> <br/>
-			<input v-model='username' type="text" id="fusername" name="fusername"> <br/><br/>
+			<label for="fusername">Username</label> 
+			<input v-model='username' type="text" id="fusername" name="fusername" class="finput"> 
 			<!-- The first Password field -->
-			<label for="fpassword">Password</label> <br/>
-			<input v-model='password' type="password" id="fpassword" name="fpassword"> <br/><br/>
+			<label for="fpassword">Password</label> 
+			<input v-model='password' type="password" id="fpassword" name="fpassword" class="finput"> 
 			<!-- The Create Account Button -->
 			<button v-on:click.prevent="login" :disabled="username.length === 0 || password.length === 0">Log In</button>
 		</form>
@@ -62,77 +62,57 @@ export default {
 </script>
 
 <style scoped>
+.sign-up-section {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+  flex-direction: column;
+}
 
 .sign-up-form {
-    margin-top: 70px;
-    padding-left: 50%;
-    width: 50%;
-    height: 90%;
-    display: flex;
-    align-items: center;
+  border: var(--light-border);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(255,255,255,.1);
 }
+
 button {
-    padding: 15px 25px;
-    font-size: 20px;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    font-weight: bold; 
-    border-radius: 30px;
-    background-color: rgb(98, 55, 227);
-    color: white;
-    border: none;
-    /* margin-top: -10px; */
+	padding: 15px 25px;
+  margin-top: 20px;
+	font-size: 20px;
+	font-family: Avenir, Helvetica, Arial, sans-serif;
+	font-weight: bold; 
+	border-radius: 30px;
+	background-color: rgb(98, 55, 227);
+	color: white;
+	border: none;
+	/* margin-top: -10px; */
 }
 
 
 button:disabled {
-    background-color: rgb(148, 148, 148);
-    color: rgb(235, 235, 235);
+	background-color: rgb(148, 148, 148);
+	color: rgb(235, 235, 235);
 }
 button:hover:enabled {
-    background-color: rgb(254, 247, 158);
-    color: rgb(90, 7, 131);
-    cursor: pointer;
+	background-color: rgb(254, 247, 158);
+	color: rgb(90, 7, 131);
+	cursor: pointer;
 }
 
-#fusername {
-    border: none;
-    padding: 5px 15px;
-    border-radius: 5px;
-    margin-top: 2px;
-    font-size: 20px;
-    margin-top: -15px;
-    border: 2px rgb(111, 14, 171) solid;
-
-}
-#fpassword {
-    border: none;
-    padding: 5px 15px;
-    border-radius: 5px;
-    margin-top: 2px;
-    font-size: 20px;
-    margin-top: -15px;
-    border: 2px rgb(111, 14, 171) solid;
+label {
+  margin-top: 15px;
 }
 
-textarea {
-    margin-top: -10px;
-}
-h2{
-    color: rgb(79, 0, 128);
-    font-size: 48px;
-    margin-bottom: -5px;
-}
-.toggle-option{
-    font-weight: bold;
-}
-.toggle-option:hover{
-    cursor: pointer;
-    text-decoration: underline;
-}
-.message {
-    width: 500px;
-}
-.error{
-    color: red;
+.finput {
+	border: none;
+	padding: 5px 15px;
+	margin-top: 5px;
+	border-radius: 5px;
+	font-size: 20px;
+	border: 2px rgb(111, 14, 171) solid;
 }
 </style>

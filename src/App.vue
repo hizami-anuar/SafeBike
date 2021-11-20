@@ -1,18 +1,19 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <div id='navbar'>
-      <img class='logo' src="@/assets/navlogo.png"/>
-      <h1>SafeBike</h1>
-      <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
-      <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>Account</router-link> 
-      <!-- <router-link class='link' to="/debug">Debug</router-link> -->
+    <div id="navbar">
+      <div id='navbar-left'>
+        <img class='logo' src="@/assets/navlogo.png"/>
+        <h1>SafeBike</h1>
+        <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
+        <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>Account</router-link> 
+        <!-- <router-link class='link' to="/debug">Debug</router-link> -->
       </div>
       <Logout
         :loggedIn='loggedIn'
         :user='user'/>
     </div>
     <router-view
+      id="page-content"
       v-bind:loggedIn='loggedIn'
       v-bind:user='user'/>
   </div>
@@ -70,31 +71,20 @@ export default {
 
 <style>
 
-html, body {
-  margin: 0px;
-  padding: 0px;
-  background-color: #FFFDD0;
-}
-
-#navbar {
+#navbar-left {
   display: flex;
   flex-direction: row;
-  height: 70px;
   align-items: center;
 }
-button{
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-}
-button:enabled {
-  cursor: pointer;
-}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: -18px;
+  width: 100%;
+  height: 100%;
 }
 
 h1 {
@@ -102,18 +92,17 @@ h1 {
   color: rgb(104, 27, 192);
 }
 
-#nav {
+#navbar {
   /* padding: 30px; */
   display: flex;
-  height: 70px;
+  height: var(--navbar-height);
   justify-content: space-between;
   align-items: center;
   background-color: rgb(227, 214, 255);
-  position: fixed;
   z-index: 2;
   width: 100%;
-  left: 0%;
-  top: 0%;
+  left: 0;
+  top: 0;
 }
 
 #nav a {
@@ -124,6 +113,11 @@ h1 {
 #nav a.router-link-exact-active {
   color: rgb(255, 255, 255);
   background-color: rgb(179, 127, 250);
+}
+
+#page-content {
+  width: 100%;
+  height: calc(100% - var(--navbar-height));
 }
 
 .logo {
