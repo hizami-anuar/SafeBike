@@ -36,7 +36,7 @@
       <template v-if="$refs.map">
         <MapCircle
           v-for="(circle, index) in circles"
-          :key="index"
+          :key="`circle-${index}`"
           :loggedIn="loggedIn"
           :user="user"
           :circle="circle"
@@ -130,8 +130,8 @@ export default {
 <style scoped>
 
 .instructions {
-  position: fixed;
-  top: 80px;
+  position: absolute;
+  top: 20px;
   left: 50%;
   padding: 6px 12px;
   z-index: 3;
@@ -150,6 +150,7 @@ export default {
   top: 15%;
 }
 #map-container {
+  position: relative;
   width: 100%;
   height: 100%;
 }

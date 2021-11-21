@@ -6,6 +6,7 @@
 
 <script>
 import {gmapApi} from 'vue2-google-maps';
+import { eventBus } from '@/main';
 
 export default {
   name: 'Map',
@@ -62,7 +63,8 @@ export default {
     region.bindTo('center', marker, 'position');
 
     this.google.maps.event.addListener(region, 'radius_changed', function() {
-    console.log(region.getRadius());
+      console.log(region.getRadius());
+      eventBus.$emit('radius-changed', {id: this.circle._id, radius: region.getRadius()});
     });
   },
   computed: {

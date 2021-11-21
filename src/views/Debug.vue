@@ -178,18 +178,6 @@ export default {
       axios.get(`/api/blockages`)
         .then((response) => {
           this.blockages = response.data.blockages;
-          this.blockages.forEach((blockage) => {
-            const id = blockage._id;
-            this.editFormData[id] = this.editFormData[id] || 
-            {
-              description: "",
-              status: "",
-              location: {
-                latitude: 0,
-                longitude: 0,
-              }
-            };
-          }); 
           this.showResponse(response);
         }).catch((error) => {
           this.showResponse(error);
@@ -281,6 +269,7 @@ export default {
 }
 
 .map-container {
+  position: relative;
   width: 50vh;
   height: 50vh;
 }
