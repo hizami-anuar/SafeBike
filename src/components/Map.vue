@@ -33,6 +33,16 @@
         :draggable="false"
         :position="createBlockageMenu.location"
       />
+      <template v-if="$refs.map">
+        <MapCircle
+          v-for="(circle, index) in circles"
+          :key="index"
+          :loggedIn="loggedIn"
+          :user="user"
+          :circle="circle"
+          :map="$refs.map"
+        />
+      </template>
     </GmapMap>
     <div class='instructions'>
       <p>Click on an existing pin to view details on the blockage report</p>
@@ -51,16 +61,18 @@
 <script>
 import CreateBlockage from '@/components/CreateBlockage.vue';
 import MapMarker from '@/components/MapMarker.vue';
+import MapCircle from '@/components/MapCircle.vue';
 import { eventBus } from "../main";
 
 export default {
   name: 'Map',
-  components: { CreateBlockage, MapMarker },
+  components: { CreateBlockage, MapMarker, MapCircle },
   props: {
       /** @type {Blockage[]} The blockage object to display */
       blockages: Array,
       loggedIn: Boolean,
       user: Object,
+      circles: Array,
       // 'center' likely
   },
   data: function () {

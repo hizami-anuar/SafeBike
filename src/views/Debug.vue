@@ -5,6 +5,7 @@
       <span>
         <button class="button-mode" v-on:click="mode='users'">Users</button>
         <button class="button-mode" v-on:click="mode='blockages'">Blockages</button>
+        <button class="button-mode" v-on:click="mode='subscription'">Subscription</button>
       </span>
       <div class="scrollbox">
         <template v-if="mode=='users'">
@@ -67,6 +68,19 @@
             :key="blockage._id"
             :blockage="blockage"/>
         </template>
+
+        <template v-else-if="mode=='subscription'">
+          <input type="submit" v-on:click.prevent="getSubscription" value="Get Subscription">
+          <div class="map-container">
+            <Map
+              class='map'
+              :blockages='subscription'
+              :loggedIn='loggedIn'
+              :user='user'
+              :circles='circles'
+            />
+          </div>
+        </template>
       </div>
     </section>
     <section>
@@ -80,16 +94,25 @@
 
 <script>
 import axios from 'axios';
-import { eventBus } from "../main";
-import DebugBlockageItem from '../components/DebugBlockageItem';
+import { eventBus } from "@/main";
+import DebugBlockageItem from '@/components/DebugBlockageItem';
+import Map from '@/components/Map.vue';
 
 export default {
   name: 'Debug',
-  components: { DebugBlockageItem },
+  components: { DebugBlockageItem, Map },
+  props: ['loggedIn', 'user'],
   data() {
     return {
       mode: 'users',
       blockages: [],
+      subscription: [],
+      circles: [
+        {
+          center: [42.35, -71.07],
+          radius: 0.01*111111,
+        }
+      ],
       blockageFormData: {
         description: "",
         status: "",
@@ -139,6 +162,16 @@ export default {
         statusText: fullResponse.statusText,
       };
       this.showObject(abridgedResponse);
+    },
+
+    getSubscription() {
+      axios.get(`/api/blockages?subscription=true`)
+        .then((response) => {
+          this.subscription = response.data.blockages;
+          this.showResponse(response);
+        }).catch((error) => {
+          this.showResponse(error);
+        })
     },
 
     getBlockages() {
@@ -245,6 +278,16 @@ export default {
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
+}
+
+.map-container {
+  width: 50vh;
+  height: 50vh;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
 }
 
 body {

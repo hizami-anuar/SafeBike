@@ -17,7 +17,27 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
   const query = req.query;
-  const blockages = await Blockages.find(query);
+  let blockages = [];
+  if (query.subscription == 'true') {
+    const circle = {
+      center: [42.35, -71.07],
+      radius: 0.01,
+    }
+    const square = (x) => x*x;
+    function inCircle(circle, point) {
+      let xSquared = square(circle.center[0]-point[0]);
+      let ySquared = square(circle.center[1]-point[1]);
+      let rSquared = square(circle.radius);
+      return xSquared + ySquared <= rSquared
+    }
+    blockages = await Blockages.find();
+    blockages = blockages.filter(blockage => {
+      return inCircle(circle, blockage.location.coordinates);
+    });
+  } else {
+    delete query.subscription;
+    blockages = await Blockages.find(query);
+  }
   await Promise.all(blockages.map(async (blockage) => {
     const user = await Users.findOne({_id: blockage.reporter});
     blockage._doc.reporterUsername = user ? user.username : "[deleted user]";
