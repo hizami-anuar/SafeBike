@@ -79,12 +79,15 @@ export default {
 <style>
   h2 {
     color: rgb(46, 2, 89);
+    font-size: 16px;
     font-family: Avenir, Helvetica, Arial, sans-serif;
-    margin-bottom: 0px;
+    margin-bottom: -15px;
+    margin-top: 4px;
   }
   p {
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-size: 15px;
+    margin-bottom: -5px;
   }
   .popup {
     padding: 0px 12px;

@@ -86,6 +86,12 @@ h1, h2 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: 20px;
+}
+h2 {
+  margin-top: 0px;
+  margin-bottom: 5px;
+  padding: 0px;
 }
 .blockage-creator {
   display: flex;
@@ -93,7 +99,6 @@ h1, h2 {
   align-items: center;
   background-color: rgb(186, 186, 235);
 
-  /* height: 100px; */
   /* max-width: 500px; */
   width: 250px;
   border: 2px solid rgb(81, 138, 235);

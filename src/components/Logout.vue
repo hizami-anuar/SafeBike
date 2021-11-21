@@ -22,6 +22,8 @@
       No notifications to show :(
     </div>      
     <div v-if='loggedIn && popupClicked' class="popup">
+    <p>Level 0</p>
+        <p>Karma: 49</p>
       <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
       <router-link v-if='loggedIn' to='/settings' >   
           <button class="submit-button" v-on:click="popupClicked=false">Settings</button>
@@ -149,6 +151,11 @@ button:disabled {
     flex-direction: column;
     border-radius: 2px;
     
+}
+
+.popup p {
+    margin: 0px;
+    padding: 0px;
 }
 
 .notification-popup {

@@ -6,6 +6,7 @@ import Account from "../views/Account.vue";
 import Login from "../views/Login.vue";
 import Signup from "../views/Signup.vue";
 import Settings from "../views/Settings.vue";
+import Subscription from "../views/Subscription.vue";
 
 Vue.use(VueRouter);
 
@@ -24,6 +25,11 @@ const routes = [
     path: "/account",
     name: "Account",
     component: Account,
+  },
+  {
+    path: "/subscription",
+    name: "Subscription",
+    component: Subscription,
   },
   {
     path: "/login",

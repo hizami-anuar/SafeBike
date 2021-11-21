@@ -2,10 +2,11 @@
   <div id="app">
     <div id="navbar">
       <div id='navbar-left'>
-        <img class='logo' src="@/assets/navlogo.png"/>
+        <router-link id='logo-div' to="/"><img class='logo' src="@/assets/navlogo.png"/></router-link>
         <h1>SafeBike</h1>
         <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
-        <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>Account</router-link> 
+        <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>My Reports</router-link> 
+        <router-link class='link' to="/subscription"><img class='icon' src="@/assets/notification-bell.png"/>My Alerts</router-link> 
         <router-link class='link' to="/debug">Debug</router-link>
       </div>
       <Logout
@@ -87,6 +88,7 @@ export default {
   height: 100%;
 }
 
+
 h1 {
   margin-right: 20px;
   color: rgb(104, 27, 192);
@@ -110,10 +112,15 @@ h1 {
   color: #2c3e50;
 }
 
-#nav a.router-link-exact-active {
+#navbar a.router-link-exact-active {
   color: rgb(255, 255, 255);
   background-color: rgb(179, 127, 250);
 }
+/* 
+#logo-div a.router-link-exact-active {
+  background-color: red;
+  background: none;
+} */
 
 #page-content {
   width: 100%;
