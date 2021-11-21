@@ -7,6 +7,14 @@ const validateThat = require("./middleware");
 
 const router = express.Router();
 
+subscriptions = [
+  {
+    _id: 'abcdef',
+    center: [42.35, -71.07],
+    radius: 0.01*111111,
+  }
+];
+
 /**
  * List all blockages.
  * Allows query by specific properties of blockage (i.e. reporter).
@@ -19,15 +27,12 @@ router.get("/", async (req, res) => {
   const query = req.query;
   let blockages = [];
   if (query.subscription == 'true') {
-    const circle = {
-      center: [42.35, -71.07],
-      radius: 0.01,
-    }
+    const circle = subscriptions[0];
     const square = (x) => x*x;
     function inCircle(circle, point) {
       let xSquared = square(circle.center[0]-point[0]);
       let ySquared = square(circle.center[1]-point[1]);
-      let rSquared = square(circle.radius);
+      let rSquared = square(circle.radius/111111); // convert meters to degrees
       return xSquared + ySquared <= rSquared
     }
     blockages = await Blockages.find();
@@ -46,6 +51,32 @@ router.get("/", async (req, res) => {
 });
 
 /**
+ * Get a subscription
+ */
+router.get("/subscription", 
+async (req, res) => {
+  res.status(200).json({ subscription: subscriptions }).end();
+});
+
+/**
+ * Create a subscription.
+ */
+router.post("/subscription", 
+async (req, res) => {
+  subscriptions.push(req.body);
+  res.status(200).json(subscriptions).end();
+});
+
+/**
+ * Update a subscription's radius.
+ */
+ router.patch("/subscription/:id", 
+ async (req, res) => {
+   subscriptions.filter(subscription => subscription._id == req.params.id)[0].radius = req.body.radius;
+   res.status(200).json(subscriptions).end();
+ });
+
+/**
  * Create a blockage.
  *
  * @name POST /api/blockages
@@ -61,19 +92,15 @@ router.post("/",
     validateThat.userIsLoggedIn,
   ], 
   async (req, res) => {
-    const latitude = req.body.location.latitude;
-    const longitude = req.body.location.longitude;
-    const time = Date.now();
-    const reporter = req.session.userID;
-    const description = req.body.description;
-    const status = req.body.status;
-    const location = { type: "Point", coordinates: [latitude, longitude] };
     const blockage = {
-      location: location,
-      time: time,
-      reporter: reporter,
-      description: description,
-      status: status,
+      location: { 
+        type: "Point", 
+        coordinates: [req.body.location.latitude, req.body.location.longitude] // coordinates come from body
+      },
+      time: Date.now(), // uses current time
+      reporter: req.session.userID, // reporter is the user currently logged in
+      description: req.body.description, // description comes from body
+      status: req.body.status, // status comes from body
     };
     await Blockages.create(blockage);
     res.status(200).json(blockage).end();

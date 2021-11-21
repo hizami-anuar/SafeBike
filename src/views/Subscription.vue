@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="submit" v-on:click.prevent="getSubscription" value="Get Subscription">
+    <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
     <div class="map-container">
       <Map
         :blockages='subscription'
@@ -24,14 +24,10 @@ export default {
     return {
       blockages: [],
       subscription: [],
-      circles: [
-        {
-          _id: 'abcdef',
-          center: [42.35, -71.07],
-          radius: 0.01*111111,
-        }
+      circles: [],
+      eventListeners: [
+        {name: 'radius-changed', func: this.updateRegionRadius}
       ],
-      eventListeners: [],
     }
   },
   created() {
@@ -40,8 +36,13 @@ export default {
   beforeDestroy: function() {
     this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
+  mounted() {
+    this.getSubscribedBlockages();
+    this.getSubscription();
+  },
   methods: {
-    getSubscription() {
+    getSubscribedBlockages() {
+      this.getSubscription();
       axios.get(`/api/blockages?subscription=true`)
         .then((response) => {
           console.log(response);
@@ -51,9 +52,25 @@ export default {
         })
     },
 
+    getSubscription() {
+      axios.get(`/api/blockages/subscription`)
+        .then((response) => {
+          console.log(response);
+          this.circles = response.data.subscription;
+        }).catch((error) => {
+          console.log(error);
+        })
+    },
+
     updateRegionRadius(data) {
-      this.circles[0].radius = data.radius;
-      this.getSubscription();
+      console.log('update');
+      axios.patch(`/api/blockages/subscription/${data.id}`, {radius: data.radius})
+        .then((response) => {
+          console.log(response);
+        }).catch((error) => {
+          console.log(error);
+        })
+      this.getSubscribedBlockages();
     }
   },
 }

@@ -62,9 +62,10 @@ export default {
 
     region.bindTo('center', marker, 'position');
 
+    const circle = this.circle;
     this.google.maps.event.addListener(region, 'radius_changed', function() {
       console.log(region.getRadius());
-      eventBus.$emit('radius-changed', {id: this.circle._id, radius: region.getRadius()});
+      eventBus.$emit('radius-changed', {id: circle._id, radius: region.getRadius()});
     });
   },
   computed: {

@@ -28,9 +28,12 @@ then you will find the application at `localhost:8080` in the browser
 ### Authorship:
 
 - **Amir-Hizami S Anuar**:
+
   - src
+    - App.vue
     - DebugBlockageItem.vue
     - Debug.vue
+    - Subscription.vue
   - models:
     - Blockage.js
   - routes:
@@ -40,7 +43,9 @@ then you will find the application at `localhost:8080` in the browser
     - index.js
   - API.md
   - heuristics.md
+
 - **Victor Luo**:
+
   - src
     - Map.vue
     - CreateBlockage.vue
@@ -50,6 +55,7 @@ then you will find the application at `localhost:8080` in the browser
     - definePopupClass.js
   - models:
     - Blockage.js
+
 - **Karen Gao**:
 
   - src
@@ -73,6 +79,7 @@ then you will find the application at `localhost:8080` in the browser
   - app.js
 
 - **Cindy Wang**:
+
   - src
     - App.vue
     - Logout.vue
