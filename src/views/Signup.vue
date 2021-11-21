@@ -98,6 +98,11 @@ export default {
 </script>
 
 <style scoped>
+
+h2 {
+    margin-top: 20px;
+    font-size: 40px;
+}
 .sign-up-section {
 	width: 100%;
 	height: 100%;

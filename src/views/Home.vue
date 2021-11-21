@@ -14,6 +14,16 @@
       :blockageData='currBlockage'
       :loggedIn='loggedIn'
       :user='user'/>
+      <Popup v-if='historyPopupShown' @close-popup='closeHistoryPopup'>
+      <History 
+      :blockageData='currBlockage'/></Popup>
+      <Popup v-if='commentsPopupShown' @close-popup='closeCommentsPopup'>
+      <Comments
+      :blockageData='currBlockage'
+      :loggedIn='loggedIn'
+      :user='user'
+      />
+      </Popup>
     </div>
     <!-- <Blockages
       :blockages='blockages'
@@ -30,12 +40,15 @@ import Map from '../components/Map.vue';
 // import Blockages from '@/components/Blockages.vue';
 import { eventBus } from "../main";
 import Blockage from '@/components/Blockage.vue';
+import Popup from '@/components/Popup.vue';
+import History from '@/components/History.vue';
+import Comments from '@/components/Comments.vue';
 
 import axios from 'axios';
 
 export default {
   name: 'Home',
-  components: { Map, Blockage},
+  components: { Map, Blockage, History, Comments, Popup},
   props: {
     loggedIn: Boolean,
     user: Object,
@@ -45,6 +58,8 @@ export default {
       blockages: [], // list of blockage objects to display 
       currBlockageId: undefined,
       currBlockage: undefined,
+      historyPopupShown: false,
+      commentsPopupShown: false,
     }
   }, 
   computed: {
@@ -59,8 +74,23 @@ export default {
     eventBus.$on('refresh-blockages', this.refreshBlockages);
     eventBus.$on('open-marker', this.displayBlockage);
     eventBus.$on('close-marker', this.undisplayBlockage);
+    eventBus.$on("history-clicked", this.toggleHistoryPopup);
+    eventBus.$on('comments-clicked', this.toggleCommentsPopup);
   },
   methods: {
+    toggleHistoryPopup () {
+      console.log('hiiii');
+      this.historyPopupShown = !this.historyPopupShown;
+    },
+    closeHistoryPopup() {
+      this.historyPopupShown = false;
+    },
+    closeCommentsPopup() {
+      this.commentsPopupShown = false;
+    },
+    toggleCommentsPopup() {
+      this.commentsPopupShown = !this.commentsPopupShown;
+    },
     // fetch list of all blockages
     getAllBlockages() {
       axios.get(`/api/blockages`)

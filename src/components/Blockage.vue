@@ -32,12 +32,19 @@
             <div v-else>
                 <span class="description" v-if='description.length!==0'>{{  description }}</span>
             </div>
-            <div v-if='loggedIn && user.userID === reporterId' class="edit-delete-buttons">
+
+            <div class="edit-delete-buttons">
+                <img v-if='!liked' class='icon' v-on:click="liked=!liked" src="@/assets/like.png"/>
+                <img v-else class='icon' v-on:click="liked=!liked" src="@/assets/liked.png"/>
+                <img v-if='!disliked' class='icon' v-on:click="disliked=!disliked" src="@/assets/dislike.png"/>
+                <img v-else class='icon' v-on:click="disliked=!disliked" src="@/assets/disliked.png"/>
+                <img v-if='loggedIn' class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
+                <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
                 <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
-                    <img v-if="!editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
+                <img v-if="loggedIn && user.userID === reporterId && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
                     <!-- Edit -->
                 <!-- </button> -->
-                <img v-if="!editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+                <img v-if="loggedIn && user.userID === reporterId && !editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
 
                 <!-- <button v-on:click="deleteBlockage">Delete</button> -->
             </div>
@@ -73,6 +80,8 @@ export default {
             date: '', // formated time for displaying (human readable) 
             reporterUsername: this.blockageData.reporterUsername,
             reporterId: this.blockageData.reporter,
+            liked: false, // whether current post is liked by user or not
+            disliked: false, // whether current post is disliked by user or not
         }
     },
     mounted() {
@@ -84,10 +93,15 @@ export default {
         date.setUTCSeconds(this.blockageData.time/1000);
         this.date = date;
     },
-    emits: [
-        'refresh-blockages',
-    ],
     methods: {
+        openHistory() {
+            // open history panel for current blockage;
+            eventBus.$emit('history-clicked');
+        },
+        openComments() {
+            // open comment panel for current blockage can also make a comment on this panel;
+            eventBus.$emit('comments-clicked');
+        },
         // enter edit blockage mode
         editBlockage() {
             this.editing = true;
@@ -142,6 +156,7 @@ export default {
                 console.log(response);
                 console.log('deleted blockage');
                 eventBus.$emit('close-marker');
+                eventBus.$emit('refresh-blockages');
                 this.$emit('refresh-blockages');
             }).catch((error) => {
                 console.log(error);
@@ -158,6 +173,18 @@ h1, h2 {
 }
 h1 {
     font-size: 20px;
+}
+.checkboxes span {
+    margin: 2px;
+}
+
+h2 {
+    margin-bottom: 5px;
+    /* margin-top: 100px; */
+}
+
+span{
+    margin: 10px;
 }
 
 .username {
@@ -227,6 +254,7 @@ button:hover:enabled {
     width: 100%;
     justify-content: flex-end;
     margin-right: -20px;
+    margin-top: 15px;
 }
 
 .edit-mode-buttons {

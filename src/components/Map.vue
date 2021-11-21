@@ -126,6 +126,11 @@ export default {
   background-color: white;
   transform: translate(-50%, 0);
 }
+
+.instructions p {
+  margin: 0px;
+  padding: 0px;
+}
 .create-blockage {
   z-index: 1;
   position: fixed;
