@@ -26,6 +26,7 @@ export default {
 
     // var pinLabel = "A";
 
+    /*
     // Pick your pin (hole or no hole)
     var pinSVGHole = "M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z";
     var labelOriginHole = new this.google.maps.Point(12,15);
@@ -48,24 +49,33 @@ export default {
       position: new this.google.maps.LatLng(this.circle.center[0], this.circle.center[1]),
       title: 'Some location',
       icon: markerImage,
+      draggable: true,
     });
     this.marker = marker;
+    */
 
     // Add circle overlay and bind to marker
     const region = new this.google.maps.Circle({
       map: map,
+      center: new this.google.maps.LatLng(this.circle.center[0], this.circle.center[1]),
       radius: this.circle.radius,    // 10 miles in metres
       fillColor: '#AAAA00',
+      draggable: true,
       editable: true,
     });
     this.region = region;
 
-    region.bindTo('center', marker, 'position');
+    // region.bindTo('center', marker, 'position');
 
     const circle = this.circle;
+    this.google.maps.event.addListener(region, 'center_changed', function() {
+      const center = [region.getCenter().lat(), region.getCenter().lng()];
+      eventBus.$emit('circle-center-changed', {id: circle._id, center: center});
+    });
+
     this.google.maps.event.addListener(region, 'radius_changed', function() {
       console.log(region.getRadius());
-      eventBus.$emit('radius-changed', {id: circle._id, radius: region.getRadius()});
+      eventBus.$emit('circle-radius-changed', {id: circle._id, radius: region.getRadius()});
     });
   },
   computed: {

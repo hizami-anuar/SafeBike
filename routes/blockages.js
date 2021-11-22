@@ -7,13 +7,7 @@ const validateThat = require("./middleware");
 
 const router = express.Router();
 
-subscriptions = [
-  {
-    _id: 'abcdef',
-    center: [42.35, -71.07],
-    radius: 0.01*111111,
-  }
-];
+subscriptions = [];
 
 /**
  * List all blockages.
@@ -27,7 +21,6 @@ router.get("/", async (req, res) => {
   const query = req.query;
   let blockages = [];
   if (query.subscription == 'true') {
-    const circle = subscriptions[0];
     const square = (x) => x*x;
     function inCircle(circle, point) {
       let xSquared = square(circle.center[0]-point[0]);
@@ -37,7 +30,7 @@ router.get("/", async (req, res) => {
     }
     blockages = await Blockages.find();
     blockages = blockages.filter(blockage => {
-      return inCircle(circle, blockage.location.coordinates);
+      return subscriptions.some((circle) => inCircle(circle, blockage.location.coordinates));
     });
   } else {
     delete query.subscription;
@@ -64,7 +57,7 @@ async (req, res) => {
 router.post("/subscription", 
 async (req, res) => {
   subscriptions.push(req.body);
-  res.status(200).json(subscriptions).end();
+  res.status(200).json({ subscription: subscriptions }).end();
 });
 
 /**
@@ -75,6 +68,15 @@ async (req, res) => {
    subscriptions.filter(subscription => subscription._id == req.params.id)[0].radius = req.body.radius;
    res.status(200).json(subscriptions).end();
  });
+
+ /**
+ * Update a subscription's center.
+ */
+  router.patch("/subscription/:id/center", 
+  async (req, res) => {
+    subscriptions.filter(subscription => subscription._id == req.params.id)[0].center = req.body.center;
+    res.status(200).json(subscriptions).end();
+  });
 
 /**
  * Create a blockage.
