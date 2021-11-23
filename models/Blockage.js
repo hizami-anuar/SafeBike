@@ -1,15 +1,5 @@
 const mongoose = require("mongoose");
 
-// THIS COMMENT IS likely still WRONG, update later
-/**
- * @typedef Blockage
- * @prop {number[]} location // [latitude, longitude] of location
- * @prop {number} time // current time represented by milliseconds
- * @prop {string} reporter // the username of the reporter
- * @prop {string} description // description of blockage
- * @prop {string} status // status of blockage
- */
-
 const pointSchema = new mongoose.Schema({
   type: {
     type: String,
@@ -22,16 +12,6 @@ const pointSchema = new mongoose.Schema({
   }
 });
 
-const commentSchema = new mongoose.Schema({
-  userID: String,
-  content: String,
-  timeUsec: Number,
-  blockage: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Post',
-  }
-});
-
 const blockageSchema = new mongoose.Schema({
   location: {
     type: pointSchema,
@@ -40,7 +20,12 @@ const blockageSchema = new mongoose.Schema({
   time: Number,
   reporter: String,
   description: String,
-  status: String, 
+  status: String,
+  active: Boolean,
+  parentBlockage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blockage'
+  },
   comments: [{
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Comment'

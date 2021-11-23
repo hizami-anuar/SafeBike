@@ -93,7 +93,7 @@ export default {
     },
     // fetch list of all blockages
     getAllBlockages() {
-      axios.get(`/api/blockages`)
+      axios.get(`/api/blockages?active=true`)
         .then((response) => {
           this.blockages = response.data.blockages;
         }).catch((error) => {

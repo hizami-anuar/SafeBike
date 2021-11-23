@@ -57,7 +57,7 @@ export default {
     // Add circle overlay and bind to marker
     const region = new this.google.maps.Circle({
       map: map,
-      center: new this.google.maps.LatLng(this.circle.center[0], this.circle.center[1]),
+      center: new this.google.maps.LatLng(this.circle.center.coordinates[0], this.circle.center.coordinates[1]),
       radius: this.circle.radius,    // 10 miles in metres
       fillColor: '#AAAA00',
       draggable: true,
@@ -68,14 +68,18 @@ export default {
     // region.bindTo('center', marker, 'position');
 
     const circle = this.circle;
-    this.google.maps.event.addListener(region, 'center_changed', function() {
+    this.google.maps.event.addListener(region, 'dragend', function() {
       const center = [region.getCenter().lat(), region.getCenter().lng()];
       eventBus.$emit('circle-center-changed', {id: circle._id, center: center});
     });
 
     this.google.maps.event.addListener(region, 'radius_changed', function() {
-      console.log(region.getRadius());
       eventBus.$emit('circle-radius-changed', {id: circle._id, radius: region.getRadius()});
+    });
+
+    this.google.maps.event.addListener(region, 'click', function() {
+      console.log('clicked');
+      eventBus.$emit('circle-clicked', {id: circle._id});
     });
   },
   computed: {

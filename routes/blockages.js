@@ -2,12 +2,10 @@ const express = require("express");
 
 const Blockages = require("../models/Blockage");
 const Users = require("../models/User");
+const Subscriptions = require("../models/Subscription");
 
 const validateThat = require("./middleware");
-
 const router = express.Router();
-
-subscriptions = [];
 
 /**
  * List all blockages.
@@ -18,9 +16,11 @@ subscriptions = [];
  * @return {Blockage[]} - list of blockages
  */
 router.get("/", async (req, res) => {
-  const query = req.query;
+  const subscriptions = await Subscriptions.find();
+  const getSubscriptions = req.query.subscriptions == 'true';
+  delete req.query.subscription;
   let blockages = [];
-  if (query.subscription == 'true') {
+  if (getSubscriptions) {
     const square = (x) => x*x;
     function inCircle(circle, point) {
       let xSquared = square(circle.center[0]-point[0]);
@@ -28,9 +28,10 @@ router.get("/", async (req, res) => {
       let rSquared = square(circle.radius/111111); // convert meters to degrees
       return xSquared + ySquared <= rSquared
     }
-    blockages = await Blockages.find();
+    delete query.subscription;
+    blockages = await Blockages.find(query);
     blockages = blockages.filter(blockage => {
-      return subscriptions.some((circle) => inCircle(circle, blockage.location.coordinates));
+      return subscriptions.some((circle) => blockage.active && inCircle(circle, blockage.location.coordinates));
     });
   } else {
     delete query.subscription;
@@ -48,6 +49,7 @@ router.get("/", async (req, res) => {
  */
 router.get("/subscription", 
 async (req, res) => {
+  const subscriptions = await Subscriptions.find({ user: req.session.userID });
   res.status(200).json({ subscription: subscriptions }).end();
 });
 
@@ -55,27 +57,59 @@ async (req, res) => {
  * Create a subscription.
  */
 router.post("/subscription", 
-async (req, res) => {
-  subscriptions.push(req.body);
-  res.status(200).json({ subscription: subscriptions }).end();
-});
+  [
+    validateThat.userIsLoggedIn,
+  ],
+  async (req, res) => {
+    const subscription = {
+      center: { type: "Point", coordinates: req.body.center },
+      radius: req.body.radius,
+      user: req.session.userID,
+      schedule: {
+        days: ['M'],
+        startTime: Date.now(),
+        endTime: Date.now() + 1000,
+      }
+    }
+    await Subscriptions.create(subscription);
+    res.status(200).json({ subscription: subscription }).end();
+  });
 
 /**
  * Update a subscription's radius.
  */
- router.patch("/subscription/:id", 
- async (req, res) => {
-   subscriptions.filter(subscription => subscription._id == req.params.id)[0].radius = req.body.radius;
-   res.status(200).json(subscriptions).end();
- });
+router.patch("/subscription/:id/radius",  
+  [
+    validateThat.userIsLoggedIn,
+  ],
+  async (req, res) => {
+    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { radius: req.body.radius });
+    res.status(200).json(response).end();
+  });
 
- /**
+/**
  * Update a subscription's center.
  */
-  router.patch("/subscription/:id/center", 
+router.patch("/subscription/:id/center",  
+  [
+    validateThat.userIsLoggedIn,
+  ],
   async (req, res) => {
-    subscriptions.filter(subscription => subscription._id == req.params.id)[0].center = req.body.center;
-    res.status(200).json(subscriptions).end();
+    const center = { type: "Point", coordinates: req.body.center }
+    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { center: center });
+    res.status(200).json(response).end();
+  });
+
+/**
+ * Delete a subscription.
+ */
+router.delete("/subscription/:id", 
+  [
+    validateThat.userIsLoggedIn,
+  ],
+  async (req, res) => {
+    response = await Subscriptions.findOneAndDelete({ _id: req.params.id });
+    res.status(200).json(response).end();
   });
 
 /**
@@ -86,6 +120,8 @@ async (req, res) => {
  * @param {Object} location - object with latitude/longitude values
  * @param {string} description - description of blockage
  * @param {string} status - status of blockage
+ * @param {Boolean} active - whether the blockage is active or not (historical)
+ * @param {Blockage} parentBlockage - the blockage that this supercedes, or none
  * @return {Blockage} - the created blockage
  * @throws {403} - if user is not logged in
  */
@@ -103,7 +139,8 @@ router.post("/",
       reporter: req.session.userID, // reporter is the user currently logged in
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
-      comments: []
+      active: req.body.active, // all new blockages should be active
+      parentBlockage: req.body.parentBlockage // parent blockage comes from body
     };
     await Blockages.create(blockage);
     res.status(200).json(blockage).end();
