@@ -108,10 +108,10 @@ export default {
         })
         .then((response) => {
           console.log(response);
-          this.circles = response.data.subscription;
         }).catch((error) => {
           console.log(error);
         })
+      this.refreshSubscription();
     },
 
     deleteSubscription(data) {
