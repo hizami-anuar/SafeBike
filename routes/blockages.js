@@ -63,6 +63,11 @@ router.post("/subscription",
       center: { type: "Point", coordinates: req.body.center },
       radius: req.body.radius,
       user: req.session.userID,
+      schedule: {
+        days: ['M'],
+        startTime: 1764,
+        endTime: 4761,
+      }
     }
     await Subscriptions.create(subscription);
     res.status(200).json({ subscription: subscription }).end();
