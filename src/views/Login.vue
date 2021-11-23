@@ -4,7 +4,8 @@
 		<form action="" class='sign-up-form'>
 			<strong class='error' v-if='this.loginError.length > 0'>{{this.loginError}}</strong> 
 			<!-- The Username and its label -->
-			<label for="fusername">Username</label> 
+			<label for="fusername">Username</label>
+			<p>(can't be longer than 15 characters)</p> 
 			<input v-model='username' type="text" id="fusername" name="fusername" class="finput"> 
 			<!-- The first Password field -->
 			<label for="fpassword">Password</label> 
