@@ -17,9 +17,10 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
   const subscriptions = await Subscriptions.find();
-  const query = req.query;
+  const getSubscriptions = req.query.subscriptions == 'true';
+  delete req.query.subscription;
   let blockages = [];
-  if (query.subscription == 'true') {
+  if (getSubscriptions) {
     const square = (x) => x*x;
     function inCircle(circle, point) {
       let xSquared = square(circle.center[0]-point[0]);
@@ -27,7 +28,8 @@ router.get("/", async (req, res) => {
       let rSquared = square(circle.radius/111111); // convert meters to degrees
       return xSquared + ySquared <= rSquared
     }
-    blockages = await Blockages.find();
+    delete query.subscription;
+    blockages = await Blockages.find(query);
     blockages = blockages.filter(blockage => {
       return subscriptions.some((circle) => inCircle(circle, blockage.location.coordinates));
     });
@@ -65,8 +67,8 @@ router.post("/subscription",
       user: req.session.userID,
       schedule: {
         days: ['M'],
-        startTime: 1764,
-        endTime: 4761,
+        startTime: Date.now(),
+        endTime: Date.now() + 1000,
       }
     }
     await Subscriptions.create(subscription);
