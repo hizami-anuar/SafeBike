@@ -12,15 +12,13 @@ const pointSchema = new mongoose.Schema({
   }
 });
 
-const blockageSchema = new mongoose.Schema({
+const subscriptionSchema = new mongoose.Schema({
   location: {
     type: pointSchema,
     required: true
   },
-  time: Number,
-  reporter: String,
-  description: String,
-  status: String
+  radius: Number,
+  user: String,
 })
 
-module.exports = mongoose.model('Blockage', blockageSchema);
+module.exports = mongoose.model('Subscription', subscriptionSchema);

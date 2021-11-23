@@ -2,6 +2,7 @@ const express = require("express");
 
 const Blockages = require("../models/Blockage");
 const Users = require("../models/User");
+const Subscription = require("../models/Subscription");
 
 const validateThat = require("./middleware");
 
@@ -55,26 +56,35 @@ async (req, res) => {
  * Create a subscription.
  */
 router.post("/subscription", 
-async (req, res) => {
-  subscriptions.push(req.body);
-  res.status(200).json({ subscription: subscriptions }).end();
-});
+  async (req, res) => {
+    subscriptions.push(req.body);
+    res.status(200).json({ subscription: subscriptions }).end();
+  });
 
 /**
  * Update a subscription's radius.
  */
- router.patch("/subscription/:id", 
- async (req, res) => {
-   subscriptions.filter(subscription => subscription._id == req.params.id)[0].radius = req.body.radius;
-   res.status(200).json(subscriptions).end();
- });
+router.patch("/subscription/:id", 
+  async (req, res) => {
+    subscriptions.filter(subscription => subscription._id == req.params.id)[0].radius = req.body.radius;
+    res.status(200).json(subscriptions).end();
+  });
 
- /**
+/**
  * Update a subscription's center.
  */
-  router.patch("/subscription/:id/center", 
+router.patch("/subscription/:id/center", 
   async (req, res) => {
     subscriptions.filter(subscription => subscription._id == req.params.id)[0].center = req.body.center;
+    res.status(200).json(subscriptions).end();
+  });
+
+/**
+ * Delete a subscription.
+ */
+router.delete("/subscription/:id", 
+  async (req, res) => {
+    subscriptions = subscriptions.filter(subscription => subscription._id != req.params.id);
     res.status(200).json(subscriptions).end();
   });
 

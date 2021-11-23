@@ -1,13 +1,37 @@
 <template>
-  <div>
-    <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
-    <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
+  <div class="subscription-page">
     <div class="map-container">
       <Map
-        :blockages='subscription'
+        :key='mapUpdateKey'
+        :blockages='blockages'
         :loggedIn='loggedIn'
         :user='user'
         :circles='circles'/>
+    </div>
+    <div class="subscriptions-container">
+      <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
+      <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
+      <div>Current Selected Subscription:</div>
+      <template v-if="selectedCircle">
+        <div class="subscription-item">
+          <div>ID: {{ selectedCircle._id }}</div>
+          <div>Center: {{ selectedCircle.center }}</div>
+          <div>Radius: {{ selectedCircle.radius }}</div>
+          <button v-on:click="deleteSubscription({id: selectedCircle._id})">Delete</button>
+        </div>
+      </template>
+      <div v-else>None selected.</div>
+      <br>
+      <br>
+      <div v-for='(circle, index) in circles' :key='index'>
+        <template>
+          <div class="subscription-item">
+            <div>ID: {{ circle._id }}</div>
+            <div>Center: {{ circle.center }}</div>
+            <div>Radius: {{ circle.radius }}</div>
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -29,8 +53,10 @@ export default {
       eventListeners: [
         {name: 'circle-radius-changed', func: this.updateRegionRadius},
         {name: 'circle-center-changed', func: this.updateRegionCenter},
+        {name: 'circle-clicked', func: this.selectRegion},
       ],
       id: 0,
+      selectedCircle: undefined,
     }
   },
   created() {
@@ -40,16 +66,21 @@ export default {
     this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
   mounted() {
-    this.getSubscribedBlockages();
-    this.getSubscription();
+    console.log("mounted");
+    this.refreshSubscription();
   },
   methods: {
-    getSubscribedBlockages() {
+    refreshSubscription() {
+      console.log("refreshing");
+      this.getSubscribedBlockages();
       this.getSubscription();
+    },
+
+    getSubscribedBlockages() {
       axios.get(`/api/blockages?subscription=true`)
         .then((response) => {
           console.log(response);
-          this.subscription = response.data.blockages;
+          this.blockages = response.data.blockages;
         }).catch((error) => {
           console.log(error);
         })
@@ -83,34 +114,63 @@ export default {
         })
     },
 
+    deleteSubscription(data) {
+      axios.delete(`/api/blockages/subscription/${data.id}`)
+        .then((response) => {
+          this.selectedCircle = undefined;
+          console.log(response);
+          this.refreshSubscription();
+        }).catch((error) => {
+          console.log(error);
+        }) 
+    },
+
     updateRegionRadius(data) {
-      console.log('update');
       axios.patch(`/api/blockages/subscription/${data.id}`, {radius: data.radius})
         .then((response) => {
           console.log(response);
         }).catch((error) => {
           console.log(error);
         })
-      this.getSubscribedBlockages();
+      this.refreshSubscription();
     },
 
     updateRegionCenter(data) {
-      console.log('update');
       axios.patch(`/api/blockages/subscription/${data.id}/center`, {center: data.center})
         .then((response) => {
           console.log(response);
         }).catch((error) => {
           console.log(error);
         })
-      this.getSubscribedBlockages();
+      this.refreshSubscription();
     },
+
+    selectRegion(data) {
+      console.log(data);
+      this.selectedCircle = this.circles.filter(circle => circle._id === data.id)[0];
+    }
   },
 }
 </script>
 
 <style scoped>
+.subscription-page {
+  display: flex;
+  flex-direction: row;
+}
+
 .map-container {
-  width: 100vw;
+  width: 50%;
   height: 100%;
+}
+
+.subscriptions-container {
+  width: 50%;
+  height: 100%;
+}
+
+.subscription-item {
+  margin: 5px;
+  border: 1px solid black;
 }
 </style>

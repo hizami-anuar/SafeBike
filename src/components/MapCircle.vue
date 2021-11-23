@@ -68,14 +68,18 @@ export default {
     // region.bindTo('center', marker, 'position');
 
     const circle = this.circle;
-    this.google.maps.event.addListener(region, 'center_changed', function() {
+    this.google.maps.event.addListener(region, 'dragend', function() {
       const center = [region.getCenter().lat(), region.getCenter().lng()];
       eventBus.$emit('circle-center-changed', {id: circle._id, center: center});
     });
 
     this.google.maps.event.addListener(region, 'radius_changed', function() {
-      console.log(region.getRadius());
       eventBus.$emit('circle-radius-changed', {id: circle._id, radius: region.getRadius()});
+    });
+
+    this.google.maps.event.addListener(region, 'click', function() {
+      console.log('clicked');
+      eventBus.$emit('circle-clicked', {id: circle._id});
     });
   },
   computed: {
