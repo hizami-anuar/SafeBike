@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
     delete query.subscription;
     blockages = await Blockages.find(query);
     blockages = blockages.filter(blockage => {
-      return subscriptions.some((circle) => inCircle(circle, blockage.location.coordinates));
+      return subscriptions.some((circle) => blockage.active && inCircle(circle, blockage.location.coordinates));
     });
   } else {
     delete query.subscription;
@@ -120,6 +120,8 @@ router.delete("/subscription/:id",
  * @param {Object} location - object with latitude/longitude values
  * @param {string} description - description of blockage
  * @param {string} status - status of blockage
+ * @param {Boolean} active - whether the blockage is active or not (historical)
+ * @param {Blockage} parentBlockage - the blockage that this supercedes, or none
  * @return {Blockage} - the created blockage
  * @throws {403} - if user is not logged in
  */
@@ -137,6 +139,8 @@ router.post("/",
       reporter: req.session.userID, // reporter is the user currently logged in
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
+      active: req.body.active, // all new blockages should be active
+      parentBlockage: req.body.parentBlockage // parent blockage comes from body
     };
     await Blockages.create(blockage);
     res.status(200).json(blockage).end();

@@ -20,7 +20,12 @@ const blockageSchema = new mongoose.Schema({
   time: Number,
   reporter: String,
   description: String,
-  status: String, 
+  status: String,
+  active: Boolean,
+  parentBlockage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Blockage'
+  },
   comments: [{
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Comment'
