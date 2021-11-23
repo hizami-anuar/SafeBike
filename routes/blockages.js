@@ -17,20 +17,22 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
   const subscriptions = await Subscriptions.find();
-  const getSubscriptions = req.query.subscriptions == 'true';
+  const getSubscription = req.query.subscription == 'true';
   delete req.query.subscription;
+  console.log(req.query);
   let blockages = [];
-  if (getSubscriptions) {
+  if (getSubscription) {
     const square = (x) => x*x;
     function inCircle(circle, point) {
-      let xSquared = square(circle.center[0]-point[0]);
-      let ySquared = square(circle.center[1]-point[1]);
+      let xSquared = square(circle.center.coordinates[0]-point[0]);
+      let ySquared = square(circle.center.coordinates[1]-point[1]);
       let rSquared = square(circle.radius/111111); // convert meters to degrees
       return xSquared + ySquared <= rSquared
     }
     blockages = await Blockages.find(req.query);
+    console.log(blockages);
     blockages = blockages.filter(blockage => {
-      return subscriptions.some((circle) => blockage.active && inCircle(circle, blockage.location.coordinates));
+      return subscriptions.some((circle) => inCircle(circle, blockage.location.coordinates));
     });
   } else {
     blockages = await Blockages.find(req.query);
