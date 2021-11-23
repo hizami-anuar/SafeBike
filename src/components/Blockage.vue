@@ -5,9 +5,10 @@
             <span class='username'>@{{reporterUsername}}</span>
         </div>
         <h1>{{  newStatus.toUpperCase()  }}</h1>
+            <button v-if='loggedIn && !editing && !updatingStatus' v-on:click='updateStatus'>Update Status</button>
             <span>{{ longitude }}°, {{ latitude }}°</span>
             <span>{{  date  }}</span>
-            <div v-if='editing'>
+            <div v-if='editing || updatingStatus'>
             <div class="checkboxes">
             <span>
                 <input type="radio" id="unblocked" value="Unblocked" v-model="newStatus">
@@ -82,6 +83,7 @@ export default {
             reporterId: this.blockageData.reporter,
             liked: false, // whether current post is liked by user or not
             disliked: false, // whether current post is disliked by user or not
+            updatingStatus: false // whether the user is currently updating the status
         }
     },
     mounted() {
@@ -106,15 +108,27 @@ export default {
         editBlockage() {
             this.editing = true;
         },
+        // update status button clicked
+        updateStatus() {
+            this.updatingStatus = true;
+        },
         // cancel edit blockage mode
         cancelEdit() {
             this.editing = false;
+            this.updatingStatus = false;
             this.newStatus = this.status;
         },
         // submit the editted blockage
         submitEditted() {
-            this.editing = false; // exit blockage mode
+            
+            if (this.editing) {
+                console.log('submitting editted');
+            }
+            else if (this.updatingStatus) {
+                console.log('submitting updated status');
+            }
 
+            if (this.editing) { // submit editted blockage
             // updated blockage info: right now can't edit location (to do?)
             let updatedBlockageData = {
                 location: {
@@ -143,6 +157,14 @@ export default {
                 }).catch((error) => {
                     console.log(error);
                 });
+            };
+
+            else if (this.updatingStatus) {
+                // submit request to update status
+            }
+
+            this.editing = false; // exit blockage mode
+            this.updatingStatus = false;
         },
         /**
          * Makes an API request to delete blcoakge. If successful, triggers the callback 
