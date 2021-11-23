@@ -77,7 +77,7 @@ export default {
     },
 
     getSubscribedBlockages() {
-      axios.get(`/api/blockages?subscription=true`)
+      axios.get(`/api/blockages?subscription=true&active=true`)
         .then((response) => {
           console.log(response);
           this.blockages = response.data.blockages;
