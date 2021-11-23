@@ -13,7 +13,7 @@ const pointSchema = new mongoose.Schema({
 });
 
 const subscriptionSchema = new mongoose.Schema({
-  location: {
+  center: {
     type: pointSchema,
     required: true
   },
