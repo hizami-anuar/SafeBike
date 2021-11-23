@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
  */
 router.get("/subscription", 
 async (req, res) => {
-  const subscriptions = await Subscriptions.find({ user: req.session.userID });
+  const subscriptions = await Subscriptions.find({ user: req.session.user._id });
   res.status(200).json({ subscription: subscriptions }).end();
 });
 
@@ -62,7 +62,7 @@ router.post("/subscription",
     const subscription = {
       center: { type: "Point", coordinates: req.body.center },
       radius: req.body.radius,
-      user: req.session.userID,
+      user: req.session.user._id,
       schedule: {
         days: ['M'],
         startTime: Date.now(),
@@ -134,7 +134,7 @@ router.post("/",
         coordinates: [req.body.location.latitude, req.body.location.longitude] // coordinates come from body
       },
       time: Date.now(), // uses current time
-      reporter: req.session.userID, // reporter is the user currently logged in
+      reporter: req.session.user._id, // reporter is the user currently logged in
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
       active: req.body.active, // all new blockages should be active
@@ -166,7 +166,7 @@ router.patch("/:id",
     const latitude = req.body.location.latitude;
     const longitude = req.body.location.longitude;
     const time = Date.now();
-    const reporter = req.session.userID;
+    const reporter = req.session.user._id;
     const description = req.body.description;
     const status = req.body.status;
     const location = { type: "Point", coordinates: [latitude, longitude] };
