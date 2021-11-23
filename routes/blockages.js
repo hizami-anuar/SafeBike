@@ -2,13 +2,10 @@ const express = require("express");
 
 const Blockages = require("../models/Blockage");
 const Users = require("../models/User");
-const Subscription = require("../models/Subscription");
+const Subscriptions = require("../models/Subscription");
 
 const validateThat = require("./middleware");
-
 const router = express.Router();
-
-subscriptions = [];
 
 /**
  * List all blockages.
@@ -19,6 +16,7 @@ subscriptions = [];
  * @return {Blockage[]} - list of blockages
  */
 router.get("/", async (req, res) => {
+  const subscriptions = await Subscriptions.find();
   const query = req.query;
   let blockages = [];
   if (query.subscription == 'true') {
@@ -49,6 +47,7 @@ router.get("/", async (req, res) => {
  */
 router.get("/subscription", 
 async (req, res) => {
+  const subscriptions = await Subscriptions.find();
   res.status(200).json({ subscription: subscriptions }).end();
 });
 
@@ -57,17 +56,21 @@ async (req, res) => {
  */
 router.post("/subscription", 
   async (req, res) => {
-    subscriptions.push(req.body);
-    res.status(200).json({ subscription: subscriptions }).end();
+    const subscription = {
+      center: { type: "Point", coordinates: req.body.center },
+      radius: req.body.radius,
+    }
+    await Subscriptions.create(subscription);
+    res.status(200).json({ subscription: subscription }).end();
   });
 
 /**
  * Update a subscription's radius.
  */
-router.patch("/subscription/:id", 
+router.patch("/subscription/:id/radius", 
   async (req, res) => {
-    subscriptions.filter(subscription => subscription._id == req.params.id)[0].radius = req.body.radius;
-    res.status(200).json(subscriptions).end();
+    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { radius: req.body.radius });
+    res.status(200).json(response).end();
   });
 
 /**
@@ -75,8 +78,9 @@ router.patch("/subscription/:id",
  */
 router.patch("/subscription/:id/center", 
   async (req, res) => {
-    subscriptions.filter(subscription => subscription._id == req.params.id)[0].center = req.body.center;
-    res.status(200).json(subscriptions).end();
+    const center = { type: "Point", coordinates: req.body.center }
+    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { center: center });
+    res.status(200).json(response).end();
   });
 
 /**
@@ -84,8 +88,8 @@ router.patch("/subscription/:id/center",
  */
 router.delete("/subscription/:id", 
   async (req, res) => {
-    subscriptions = subscriptions.filter(subscription => subscription._id != req.params.id);
-    res.status(200).json(subscriptions).end();
+    response = await Subscriptions.findOneAndDelete({ _id: req.params.id });
+    res.status(200).json(response).end();
   });
 
 /**
@@ -113,7 +117,6 @@ router.post("/",
       reporter: req.session.userID, // reporter is the user currently logged in
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
-      comments: []
     };
     await Blockages.create(blockage);
     res.status(200).json(blockage).end();

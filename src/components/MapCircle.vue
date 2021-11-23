@@ -57,7 +57,7 @@ export default {
     // Add circle overlay and bind to marker
     const region = new this.google.maps.Circle({
       map: map,
-      center: new this.google.maps.LatLng(this.circle.center[0], this.circle.center[1]),
+      center: new this.google.maps.LatLng(this.circle.center.coordinates[0], this.circle.center.coordinates[1]),
       radius: this.circle.radius,    // 10 miles in metres
       fillColor: '#AAAA00',
       draggable: true,
