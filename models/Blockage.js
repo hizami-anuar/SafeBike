@@ -12,16 +12,6 @@ const pointSchema = new mongoose.Schema({
   }
 });
 
-const commentSchema = new mongoose.Schema({
-  userID: String,
-  content: String,
-  timeUsec: Number,
-  blockage: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Post',
-  }
-});
-
 const blockageSchema = new mongoose.Schema({
   location: {
     type: pointSchema,
