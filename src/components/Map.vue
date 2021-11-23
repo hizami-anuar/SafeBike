@@ -75,6 +75,9 @@ export default {
       circles: Array,
       // 'center' likely
   },
+  mounted() {
+    eventBus.$on('close-marker', () => this.active = null);
+  },
   data: function () {
     return {
       center: {lat:42.3601, lng:-71.0942},  // where the map starts
