@@ -12,6 +12,12 @@ const pointSchema = new mongoose.Schema({
   }
 });
 
+const scheduleSchema = new mongoose.Schema({
+    days: [String],
+    startTime: Number,
+    endTime: Number,
+})
+
 const subscriptionSchema = new mongoose.Schema({
   center: {
     type: pointSchema,
@@ -19,6 +25,7 @@ const subscriptionSchema = new mongoose.Schema({
   },
   radius: Number,
   user: String,
+  schedule: scheduleSchema,
 })
 
 module.exports = mongoose.model('Subscription', subscriptionSchema);

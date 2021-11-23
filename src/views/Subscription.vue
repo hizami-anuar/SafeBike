@@ -29,6 +29,7 @@
             <div>ID: {{ circle._id }}</div>
             <div>Center: {{ circle.center.coordinates }}</div>
             <div>Radius: {{ circle.radius }}</div>
+            <div>Schedule: {{ circle.schedule }}</div>
           </div>
         </template>
       </div>
