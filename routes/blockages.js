@@ -28,14 +28,12 @@ router.get("/", async (req, res) => {
       let rSquared = square(circle.radius/111111); // convert meters to degrees
       return xSquared + ySquared <= rSquared
     }
-    delete query.subscription;
-    blockages = await Blockages.find(query);
+    blockages = await Blockages.find(req.query);
     blockages = blockages.filter(blockage => {
       return subscriptions.some((circle) => blockage.active && inCircle(circle, blockage.location.coordinates));
     });
   } else {
-    delete query.subscription;
-    blockages = await Blockages.find(query);
+    blockages = await Blockages.find(req.query);
   }
   await Promise.all(blockages.map(async (blockage) => {
     const user = await Users.findOne({_id: blockage.reporter});
