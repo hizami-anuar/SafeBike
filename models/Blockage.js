@@ -12,6 +12,16 @@ const pointSchema = new mongoose.Schema({
   }
 });
 
+const commentSchema = new mongoose.Schema({
+  userID: String,
+  content: String,
+  timeUsec: Number,
+  blockage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Post',
+  }
+});
+
 const blockageSchema = new mongoose.Schema({
   location: {
     type: pointSchema,
@@ -20,7 +30,11 @@ const blockageSchema = new mongoose.Schema({
   time: Number,
   reporter: String,
   description: String,
-  status: String
+  status: String, 
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Comment'
+  }]
 })
 
 module.exports = mongoose.model('Blockage', blockageSchema);

@@ -46,6 +46,10 @@ const routes = [
     name: "Settings",
     component: Settings,
   },
+  {
+    path: "/:catchAll(.*)", 
+    component: () => import('@/views/NotFound.vue')
+  }
 ];
 
 const router = new VueRouter({

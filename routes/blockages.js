@@ -113,6 +113,7 @@ router.post("/",
       reporter: req.session.userID, // reporter is the user currently logged in
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
+      comments: []
     };
     await Blockages.create(blockage);
     res.status(200).json(blockage).end();
