@@ -129,35 +129,35 @@ export default {
             }
 
             if (this.editing) { // submit editted blockage
-            // updated blockage info: right now can't edit location (to do?)
-            let updatedBlockageData = {
-                location: {
-                    longitude: this.longitude,
-                    latitude: this.latitude,
-                },
-                description: this.newDescription,
-                status: this.newStatus
+                // updated blockage info: right now can't edit location (to do?)
+                let updatedBlockageData = {
+                    location: {
+                       longitude: this.longitude,
+                       latitude: this.latitude,
+                   },
+                   description: this.newDescription,
+                   status: this.newStatus
+               }
+
+               // request to submit editted blockage
+               axios.patch(`/api/blockages/${this.blockageData._id}`, updatedBlockageData)
+                   .then((response) => {
+                       console.log(response);
+                       console.log('edited blockage');
+                       eventBus.$emit('refresh-blockages');
+
+                       // update the description and status displayed to the new ones
+                       this.description = this.newDescription;
+                       this.status = this.newStatus;
+
+                       //update the frontend time
+                       var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
+                       date.setUTCSeconds(Date.now()/1000);
+                       this.date = date;
+                   }).catch((error) => {
+                       console.log(error);
+                   });
             }
-
-            // request to submit editted blockage
-            axios.patch(`/api/blockages/${this.blockageData._id}`, updatedBlockageData)
-                .then((response) => {
-                    console.log(response);
-                    console.log('edited blockage');
-                    eventBus.$emit('refresh-blockages');
-
-                    // update the description and status displayed to the new ones
-                    this.description = this.newDescription;
-                    this.status = this.newStatus;
-
-                    //update the frontend time
-                    var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-                    date.setUTCSeconds(Date.now()/1000);
-                    this.date = date;
-                }).catch((error) => {
-                    console.log(error);
-                });
-            };
 
             else if (this.updatingStatus) {
                 // submit request to update status
