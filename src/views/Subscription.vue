@@ -39,7 +39,7 @@
 <script>
 import axios from 'axios';
 import { eventBus } from "@/main";
-import Map from '@/components/Map.vue';
+import Map from '@/components/Map';
 
 export default {
   name: 'Subscription',
