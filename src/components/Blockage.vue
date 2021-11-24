@@ -172,8 +172,7 @@ export default {
             eventBus.$emit('refresh-blockages'); // refresh the list of blockages
             console.log('updated status of blockage , success request')
             // reset description and status of the create blockage
-            this.description = this.newDescription;
-            this.status = this.newStatus;
+            this.newStatus = this.status;
           })
           .catch(err => {
             console.log(err.response || err);
