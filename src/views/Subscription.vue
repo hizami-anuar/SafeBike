@@ -2,7 +2,6 @@
   <div class="subscription-page">
     <div class="map-container">
       <Map
-        :key='mapUpdateKey'
         :blockages='blockages'
         :loggedIn='loggedIn'
         :user='user'

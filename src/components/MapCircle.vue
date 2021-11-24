@@ -1,6 +1,16 @@
 <template>
   <div id="marker-container">
-
+    <GmapCircle
+      :center="new this.google.maps.LatLng(this.circle.center.coordinates[0], this.circle.center.coordinates[1])"
+      :radius="this.circle.radius"
+      :draggable="true"
+      :editable="true"
+      :options="{fillColor: '#AAAA00'}"
+      @dragend="dragEndHandler($event)"
+      @center_changed="centerChangedHandler($event)"
+      @radius_changed="radiusChangedHandler($event)"
+      @click="circleClickHandler($event)"
+    />
   </div>
 </template>
 
@@ -16,13 +26,14 @@ export default {
     return {
       marker: undefined,
       region: undefined,
+      center: undefined,
     };
   },
   async mounted() {
     await this.$gmapApiPromiseLazy();
     await this.$nextTick();
   
-    const map = await this.map.$mapPromise;
+    //const map = await this.map.$mapPromise;
 
     // var pinLabel = "A";
 
@@ -55,38 +66,46 @@ export default {
     */
 
     // Add circle overlay and bind to marker
-    const region = new this.google.maps.Circle({
-      map: map,
-      center: new this.google.maps.LatLng(this.circle.center.coordinates[0], this.circle.center.coordinates[1]),
-      radius: this.circle.radius,    // 10 miles in metres
-      fillColor: '#AAAA00',
-      draggable: true,
-      editable: true,
-    });
-    this.region = region;
+    // const region = new this.google.maps.Circle({
+    //   map: map,
+    //   center: new this.google.maps.LatLng(this.circle.center.coordinates[0], this.circle.center.coordinates[1]),
+    //   radius: this.circle.radius,    // 10 miles in metres
+    //   fillColor: '#AAAA00',
+    //   draggable: true,
+    //   editable: true,
+    // });
+    // this.region = region;
 
     // region.bindTo('center', marker, 'position');
 
-    const circle = this.circle;
-    this.google.maps.event.addListener(region, 'dragend', function() {
-      const center = [region.getCenter().lat(), region.getCenter().lng()];
-      eventBus.$emit('circle-center-changed', {id: circle._id, center: center});
-    });
-
-    this.google.maps.event.addListener(region, 'radius_changed', function() {
-      eventBus.$emit('circle-radius-changed', {id: circle._id, radius: region.getRadius()});
-    });
-
-    this.google.maps.event.addListener(region, 'click', function() {
-      console.log('clicked');
-      eventBus.$emit('circle-clicked', {id: circle._id});
-    });
+    // const circle = this.circle;
+    // this.google.maps.event.addListener(region, 'dragend', function() {
+    //   const center = [region.getCenter().lat(), region.getCenter().lng()];
+    //   eventBus.$emit('circle-center-changed', {id: circle._id, center: center});
+    // });
   },
   computed: {
     google: gmapApi,
   },
   methods: {
+    dragEndHandler() {
+      eventBus.$emit('circle-center-changed', {id: this.circle._id, center: this.center});
+    },
 
+    centerChangedHandler(event) { // event is lat/lng functions
+      const center = [event.lat(), event.lng()];
+      this.center = center;
+      //eventBus.$emit('circle-center-changed', {id: this.circle._id, center: center});
+    },
+
+    radiusChangedHandler(event) { // event is radius
+      eventBus.$emit('circle-radius-changed', {id: this.circle._id, radius: event});
+    },
+
+    circleClickHandler() {
+      console.log('clicked');
+      eventBus.$emit('circle-clicked', {id: this.circle._id});
+    },
   },
 }
 </script>
