@@ -10,7 +10,6 @@
       :blockages='blockages'
       :loggedIn='loggedIn'
       :user='user'
-      @refresh-blockages='refreshBlockages'
     />
   </div>
 </template>
@@ -42,9 +41,9 @@ export default {
     getBlockages() {
       axios.get(`/api/blockages`)
         .then((response) => {
-          this.blockages = response.data.blockages.filter(blockage => blockage.reporter == this.user.userID);
+          this.blockages = response.data.blockages.filter(blockage => blockage.reporter == this.user._id);
         }).catch((error) => {
-          this.console.log(error);
+          console.log(error);
         });
     },
   },

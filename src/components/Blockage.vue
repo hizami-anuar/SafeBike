@@ -42,14 +42,13 @@
         <img v-if='loggedIn' class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
-        <img v-if="loggedIn && user.userID === reporterId && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
+        <img v-if="loggedIn && user._id === reporterId && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
           <!-- Edit -->
         <!-- </button> -->
-        <img v-if="loggedIn && user.userID === reporterId && !editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+        <img v-if="loggedIn && user._id === reporterId && !editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
 
         <!-- <button v-on:click="deleteBlockage">Delete</button> -->
       </div>
-      
   </form>
 </template>
 
@@ -135,28 +134,28 @@ export default {
           //    longitude: this.blockageData.location.coordinates[0],
           //    latitude: this.blockageData.location.coordinates[1],
           //  },
-           description: this.newDescription,
-           status: this.newStatus
-         }
+          description: this.newDescription,
+          status: this.newStatus
+        }
 
-         // request to submit editted blockage
-         axios.patch(`/api/blockages/${this.blockageData._id}`, updatedBlockageData)
-           .then((response) => {
-             console.log(response);
-             console.log('edited blockage successfully');
-             eventBus.$emit('refresh-blockages');
+        // request to submit editted blockage
+        axios.patch(`/api/blockages/${this.blockageData._id}`, updatedBlockageData)
+          .then((response) => {
+            console.log(response);
+            console.log('edited blockage successfully');
+            eventBus.$emit('refresh-blockages');
 
-             // update the description and status displayed to the new ones
-             this.description = this.newDescription;
-             this.status = this.newStatus;
+            // update the description and status displayed to the new ones
+            this.description = this.newDescription;
+            this.status = this.newStatus;
 
-             //update the frontend time
-             var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-             date.setUTCSeconds(Date.now()/1000);
-             this.date = date;
-           }).catch((error) => {
-             console.log(error);
-           });
+            //update the frontend time
+            var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
+            date.setUTCSeconds(Date.now()/1000);
+            this.date = date;
+          }).catch((error) => {
+            console.log(error);
+          });
       }
 
       else if (this.updatingStatus) {
@@ -164,27 +163,29 @@ export default {
         let fields = { 
           status: this.newStatus, 
           description: this.newDescription,
-        location: {
-      latitude: this.blockageData.location.coordinates[0],
-      longitude: this.blockageData.location.coordinates[1],
-    },
-    active: true,
-    parentBlockage: this.blockageData._id,
-    };
-    axios.post(`/api/blockages/`, fields).then(() => {
-    this.errorMessage = '';
-    eventBus.$emit('refresh-blockages'); // refresh the list of blockages
-    console.log('updated status of blockage , success request')
-    // reset description and status of the create blockage
-    this.description = this.newDescription;
-    this.status = this.newStatus;
-    }).catch(err => {
-    console.log(err.response || err);
-    this.errorMessage = err.response.data.error 
-          || err.response.data.message 
-          || "An unknown error occurred when updating status of this Blockage.";
-    });
-  }
+          location: {
+            latitude: this.blockageData.location.coordinates[0],
+            longitude: this.blockageData.location.coordinates[1],
+          },
+          active: true,
+          parentBlockage: this.blockageData._id,
+        };
+        axios.post(`/api/blockages/`, fields)
+          .then(() => {
+            this.errorMessage = '';
+            eventBus.$emit('refresh-blockages'); // refresh the list of blockages
+            console.log('updated status of blockage , success request')
+            // reset description and status of the create blockage
+            this.description = this.newDescription;
+            this.status = this.newStatus;
+          })
+          .catch(err => {
+            console.log(err.response || err);
+            this.errorMessage = err.response.data.error 
+                  || err.response.data.message 
+                  || "An unknown error occurred when updating status of this Blockage.";
+          });
+      }
 
       this.editing = false; // exit blockage mode
       this.updatingStatus = false;
