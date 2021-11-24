@@ -39,7 +39,7 @@
         <img v-else class='icon' v-on:click="liked=!liked" src="@/assets/liked.png"/>
         <img v-if='!disliked' class='icon' v-on:click="disliked=!disliked" src="@/assets/dislike.png"/>
         <img v-else class='icon' v-on:click="disliked=!disliked" src="@/assets/disliked.png"/>
-        <img v-if='loggedIn' class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
+        <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
         <img v-if="loggedIn && user._id === reporterId && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
