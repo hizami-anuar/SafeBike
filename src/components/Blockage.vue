@@ -6,20 +6,20 @@
     </div>
     <h1>{{  newStatus.toUpperCase()  }}</h1>
       <button v-if='loggedIn && !editing && !updatingStatus' v-on:click='updateStatus'>Update Status</button>
-      <span>{{ longitude }}°, {{ latitude }}°</span>
+      <span>{{ displayLat }}°, {{ displayLng }}°</span>
       <span>{{  date  }}</span>
       <div v-if='editing || updatingStatus'>
       <div class="checkboxes">
       <span>
-        <input type="radio" id="unblocked" value="Unblocked" v-model="newStatus">
+        <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
         <label for="unblocked">Unblocked</label>
       </span>
       <span>
-        <input type="radio" id="unsafe" value="Unsafe" v-model="newStatus">
+        <input type="radio" id="unsafe" value="UNSAFE" v-model="newStatus">
         <label for="unsafe">Unsafe</label>
       </span>
       <span>
-        <input type="radio" id="blocked" value="Blocked" v-model="newStatus">
+        <input type="radio" id="blocked" value="BLOCKED" v-model="newStatus">
         <label for="blocked">Blocked</label>
       </span>
       </div>
@@ -72,8 +72,8 @@ export default {
       errorMessage: '',
       description: this.blockageData.description, 
       status: this.blockageData.status, 
-      longitude: this.blockageData.location.coordinates[0].toFixed(2), // round longitude to 2 decimals
-      latitude: this.blockageData.location.coordinates[1].toFixed(2), // round latitude to 2 decimals
+      displayLat: this.blockageData.location.coordinates[0].toFixed(2), // round latitude to 2 decimals
+      displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
       editing: false, // whether we're in editing mode or not
       newStatus: '', // updated status for editing mode
       newDescription: '', // updated description for edidting mode
@@ -130,10 +130,6 @@ export default {
       if (this.editing) { // submit editted blockage
         // updated blockage info: right now can't edit location (to do?)
         let updatedBlockageData = {
-          // location: {
-          //    longitude: this.blockageData.location.coordinates[0],
-          //    latitude: this.blockageData.location.coordinates[1],
-          //  },
           description: this.newDescription,
           status: this.newStatus
         }
