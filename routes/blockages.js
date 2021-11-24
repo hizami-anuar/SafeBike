@@ -3,6 +3,7 @@ const express = require("express");
 const Blockages = require("../models/Blockage");
 const Users = require("../models/User");
 const Subscriptions = require("../models/Subscription");
+const Comments = require("../models/Comment");
 
 const validateThat = require("./middleware");
 const router = express.Router();
@@ -43,6 +44,48 @@ router.get("/", async (req, res) => {
   }));
   res.status(200).json({ blockages: blockages }).end();
 });
+
+/////////// COMMENT FUNCTIONS /////////////
+// find all comments of a post with id in param
+router.get("/comments/:id", async (req, res) => {
+  const blockage = await Blockages.findOne({_id: req.params.id});
+  const comments = [];
+  for (const comment_id of blockage.comments) {
+    const comment = await Comments.findOne({_id: comment_id});
+    comments.push(comment);
+  }
+  res.status(200).json(comments);
+});
+
+// post a new comment under a post with the given id
+router.post("/comments/:id", [validateThat.userIsLoggedIn, validateThat.userHasPermissionComment],
+  async(req, res) => {
+    const comment = {
+      userID: req.session.user._id,
+      content: req.body.content,
+      timeUsec: Date.now(),
+      username: req.session.user.username,
+      blockage: req.params.id,
+    }
+    const createdComment = await Comments.create(comment);
+    response = await Blockages.findOneAndUpdate({_id: req.params.id}, {"$push": {comments: createdComment}});
+    // blockage.comments.push(comment);
+    res.status(200).json(response).end();
+});
+
+// delete a comment object 
+// TODO: user can only delete their own comment middleware
+router.delete("/comments/:id", [validateThat.userIsLoggedIn],
+  async(req, res) => {
+    comment = await Comments.findOne({_id: req.params.id});
+    blockage = await Blockages.findOne({_id: comment.blockage});
+    let updated_comments = blockage.comments.filter((commentId) => commentId !== req.params.id);
+    updated = await Blockages.findOneAndUpdate({_id: comment.blockage}, {comments: updated_comments});
+    response = await Comments.findOneAndDelete({ _id: req.params.id });
+    res.status(200).json(response).end();
+  });
+
+
 
 /**
  * Get a subscription
@@ -140,7 +183,8 @@ router.post("/",
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
       active: req.body.active, // all new blockages should be active
-      parentBlockage: req.body.parentBlockage // parent blockage comes from body
+      parentBlockage: req.body.parentBlockage, // parent blockage comes from body
+      comments: []
     };
     if (req.body.parentBlockage) {
       Blockages.findOneAndUpdate({ _id: req.body.parentBlockage }, { active: false });

@@ -12,15 +12,15 @@
       <div class="checkboxes">
       <span>
         <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
-        <label for="unblocked">Unblocked</label>
+        <label for="UNBLOCKED">Unblocked</label>
       </span>
       <span>
         <input type="radio" id="unsafe" value="UNSAFE" v-model="newStatus">
-        <label for="unsafe">Unsafe</label>
+        <label for="UNSAFE">Unsafe</label>
       </span>
       <span>
         <input type="radio" id="blocked" value="BLOCKED" v-model="newStatus">
-        <label for="blocked">Blocked</label>
+        <label for="BLOCKED">Blocked</label>
       </span>
       </div>
         <h2>Description</h2>
@@ -39,7 +39,7 @@
         <img v-else class='icon' v-on:click="liked=!liked" src="@/assets/liked.png"/>
         <img v-if='!disliked' class='icon' v-on:click="disliked=!disliked" src="@/assets/dislike.png"/>
         <img v-else class='icon' v-on:click="disliked=!disliked" src="@/assets/disliked.png"/>
-        <img v-if='loggedIn' class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
+        <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
         <img v-if="loggedIn && user._id === reporterId && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
@@ -92,7 +92,7 @@ export default {
     // convert from unix epoch time to human readable date
     var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
     date.setUTCSeconds(this.blockageData.time/1000);
-    this.date = date;
+    this.date = date.toLocaleString('en-US');
   },
   methods: {
     openHistory() {
@@ -172,8 +172,7 @@ export default {
             eventBus.$emit('refresh-blockages'); // refresh the list of blockages
             console.log('updated status of blockage , success request')
             // reset description and status of the create blockage
-            this.description = this.newDescription;
-            this.status = this.newStatus;
+            this.newStatus = this.status;
           })
           .catch(err => {
             console.log(err.response || err);
@@ -182,7 +181,6 @@ export default {
                   || "An unknown error occurred when updating status of this Blockage.";
           });
       }
-
       this.editing = false; // exit blockage mode
       this.updatingStatus = false;
     },
