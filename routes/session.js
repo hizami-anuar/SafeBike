@@ -7,27 +7,25 @@ const validateThat = require('./middleware');
 const router = express.Router();
 
 /**
- * Set username of active user.
+ * Set active user in the current session.
  * 
  * @name POST /api/session
  * @return {string} - the username of the user who logged in
  * @throws {403} - if username password combo is not correct
- * @throws {400} - if username or password is not formatted correctly - ie there is whitespace
+ * @throws {400} - if user is already logged in
  */
 router.post('/', [
     validateThat.userIsNotLoggedIn,
-    validateThat.validUsername,
-    validateThat.validPassword,
     validateThat.validCredentials,
   ], async (req, res) => {
     const user = await Users.findOne({ username: req.body.username });
-    req.session.username = req.body.username;
-    req.session.userID = user._id;
-    res.status(200).json({ username: req.session.username, userID: user.userID, following: user.following });
+    delete user.password;
+    req.session.user = user;
+    res.status(200).json(user);
   });
 
 /**
- * Remove username of active user.
+ * Remove active user object from session.
  * 
  * @name DELETE /api/session
  * @throws 404 if user is not logged in
@@ -35,10 +33,9 @@ router.post('/', [
  router.delete('/', [
     validateThat.userIsLoggedIn,
   ], (req, res) => {
-    const username = req.session.username
-    req.session.username = undefined;
-    req.session.userID = undefined;
-    res.status(200).json({ username: username });
+    const user = req.session.user;
+    delete req.session.user;
+    res.status(200).json(user);
   });
 
 /**
@@ -50,12 +47,7 @@ router.post('/', [
 router.get('/', [
   validateThat.userIsLoggedIn,
   ], (req, res) => {
-    //const user = await Users.findOne({_id: req.session.id});
-    res.status(200).json({
-        username: req.session.username,
-        userID: req.session.userID,
-        //following: user.following
-    });
+    res.status(200).json(req.session.user);
   });
 
 

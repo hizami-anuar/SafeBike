@@ -21,25 +21,25 @@ import { eventBus } from "../main";
 
 import Blockages from '@/components/Blockages.vue';
 export default {
-    name: 'Acount',
-    components: {
-      Blockages
-    },
-    props: {
-        loggedIn: Boolean,
-        user: Object
-    },
-    data() {
-      return {
-        blockages: [], // blockages made by current user
-      }
-    },
-    mounted() {
-      eventBus.$on('refresh-blockages', this.getBlockages)
-      this.getBlockages();
-    },
-    methods: {
-        getBlockages() {
+  name: 'Account',
+  components: {
+    Blockages
+  },
+  props: {
+    loggedIn: Boolean,
+    user: Object
+  },
+  data() {
+    return {
+      blockages: [], // blockages made by current user
+    }
+  },
+  mounted() {
+    eventBus.$on('refresh-blockages', this.getBlockages)
+    this.getBlockages();
+  },
+  methods: {
+    getBlockages() {
       axios.get(`/api/blockages`)
         .then((response) => {
           this.blockages = response.data.blockages.filter(blockage => blockage.reporter == this.user.userID);
@@ -47,7 +47,7 @@ export default {
           this.console.log(error);
         });
     },
-    },
+  },
 }
 </script>
 

@@ -17,20 +17,22 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
   const subscriptions = await Subscriptions.find();
-  const getSubscriptions = req.query.subscriptions == 'true';
+  const getSubscription = req.query.subscription == 'true';
   delete req.query.subscription;
+  console.log(req.query);
   let blockages = [];
-  if (getSubscriptions) {
+  if (getSubscription) {
     const square = (x) => x*x;
     function inCircle(circle, point) {
-      let xSquared = square(circle.center[0]-point[0]);
-      let ySquared = square(circle.center[1]-point[1]);
+      let xSquared = square(circle.center.coordinates[0]-point[0]);
+      let ySquared = square(circle.center.coordinates[1]-point[1]);
       let rSquared = square(circle.radius/111111); // convert meters to degrees
       return xSquared + ySquared <= rSquared
     }
     blockages = await Blockages.find(req.query);
+    console.log(blockages);
     blockages = blockages.filter(blockage => {
-      return subscriptions.some((circle) => blockage.active && inCircle(circle, blockage.location.coordinates));
+      return subscriptions.some((circle) => inCircle(circle, blockage.location.coordinates));
     });
   } else {
     blockages = await Blockages.find(req.query);
@@ -47,7 +49,7 @@ router.get("/", async (req, res) => {
  */
 router.get("/subscription", 
 async (req, res) => {
-  const subscriptions = await Subscriptions.find({ user: req.session.userID });
+  const subscriptions = await Subscriptions.find({ user: req.session.user._id });
   res.status(200).json({ subscription: subscriptions }).end();
 });
 
@@ -62,7 +64,7 @@ router.post("/subscription",
     const subscription = {
       center: { type: "Point", coordinates: req.body.center },
       radius: req.body.radius,
-      user: req.session.userID,
+      user: req.session.user._id,
       schedule: {
         days: ['M'],
         startTime: Date.now(),
@@ -134,7 +136,7 @@ router.post("/",
         coordinates: [req.body.location.latitude, req.body.location.longitude] // coordinates come from body
       },
       time: Date.now(), // uses current time
-      reporter: req.session.userID, // reporter is the user currently logged in
+      reporter: req.session.user._id, // reporter is the user currently logged in
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
       active: req.body.active, // all new blockages should be active
@@ -169,7 +171,7 @@ router.patch("/:id",
     // const latitude = req.body.location.latitude;
     // const longitude = req.body.location.longitude;
     const time = Date.now();
-    const reporter = req.session.userID;
+    const reporter = req.session.user._id;
     const description = req.body.description;
     const status = req.body.status;
     // const location = { type: "Point", coordinates: [latitude, longitude] };

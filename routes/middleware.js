@@ -60,7 +60,7 @@ const usernameExists = (req, res, next) => {
 
 // Checks that the username is set in session, i.e., user logged in
 const userIsLoggedIn = (req, res, next) => {
-  if (req.session.username == undefined) {
+  if (req.session.user === undefined) {
     return sendError(res, 403, 'You must be logged in in order to perform this action!');
   }
   next();
@@ -84,7 +84,7 @@ const followingUserIDExists = (req, res, next) => {
 
 // Checks that the username is set in session, i.e., user logged in
 const userIsNotLoggedIn = (req, res, next) => {
-  if (req.session.username != undefined) {
+  if (req.session.user !== undefined) {
     return sendError(res, 400, 'You are already logged in!');
   }
   next();
@@ -93,7 +93,7 @@ const userIsNotLoggedIn = (req, res, next) => {
 // Checks that the user has permission to edit/delete a blockage
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
-  if (blockage.reporter != req.session.userID) {
+  if (blockage.reporter !== req.session.user._id) {
     return sendError(res, 403, 'You do not have permission to edit or delete this blockage!');
   }
   next()

@@ -4,6 +4,7 @@
       :clickable="true"
       :draggable="false"
       :position="marker.location"
+      :icon="markerImage"
       @click="toggleBlockageView"
     />
     <div v-if="active" class='popup' ref="popup">
@@ -34,7 +35,37 @@ export default {
     return {
       Popup: undefined,
       popup: undefined,
+      statusFills: {
+        BLOCKED: "#FF0000", 
+        UNSAFE: "#FFFF00",
+        UNBLOCKED: "#00FF00",
+      },
+      statusOutlines: {
+        BLOCKED: "#AA0000", 
+        UNSAFE: "#AAAA00",
+        UNBLOCKED: "#00AA00",
+      },
     };
+  },
+  computed: {
+    google: gmapApi,
+    markerImage () {
+      var pinSVGHole = "M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z";
+      var labelOriginHole = new this.google.maps.Point(12,15);
+      // var pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
+      // var labelOriginFilled =  new this.google.maps.Point(12,9);
+      var markerImage = {
+          path: pinSVGHole,
+          anchor: new this.google.maps.Point(12,17),
+          fillOpacity: 1,
+          fillColor: this.statusFills[this.blockage.status],
+          strokeWeight: 2,
+          strokeColor: this.statusOutlines[this.blockage.status],
+          scale: 2,
+          labelOrigin: labelOriginHole
+      };
+      return markerImage;
+    }
   },
   async mounted() {
     await this.$gmapApiPromiseLazy();
@@ -57,9 +88,6 @@ export default {
         this.$refs.popup);
       this.popup.setMap(map);
     }
-  },
-  computed: {
-    google: gmapApi,
   },
   methods: {
     openBlockageView: function() {

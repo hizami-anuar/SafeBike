@@ -43,9 +43,8 @@ router.post("/",
       username: req.body.username,
       password: req.body.password,
     });
-    req.session.username = user.username;
-    req.session.userID = user._id;
     delete user.password;
+    req.session.user = user;
     res.status(200).json(user).end();
   }
 );
@@ -68,11 +67,11 @@ router.put("/username",
   ],
   async (req, res) => {
     const username = req.body.username;
-    const user = await Users.findByIdAndUpdate(req.session.userID, {
+    const user = await Users.findByIdAndUpdate(req.session.user._id, {
       username: req.body.username,
     });
     user.username = req.body.username;
-    req.session.username = username;
+    req.session.user.username = username;
     res.status(200).json(user).end();
   }
 );
@@ -93,7 +92,7 @@ router.put("/password",
     validateThat.validPassword
   ],
   async (req, res) => {
-    const user = await Users.findByIdAndUpdate(req.session.userID, {
+    const user = await Users.findByIdAndUpdate(req.session.user._id, {
       password: req.body.password,
     });
     delete user.password;
@@ -110,9 +109,9 @@ router.put("/password",
  * @throws {404} - if user does not exist
  */
 router.delete("/", [validateThat.userIsLoggedIn], async (req, res) => {
-  const user = await Users.findByIdAndRemove(req.session.userID);
-  req.session.username = undefined;
-  req.session.userID = undefined;
+  const user = await Users.findByIdAndRemove(req.session.user._id);
+  delete req.session.user;
+  delete user.password;
   res.status(200).json(user).end();
 });
 
