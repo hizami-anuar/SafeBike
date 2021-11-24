@@ -174,9 +174,11 @@ router.patch("/:id",
     const reporter = req.session.user._id;
     const description = req.body.description;
     const status = req.body.status;
-    // const location = { type: "Point", coordinates: [latitude, longitude] };
+    let location = undefined; 
+    if (req.body.location)
+      location = { type: "Point", coordinates: [req.body.location.latitude, req.body.location.longitude] };
     const updates = {
-      // location: location,
+      location: location,
       time: time,
       reporter: reporter,
       description: description,
@@ -185,7 +187,7 @@ router.patch("/:id",
     Object.keys(updates).forEach((key) =>
       updates[key] === undefined ? delete updates[key] : {}
     );
-    response = await Blockages.findOneAndUpdate({ _id: id }, updates);
+    const response = await Blockages.findOneAndUpdate({ _id: id }, updates);
     res.status(200).json(response).end();
   });
 
