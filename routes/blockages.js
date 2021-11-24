@@ -65,6 +65,7 @@ router.post("/comments/:id", [validateThat.userIsLoggedIn, validateThat.userHasP
       content: req.body.content,
       timeUsec: Date.now(),
       username: req.session.user.username,
+      blockage: req.params.id,
     }
     const createdComment = await Comments.create(comment);
     response = await Blockages.findOneAndUpdate({_id: req.params.id}, {"$push": {comments: createdComment}});
@@ -76,6 +77,10 @@ router.post("/comments/:id", [validateThat.userIsLoggedIn, validateThat.userHasP
 // TODO: user can only delete their own comment middleware
 router.delete("/comments/:id", [validateThat.userIsLoggedIn],
   async(req, res) => {
+    comment = await Comments.findOne({_id: req.params.id});
+    blockage = await Blockages.findOne({_id: comment.blockage});
+    let updated_comments = blockage.comments.filter((commentId) => commentId !== req.params.id);
+    updated = await Blockages.findOneAndUpdate({_id: comment.blockage}, {comments: updated_comments});
     response = await Comments.findOneAndDelete({ _id: req.params.id });
     res.status(200).json(response).end();
   });
