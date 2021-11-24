@@ -16,7 +16,8 @@
       :user='user'/>
       <Popup v-if='historyPopupShown' @close-popup='closeHistoryPopup'>
       <History 
-      :blockageData='currBlockage'/></Popup>
+      :blockageData='currBlockage'
+      :user='user'/></Popup>
       <Popup v-if='commentsPopupShown' @close-popup='closeCommentsPopup'>
       <Comments
       :blockageData='currBlockage'

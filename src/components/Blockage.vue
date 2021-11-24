@@ -11,16 +11,16 @@
       <div v-if='editing || updatingStatus'>
       <div class="checkboxes">
       <span>
-        <input type="radio" id="unblocked" value="Unblocked" v-model="newStatus">
-        <label for="unblocked">Unblocked</label>
+        <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
+        <label for="UNBLOCKED">Unblocked</label>
       </span>
       <span>
-        <input type="radio" id="unsafe" value="Unsafe" v-model="newStatus">
-        <label for="unsafe">Unsafe</label>
+        <input type="radio" id="unsafe" value="UNSAFE" v-model="newStatus">
+        <label for="UNSAFE">Unsafe</label>
       </span>
       <span>
-        <input type="radio" id="blocked" value="Blocked" v-model="newStatus">
-        <label for="blocked">Blocked</label>
+        <input type="radio" id="blocked" value="BLOCKED" v-model="newStatus">
+        <label for="BLOCKED">Blocked</label>
       </span>
       </div>
         <h2>Description</h2>
@@ -92,7 +92,7 @@ export default {
     // convert from unix epoch time to human readable date
     var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
     date.setUTCSeconds(this.blockageData.time/1000);
-    this.date = date;
+    this.date = date.toLocaleString('en-US');
   },
   methods: {
     openHistory() {
@@ -186,7 +186,6 @@ export default {
                   || "An unknown error occurred when updating status of this Blockage.";
           });
       }
-
       this.editing = false; // exit blockage mode
       this.updatingStatus = false;
     },
