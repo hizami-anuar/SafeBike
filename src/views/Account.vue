@@ -10,7 +10,6 @@
       :blockages='blockages'
       :loggedIn='loggedIn'
       :user='user'
-      @refresh-blockages='refreshBlockages'
     />
   </div>
 </template>
@@ -21,33 +20,33 @@ import { eventBus } from "../main";
 
 import Blockages from '@/components/Blockages.vue';
 export default {
-    name: 'Acount',
-    components: {
-      Blockages
-    },
-    props: {
-        loggedIn: Boolean,
-        user: Object
-    },
-    data() {
-      return {
-        blockages: [], // blockages made by current user
-      }
-    },
-    mounted() {
-      eventBus.$on('refresh-blockages', this.getBlockages)
-      this.getBlockages();
-    },
-    methods: {
-        getBlockages() {
+  name: 'Account',
+  components: {
+    Blockages
+  },
+  props: {
+    loggedIn: Boolean,
+    user: Object
+  },
+  data() {
+    return {
+      blockages: [], // blockages made by current user
+    }
+  },
+  mounted() {
+    eventBus.$on('refresh-blockages', this.getBlockages)
+    this.getBlockages();
+  },
+  methods: {
+    getBlockages() {
       axios.get(`/api/blockages`)
         .then((response) => {
-          this.blockages = response.data.blockages.filter(blockage => blockage.reporter == this.user.userID);
+          this.blockages = response.data.blockages.filter(blockage => blockage.reporter == this.user._id);
         }).catch((error) => {
-          this.console.log(error);
+          console.log(error);
         });
     },
-    },
+  },
 }
 </script>
 

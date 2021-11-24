@@ -142,6 +142,9 @@ router.post("/",
       active: req.body.active, // all new blockages should be active
       parentBlockage: req.body.parentBlockage // parent blockage comes from body
     };
+    if (req.body.parentBlockage) {
+      Blockages.findOneAndUpdate({ _id: req.body.parentBlockage }, { active: false });
+    }
     await Blockages.create(blockage);
     res.status(200).json(blockage).end();
   });
@@ -165,15 +168,15 @@ router.patch("/:id",
   async (req, res) => {
     const id = req.params.id;
 
-    const latitude = req.body.location.latitude;
-    const longitude = req.body.location.longitude;
+    // const latitude = req.body.location.latitude;
+    // const longitude = req.body.location.longitude;
     const time = Date.now();
     const reporter = req.session.user._id;
     const description = req.body.description;
     const status = req.body.status;
-    const location = { type: "Point", coordinates: [latitude, longitude] };
+    // const location = { type: "Point", coordinates: [latitude, longitude] };
     const updates = {
-      location: location,
+      // location: location,
       time: time,
       reporter: reporter,
       description: description,
