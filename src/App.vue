@@ -7,7 +7,6 @@
         <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
         <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>My Reports</router-link> 
         <router-link class='link' to="/subscription"><img class='icon' src="@/assets/notification-bell.png"/>My Alerts</router-link> 
-        <router-link class='link' to="/debug">Debug</router-link>
       </div>
       <Logout
         :loggedIn='loggedIn'

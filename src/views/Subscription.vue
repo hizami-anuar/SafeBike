@@ -10,8 +10,11 @@
     <div class="subscriptions-container">
       <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
       <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
-      <template v-if="createEnabled">
-        <div>
+      <template v-if="true">
+        <form class="subscriptions-form">
+          <h1>New Alert</h1>
+          <label>Name: </label><input type="text"/>
+          <h3>Location</h3>
           <div>{{ createLocation }}</div>
           <div>{{ subscriptionFormData.days }}</div>
           <div class="days-container">
@@ -25,7 +28,17 @@
               <label :for="`checkbox-${day}`">{{ day }}</label>
             </div>
           </div>
-        </div>
+          <div>
+            <label>Start Time: </label>
+            <input type="time" v-model="subscriptionFormData.startTime" />
+          </div>
+          <div>
+            <label>End Time: </label>
+            <input type="time" v-model="subscriptionFormData.endTime" />
+          </div>
+          <input type="time" v-model="subscriptionFormData.startTime" disabled />
+          <input type="time" v-model="subscriptionFormData.endTime" disabled />
+        </form>
       </template>
       <br>
       <br>
@@ -66,23 +79,24 @@ export default {
   props: ['loggedIn', 'user'],
   data() {
     return {
+      DAYS: ["S", "M", "T", "W", "Th", "F", "Sa"],
       blockages: [],
       subscription: [],
       circles: [],
-      id: 0,
       createEnabled: false,
       createLocation: undefined,
       selectedCircle: undefined,
-      DAYS: ["S", "M", "T", "W", "Th", "F", "Sa"],
       subscriptionFormData: {
-        days: []
+        days: [],
+        startTime: undefined,
+        endTime: undefined,
       },
       eventListeners: [
         {name: 'circle-radius-changed', func: this.updateRegionRadius},
         {name: 'circle-center-changed', func: this.updateRegionCenter},
         {name: 'circle-clicked', func: this.selectRegion},
         {name: 'activate-create-subscription', func: this.activateCreateSubscription},
-      ]
+      ],
     }
   },
   created() {
@@ -122,13 +136,8 @@ export default {
         })
     },
 
-    next() {
-      return this.id++;
-    },
-
     addSubscription() {
       axios.post(`/api/subscriptions`, {
-          _id: this.next(),
           center: [42.35, -71.07],
           radius: 0.01*111111,
         })
@@ -200,6 +209,10 @@ export default {
   height: 100%;
 }
 
+.subscriptions-form {
+  border: 1px solid black;
+}
+
 .subscription-item {
   margin: 5px;
   border: 1px solid black;
@@ -209,6 +222,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  height: 30px;
 }
 
 .round {

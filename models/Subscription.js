@@ -19,6 +19,7 @@ const scheduleSchema = new mongoose.Schema({
 })
 
 const subscriptionSchema = new mongoose.Schema({
+  name: String,
   center: {
     type: pointSchema,
     required: true

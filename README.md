@@ -31,13 +31,19 @@ then you will find the application at `localhost:8080` in the browser
 
   - src
     - App.vue
-    - DebugBlockageItem.vue
-    - Debug.vue
     - Subscription.vue
+  - src/components
+    - Map.vue
+    - MapCircle.vue
+    - MapMarker.vue
+    - MapSubscription.vue
   - models:
     - Blockage.js
   - routes:
     - blockages.js
+    - subscriptions.js
+    - users.js
+    - session.js
     - middleware.js
   - router:
     - index.js
