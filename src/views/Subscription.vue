@@ -1,7 +1,7 @@
 <template>
   <div class="subscription-page">
     <div class="map-container">
-      <Map
+      <MapSubscription
         :blockages='blockages'
         :loggedIn='loggedIn'
         :user='user'
@@ -10,6 +10,13 @@
     <div class="subscriptions-container">
       <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
       <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
+      <template v-if="createEnabled">
+        <div>
+          <div>{{ createLocation }}</div>
+        </div>
+      </template>
+      <br>
+      <br>
       <div>Current Selected Subscription:</div>
       <template v-if="selectedCircle">
         <div class="subscription-item">
@@ -39,24 +46,27 @@
 <script>
 import axios from 'axios';
 import { eventBus } from "@/main";
-import Map from '@/components/Map';
+import MapSubscription from '@/components/MapSubscription';
 
 export default {
   name: 'Subscription',
-  components: { Map },
+  components: { MapSubscription },
   props: ['loggedIn', 'user'],
   data() {
     return {
       blockages: [],
       subscription: [],
       circles: [],
+      id: 0,
+      createEnabled: false,
+      createLocation: undefined,
+      selectedCircle: undefined,
       eventListeners: [
         {name: 'circle-radius-changed', func: this.updateRegionRadius},
         {name: 'circle-center-changed', func: this.updateRegionCenter},
         {name: 'circle-clicked', func: this.selectRegion},
-      ],
-      id: 0,
-      selectedCircle: undefined,
+        {name: 'activate-create-subscription', func: this.activateCreateSubscription},
+      ]
     }
   },
   created() {
@@ -148,7 +158,12 @@ export default {
     selectRegion(data) {
       console.log(data);
       this.selectedCircle = this.circles.filter(circle => circle._id === data.id)[0];
-    }
+    },
+
+    activateCreateSubscription(data) {
+      this.createEnabled = true;
+      this.createLocation = data.center;
+    },
   },
 }
 </script>
