@@ -32,6 +32,10 @@ export default {
   computed: {
     google: gmapApi,
   },
+  async mounted() {
+    await this.$gmapApiPromiseLazy();
+    await this.$nextTick();
+  },
   methods: {
     dragEndHandler() {
       eventBus.$emit('circle-center-changed', {id: this.circle._id, center: this.center});

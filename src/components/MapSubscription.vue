@@ -39,9 +39,9 @@
       </template>
     </GmapMap>
     <div class='instructions'>
-      <p>Click on an existing pin to view details on the blockage report</p>
-      <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
-      <p v-else>Please log in to report a new blockage</p>
+      <p>Click on an existing pin to view details on the subscription.</p>
+      <p v-if='loggedIn'>Double click on the map to create a new subscription.</p>
+      <p v-else>Please log in to create a new subscription.</p>
     </div>
   </div>
 </template>

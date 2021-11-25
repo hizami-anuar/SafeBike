@@ -13,6 +13,18 @@
       <template v-if="createEnabled">
         <div>
           <div>{{ createLocation }}</div>
+          <div>{{ subscriptionFormData.days }}</div>
+          <div class="days-container">
+            <div class="round" 
+              v-for="day in DAYS"
+              :key="day">
+              <input type="checkbox" 
+                :value="day"
+                v-model="subscriptionFormData.days" 
+                :id="`checkbox-${day}`"/>
+              <label :for="`checkbox-${day}`">{{ day }}</label>
+            </div>
+          </div>
         </div>
       </template>
       <br>
@@ -61,6 +73,10 @@ export default {
       createEnabled: false,
       createLocation: undefined,
       selectedCircle: undefined,
+      DAYS: ["S", "M", "T", "W", "Th", "F", "Sa"],
+      subscriptionFormData: {
+        days: []
+      },
       eventListeners: [
         {name: 'circle-radius-changed', func: this.updateRegionRadius},
         {name: 'circle-center-changed', func: this.updateRegionCenter},
@@ -187,5 +203,36 @@ export default {
 .subscription-item {
   margin: 5px;
   border: 1px solid black;
+}
+
+.days-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.round {
+  position: relative;
+}
+
+.round label {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+  height: 28px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 28px;
+}
+
+.round input[type="checkbox"] {
+  visibility: hidden;
+}
+
+.round input[type="checkbox"]:checked + label {
+  background-color: #66bb6a;
+  border-color: #66bb6a;
 }
 </style>
