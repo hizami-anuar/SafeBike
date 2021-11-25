@@ -8,10 +8,13 @@ const router = express.Router();
 /**
  * Get a subscription
  */
-router.get("/", 
+router.get("/",
+  [
+    validateThat.userIsLoggedIn,
+  ],
   async (req, res) => {
-  const subscriptions = await Subscriptions.find({ user: req.session.user._id });
-  res.status(200).json({ subscription: subscriptions }).end();
+    const subscriptions = await Subscriptions.find({ user: req.session.user._id });
+    res.status(200).json({ subscription: subscriptions }).end();
   });
 
 /**

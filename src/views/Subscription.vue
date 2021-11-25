@@ -13,17 +13,17 @@
       <template v-if="true">
         <form class="subscriptions-form">
           <h1>New Alert</h1>
-          <label>Name: </label><input type="text"/>
+          <label>Name: </label><input type="text" v-model="subscriptionFormData.name"/>
           <h3>Location</h3>
           <div>{{ createLocation }}</div>
           <div>{{ subscriptionFormData.days }}</div>
           <div class="days-container">
             <div class="round" 
-              v-for="day in DAYS"
-              :key="day">
+              v-for="(day, index) in DAYS"
+              :key="index">
               <input type="checkbox" 
                 :value="day"
-                v-model="subscriptionFormData.days" 
+                v-model="subscriptionFormData.days[index]" 
                 :id="`checkbox-${day}`"/>
               <label :for="`checkbox-${day}`">{{ day }}</label>
             </div>
@@ -36,8 +36,29 @@
             <label>End Time: </label>
             <input type="time" v-model="subscriptionFormData.endTime" />
           </div>
+        </form>
+      </template>
+      <br>
+      <br>
+      <template>
+        <form class="subscriptions-form">
+          <h1>Viewing Alert</h1>
+          <h3>Name: {{ subscriptionFormData.name }}</h3>
+          <div class="days-container">
+            <div class="round" 
+              v-for="(day, index) in DAYS"
+              :key="index">
+              <input type="checkbox" 
+                :value="day"
+                v-model="subscriptionFormData.days[index]" 
+                :id="`${1234}-${day}`"
+                disabled />
+              <label :for="`${1234}-${day}`">{{ day }}</label>
+            </div>
+          </div>
           <input type="time" v-model="subscriptionFormData.startTime" disabled />
           <input type="time" v-model="subscriptionFormData.endTime" disabled />
+          <div>{{ subscriptionFormData }}</div>
         </form>
       </template>
       <br>
@@ -87,7 +108,8 @@ export default {
       createLocation: undefined,
       selectedCircle: undefined,
       subscriptionFormData: {
-        days: [],
+        name: undefined,
+        days: [false, false, false, false, false, false, false],
         startTime: undefined,
         endTime: undefined,
       },

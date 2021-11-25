@@ -13,9 +13,9 @@ const pointSchema = new mongoose.Schema({
 });
 
 const scheduleSchema = new mongoose.Schema({
-    days: [String],
-    startTime: Number,
-    endTime: Number,
+    days: [Boolean],
+    startTime: String,
+    endTime: String,
 })
 
 const subscriptionSchema = new mongoose.Schema({
