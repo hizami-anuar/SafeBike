@@ -12,6 +12,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const sessionRouter = require("./routes/session");
 const blockagesRouter = require("./routes/blockages");
+const subscriptionsRouter = require("./routes/subscriptions");
 
 mongoose.connect(
   process.env.MONGODB_URI
@@ -47,6 +48,7 @@ app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/session", sessionRouter);
 app.use("/api/blockages", blockagesRouter);
+app.use("/api/subscriptions", subscriptionsRouter);
 
 // Catch all other routes into a meaningful error message
 app.all("*", (req, res) => {

@@ -87,7 +87,7 @@ export default {
     },
 
     getSubscription() {
-      axios.get(`/api/blockages/subscription`)
+      axios.get(`/api/subscriptions`)
         .then((response) => {
           console.log(response);
           this.circles = response.data.subscription;
@@ -101,7 +101,7 @@ export default {
     },
 
     addSubscription() {
-      axios.post(`/api/blockages/subscription`, {
+      axios.post(`/api/subscriptions`, {
           _id: this.next(),
           center: [42.35, -71.07],
           radius: 0.01*111111,
@@ -115,7 +115,7 @@ export default {
     },
 
     deleteSubscription(data) {
-      axios.delete(`/api/blockages/subscription/${data.id}`)
+      axios.delete(`/api/subscriptions/${data.id}`)
         .then((response) => {
           this.selectedCircle = undefined;
           console.log(response);
@@ -126,7 +126,7 @@ export default {
     },
 
     updateRegionRadius(data) {
-      axios.patch(`/api/blockages/subscription/${data.id}/radius`, { radius: data.radius })
+      axios.patch(`/api/subscriptions/${data.id}/radius`, { radius: data.radius })
         .then((response) => {
           console.log(response);
         }).catch((error) => {
@@ -136,7 +136,7 @@ export default {
     },
 
     updateRegionCenter(data) {
-      axios.patch(`/api/blockages/subscription/${data.id}/center`, { center: data.center })
+      axios.patch(`/api/subscriptions/${data.id}/center`, { center: data.center })
         .then((response) => {
           console.log(response);
         }).catch((error) => {

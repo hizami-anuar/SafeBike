@@ -20,7 +20,6 @@ router.get("/", async (req, res) => {
   const subscriptions = await Subscriptions.find();
   const getSubscription = req.query.subscription == 'true';
   delete req.query.subscription;
-  console.log(req.query);
   let blockages = [];
   if (getSubscription) {
     const square = (x) => x*x;
@@ -31,7 +30,6 @@ router.get("/", async (req, res) => {
       return xSquared + ySquared <= rSquared
     }
     blockages = await Blockages.find(req.query);
-    console.log(blockages);
     blockages = blockages.filter(blockage => {
       return subscriptions.some((circle) => inCircle(circle, blockage.location.coordinates));
     });
@@ -82,76 +80,6 @@ router.delete("/comments/:id", [validateThat.userIsLoggedIn],
     let updated_comments = blockage.comments.filter((commentId) => commentId !== req.params.id);
     updated = await Blockages.findOneAndUpdate({_id: comment.blockage}, {comments: updated_comments});
     response = await Comments.findOneAndDelete({ _id: req.params.id });
-    res.status(200).json(response).end();
-  });
-
-
-
-/**
- * Get a subscription
- */
-router.get("/subscription", 
-async (req, res) => {
-  const subscriptions = await Subscriptions.find({ user: req.session.user._id });
-  res.status(200).json({ subscription: subscriptions }).end();
-});
-
-/**
- * Create a subscription.
- */
-router.post("/subscription", 
-  [
-    validateThat.userIsLoggedIn,
-  ],
-  async (req, res) => {
-    const subscription = {
-      center: { type: "Point", coordinates: req.body.center },
-      radius: req.body.radius,
-      user: req.session.user._id,
-      schedule: {
-        days: ['M'],
-        startTime: Date.now(),
-        endTime: Date.now() + 1000,
-      }
-    }
-    await Subscriptions.create(subscription);
-    res.status(200).json({ subscription: subscription }).end();
-  });
-
-/**
- * Update a subscription's radius.
- */
-router.patch("/subscription/:id/radius",  
-  [
-    validateThat.userIsLoggedIn,
-  ],
-  async (req, res) => {
-    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { radius: req.body.radius });
-    res.status(200).json(response).end();
-  });
-
-/**
- * Update a subscription's center.
- */
-router.patch("/subscription/:id/center",  
-  [
-    validateThat.userIsLoggedIn,
-  ],
-  async (req, res) => {
-    const center = { type: "Point", coordinates: req.body.center }
-    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { center: center });
-    res.status(200).json(response).end();
-  });
-
-/**
- * Delete a subscription.
- */
-router.delete("/subscription/:id", 
-  [
-    validateThat.userIsLoggedIn,
-  ],
-  async (req, res) => {
-    response = await Subscriptions.findOneAndDelete({ _id: req.params.id });
     res.status(200).json(response).end();
   });
 
