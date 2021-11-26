@@ -26,13 +26,14 @@ router.post("/",
   ],
   async (req, res) => {
     const subscription = {
+      name: req.body.name,
       center: { type: "Point", coordinates: req.body.center },
       radius: req.body.radius,
       user: req.session.user._id,
       schedule: {
-          days: ['M'],
-          startTime: Date.now(),
-          endTime: Date.now() + 1000,
+        days: req.body.days,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
       }
     }
     await Subscriptions.create(subscription);

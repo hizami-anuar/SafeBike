@@ -16,12 +16,11 @@
 
 <script>
 import {gmapApi} from 'vue2-google-maps';
-import { eventBus } from '@/main';
 
 export default {
   name: 'Map',
   components: {  },
-  props: ['loggedIn', 'user', 'map', 'circle'],
+  props: ['map', 'circle', 'dragEndHandler', 'centerChangedHandler', 'radiusChangedHandler', 'circleClickHandler',],
   data: function () {
     return {
       marker: undefined,
@@ -35,25 +34,6 @@ export default {
   async mounted() {
     await this.$gmapApiPromiseLazy();
     await this.$nextTick();
-  },
-  methods: {
-    dragEndHandler() {
-      eventBus.$emit('circle-center-changed', {id: this.circle._id, center: this.center});
-    },
-
-    centerChangedHandler(event) { // event is lat/lng functions
-      const center = [event.lat(), event.lng()];
-      this.center = center;
-    },
-
-    radiusChangedHandler(event) { // event is radius
-      eventBus.$emit('circle-radius-changed', {id: this.circle._id, radius: event});
-    },
-
-    circleClickHandler() {
-      console.log('clicked');
-      eventBus.$emit('circle-clicked', {id: this.circle._id});
-    },
   },
 }
 </script>

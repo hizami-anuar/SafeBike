@@ -8,7 +8,6 @@
         :circles='circles'/>
     </div>
     <div class="subscriptions-container">
-      <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
       <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
       <template v-if="true">
         <form class="subscriptions-form">
@@ -37,6 +36,7 @@
             <input type="time" v-model="subscriptionFormData.endTime" />
           </div>
         </form>
+        <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
       </template>
       <br>
       <br>
@@ -77,13 +77,25 @@
       <br>
       <div v-for='(circle, index) in circles' :key='index'>
         <template>
-          <div class="subscription-item">
-            <div>ID: {{ circle._id }}</div>
-            <div>Center: {{ circle.center.coordinates }}</div>
-            <div>Radius: {{ circle.radius }}</div>
-            <div>Schedule: {{ circle.schedule }}</div>
+        <form class="subscriptions-form">
+          <h1>Viewing Alert</h1>
+          <h3>Name: {{ circle.name }}</h3>
+          <div class="days-container">
+            <div class="round" 
+              v-for="(day, index) in DAYS"
+              :key="index">
+              <input type="checkbox" 
+                :value="day"
+                v-model="circle.schedule.days[index]" 
+                :id="`${1234}-${day}`"
+                disabled />
+              <label :for="`${1234}-${day}`">{{ day }}</label>
+            </div>
           </div>
-        </template>
+          <input type="time" v-model="circle.schedule.startTime" disabled />
+          <input type="time" v-model="circle.schedule.endTime" disabled />
+        </form>
+      </template>
       </div>
     </div>
   </div>
@@ -110,8 +122,8 @@ export default {
       subscriptionFormData: {
         name: undefined,
         days: [false, false, false, false, false, false, false],
-        startTime: undefined,
-        endTime: undefined,
+        startTime: "01:23",
+        endTime: "12:34",
       },
       eventListeners: [
         {name: 'circle-radius-changed', func: this.updateRegionRadius},
@@ -159,10 +171,7 @@ export default {
     },
 
     addSubscription() {
-      axios.post(`/api/subscriptions`, {
-          center: [42.35, -71.07],
-          radius: 0.01*111111,
-        })
+      axios.post(`/api/subscriptions`, this.subscriptionFormData)
         .then((response) => {
           console.log(response);
         }).catch((error) => {
@@ -210,6 +219,8 @@ export default {
     activateCreateSubscription(data) {
       this.createEnabled = true;
       this.createLocation = data.center;
+      this.subscriptionFormData.center = data.center;
+      this.subscriptionFormData.radius = 111111*0.01;
     },
   },
 }

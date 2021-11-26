@@ -28,11 +28,9 @@
         @close-marker="active = null"
       />
       <template v-if="$refs.map">
-        <MapCircle
+        <SubscriptionCircle
           v-for="(circle, index) in circles"
           :key="`circle-${index}`"
-          :loggedIn="loggedIn"
-          :user="user"
           :circle="circle"
           :map="$refs.map"
         />
@@ -48,12 +46,12 @@
 
 <script>
 import MapMarker from '@/components/MapMarker.vue';
-import MapCircle from '@/components/MapCircle.vue';
+import SubscriptionCircle from '@/components/SubscriptionCircle.vue';
 import { eventBus } from "../main";
 
 export default {
   name: 'Map',
-  components: { MapMarker, MapCircle },
+  components: { MapMarker, SubscriptionCircle },
   props: {
       /** @type {Blockage[]} The blockage object to display */
       blockages: Array,
@@ -95,6 +93,7 @@ export default {
       this.center = pos;
     },
     closeAllMarkerPopups: function() {
+      
       this.active = null;
     },
   }
