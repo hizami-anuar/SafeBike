@@ -40,63 +40,20 @@
       </template>
       <br>
       <br>
-      <template>
-        <form class="subscriptions-form">
-          <h1>Viewing Alert</h1>
-          <h3>Name: {{ subscriptionFormData.name }}</h3>
-          <div class="days-container">
-            <div class="round" 
-              v-for="(day, index) in DAYS"
-              :key="index">
-              <input type="checkbox" 
-                :value="day"
-                v-model="subscriptionFormData.days[index]" 
-                :id="`${1234}-${day}`"
-                disabled />
-              <label :for="`${1234}-${day}`">{{ day }}</label>
-            </div>
-          </div>
-          <input type="time" v-model="subscriptionFormData.startTime" disabled />
-          <input type="time" v-model="subscriptionFormData.endTime" disabled />
-          <div>{{ subscriptionFormData }}</div>
-        </form>
-      </template>
-      <br>
-      <br>
       <div>Current Selected Subscription:</div>
       <template v-if="selectedCircle">
-        <div class="subscription-item">
-          <div>ID: {{ selectedCircle._id }}</div>
-          <div>Center: {{ selectedCircle.center.coordinates }}</div>
-          <div>Radius: {{ selectedCircle.radius }}</div>
-          <button v-on:click="deleteSubscription({id: selectedCircle._id})">Delete</button>
-        </div>
+        <SubscriptionItem 
+          :DAYS='DAYS'
+          :subscription='selectedCircle'/>
       </template>
       <div v-else>None selected.</div>
       <br>
       <br>
-      <div v-for='(circle, index) in circles' :key='index'>
-        <template>
-        <form class="subscriptions-form">
-          <h1>Viewing Alert</h1>
-          <h3>Name: {{ circle.name }}</h3>
-          <div class="days-container">
-            <div class="round" 
-              v-for="(day, index) in DAYS"
-              :key="index">
-              <input type="checkbox" 
-                :value="day"
-                v-model="circle.schedule.days[index]" 
-                :id="`${1234}-${day}`"
-                disabled />
-              <label :for="`${1234}-${day}`">{{ day }}</label>
-            </div>
-          </div>
-          <input type="time" v-model="circle.schedule.startTime" disabled />
-          <input type="time" v-model="circle.schedule.endTime" disabled />
-        </form>
-      </template>
-      </div>
+        <SubscriptionItem 
+          v-for='(subscription, index) in circles' 
+          :key='index'
+          :DAYS='DAYS'
+          :subscription='subscription'/>
     </div>
   </div>
 </template>
@@ -105,10 +62,11 @@
 import axios from 'axios';
 import { eventBus } from "@/main";
 import MapSubscription from '@/components/MapSubscription';
+import SubscriptionItem from '@/components/SubscriptionItem';
 
 export default {
   name: 'Subscription',
-  components: { MapSubscription },
+  components: { MapSubscription, SubscriptionItem },
   props: ['loggedIn', 'user'],
   data() {
     return {
