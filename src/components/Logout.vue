@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { eventBus } from "../main";
+import { eventBus } from "@/main";
 import axios from "axios";
 export default {
   name: 'Logout',

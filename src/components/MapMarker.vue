@@ -23,7 +23,7 @@
 import {gmapApi} from 'vue2-google-maps';
 
 import {definePopupClass} from '@/composables/definePopupClass.js'
-import { eventBus } from "../main";
+import { eventBus } from "@/main";
 
 // import Blockage from '@/components/Blockage.vue';
 

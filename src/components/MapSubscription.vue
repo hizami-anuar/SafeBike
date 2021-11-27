@@ -32,9 +32,9 @@
           v-for="(circle, index) in circles"
           :key="`circle-${index}`"
           :circle="circle"
-          :map="$refs.map"
         />
       </template>
+      <slot v-if='$refs.map' name="mapItems"></slot>
     </GmapMap>
     <div class='instructions'>
       <p>Click on an existing pin to view details on the subscription.</p>
@@ -47,7 +47,7 @@
 <script>
 import MapMarker from '@/components/MapMarker.vue';
 import SubscriptionCircle from '@/components/SubscriptionCircle.vue';
-import { eventBus } from "../main";
+import { eventBus } from "@/main";
 
 export default {
   name: 'Map',

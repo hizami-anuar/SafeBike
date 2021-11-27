@@ -15,13 +15,21 @@
     </div>
     <input type="time" v-model="subscription.schedule.startTime" disabled />
     <input type="time" v-model="subscription.schedule.endTime" disabled />
+    <input type="submit" value="delete" v-on:click.prevent="deleteSubscription" />
   </div>
 </template>
 
 <script>
+import { eventBus } from "@/main";
+
 export default {
   name: 'SubscriptionItem',
-  props: ['subscription', 'DAYS']
+  props: ['subscription', 'DAYS'],
+  methods: {
+    deleteSubscription() {
+      eventBus.$emit('delete-subscription', { id: this.subscription._id })
+    }
+  },
 }
 </script>
 

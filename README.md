@@ -37,6 +37,9 @@ then you will find the application at `localhost:8080` in the browser
     - MapCircle.vue
     - MapMarker.vue
     - MapSubscription.vue
+    - CreateCircle.vue
+    - SubscriptionCircle.vue
+    - SubscriptionItem.vue
   - models:
     - Blockage.js
   - routes:

@@ -36,10 +36,10 @@
 </template>
 
 <script>
-import Map from '../components/Map.vue';
+import Map from '@/components/Map.vue';
 
 // import Blockages from '@/components/Blockages.vue';
-import { eventBus } from "../main";
+import { eventBus } from "@/main";
 import Blockage from '@/components/Blockage.vue';
 import Popup from '@/components/Popup.vue';
 import History from '@/components/History.vue';

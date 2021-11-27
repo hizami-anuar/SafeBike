@@ -16,7 +16,7 @@
 
 <script>
 import axios from 'axios';
-import { eventBus } from "../main";
+import { eventBus } from "@/main";
 
 import Blockages from '@/components/Blockages.vue';
 export default {

@@ -5,7 +5,13 @@
         :blockages='blockages'
         :loggedIn='loggedIn'
         :user='user'
-        :circles='circles'/>
+        :circles='circles'>
+        <template v-slot:mapItems>
+          <CreateCircle
+            :circle="subscriptionFormData"
+          />
+        </template>
+      </MapSubscription>
     </div>
     <div class="subscriptions-container">
       <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
@@ -37,6 +43,7 @@
           </div>
         </form>
         <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
+        <div>{{ subscriptionFormData }}</div>
       </template>
       <br>
       <br>
@@ -63,12 +70,21 @@ import axios from 'axios';
 import { eventBus } from "@/main";
 import MapSubscription from '@/components/MapSubscription';
 import SubscriptionItem from '@/components/SubscriptionItem';
+import CreateCircle from '@/components/CreateCircle';
 
 export default {
   name: 'Subscription',
-  components: { MapSubscription, SubscriptionItem },
+  components: { MapSubscription, SubscriptionItem, CreateCircle },
   props: ['loggedIn', 'user'],
   data() {
+    let blankSubscriptionFormData = {
+      name: undefined,
+      center: undefined,
+      radius: undefined,
+      days: [false, false, false, false, false, false, false],
+      startTime: "01:23",
+      endTime: "12:34",
+    };
     return {
       DAYS: ["S", "M", "T", "W", "Th", "F", "Sa"],
       blockages: [],
@@ -77,17 +93,16 @@ export default {
       createEnabled: false,
       createLocation: undefined,
       selectedCircle: undefined,
-      subscriptionFormData: {
-        name: undefined,
-        days: [false, false, false, false, false, false, false],
-        startTime: "01:23",
-        endTime: "12:34",
-      },
+      blankSubscriptionFormData: Object.assign({}, blankSubscriptionFormData),
+      subscriptionFormData: Object.assign({}, blankSubscriptionFormData),
       eventListeners: [
         {name: 'circle-radius-changed', func: this.updateRegionRadius},
         {name: 'circle-center-changed', func: this.updateRegionCenter},
         {name: 'circle-clicked', func: this.selectRegion},
+        {name: 'create-circle-radius-changed', func: this.updateCreateRegionRadius},
+        {name: 'create-circle-center-changed', func: this.updateCreateRegionCenter},
         {name: 'activate-create-subscription', func: this.activateCreateSubscription},
+        {name: 'delete-subscription', func: this.deleteSubscription},
       ],
     }
   },
@@ -132,10 +147,11 @@ export default {
       axios.post(`/api/subscriptions`, this.subscriptionFormData)
         .then((response) => {
           console.log(response);
+          this.resetSubscriptionForm();
+          this.refreshSubscription();
         }).catch((error) => {
           console.log(error);
         })
-      this.refreshSubscription();
     },
 
     deleteSubscription(data) {
@@ -169,6 +185,14 @@ export default {
       this.refreshSubscription();
     },
 
+    updateCreateRegionRadius(data) {
+      this.subscriptionFormData.radius = data.radius;
+    },
+
+    updateCreateRegionCenter(data) {
+      this.subscriptionFormData.center.coordinates = data.center;
+    },
+
     selectRegion(data) {
       console.log(data);
       this.selectedCircle = this.circles.filter(circle => circle._id === data.id)[0];
@@ -177,8 +201,19 @@ export default {
     activateCreateSubscription(data) {
       this.createEnabled = true;
       this.createLocation = data.center;
-      this.subscriptionFormData.center = data.center;
+      this.subscriptionFormData.center = { type: "Point", coordinates: data.center };
       this.subscriptionFormData.radius = 111111*0.01;
+    },
+
+    resetSubscriptionForm() {
+      this.subscriptionFormData = {
+        name: undefined,
+        center: undefined,
+        radius: undefined,
+        days: [false, false, false, false, false, false, false],
+        startTime: "01:23",
+        endTime: "12:34",
+      };
     },
   },
 }

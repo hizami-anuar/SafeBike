@@ -51,7 +51,7 @@
 <script>
 import CreateBlockage from '@/components/CreateBlockage.vue';
 import MapMarker from '@/components/MapMarker.vue';
-import { eventBus } from "../main";
+import { eventBus } from "@/main";
 
 export default {
   name: 'Map',

@@ -27,7 +27,7 @@ router.post("/",
   async (req, res) => {
     const subscription = {
       name: req.body.name,
-      center: { type: "Point", coordinates: req.body.center },
+      center: req.body.center,
       radius: req.body.radius,
       user: req.session.user._id,
       schedule: {
