@@ -27,13 +27,6 @@
         @open-marker="clickBlockageMarker"
         @close-marker="active = null"
       />
-      <template v-if="$refs.map">
-        <SubscriptionCircle
-          v-for="(circle, index) in circles"
-          :key="`circle-${index}`"
-          :circle="circle"
-        />
-      </template>
       <slot v-if='$refs.map' name="mapItems"></slot>
     </GmapMap>
     <div class='instructions'>
@@ -45,13 +38,12 @@
 </template>
 
 <script>
-import MapMarker from '@/components/MapMarker.vue';
-import SubscriptionCircle from '@/components/SubscriptionCircle.vue';
+import MapMarker from '@/components/map_components/MapMarker.vue';
 import { eventBus } from "@/main";
 
 export default {
   name: 'Map',
-  components: { MapMarker, SubscriptionCircle },
+  components: { MapMarker },
   props: {
       /** @type {Blockage[]} The blockage object to display */
       blockages: Array,

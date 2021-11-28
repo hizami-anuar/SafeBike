@@ -7,6 +7,7 @@
       :draggable="true"
       :editable="true"
       :options="{fillColor: color}"
+      @dragstart="circleClickHandler($event)"
       @dragend="dragEndHandler($event)"
       @center_changed="centerChangedHandler($event)"
       @radius_changed="radiusChangedHandler($event)"
@@ -21,7 +22,7 @@ import {gmapApi} from 'vue2-google-maps';
 export default {
   name: 'Map',
   components: {  },
-  props: ['circle', 'color', 'dragEndHandler', 'centerChangedHandler', 'radiusChangedHandler', 'circleClickHandler',],
+  props: ['circle', 'color', 'dragStartHandler', 'dragEndHandler', 'centerChangedHandler', 'radiusChangedHandler', 'circleClickHandler',],
   data: function () {
     return {
       marker: undefined,

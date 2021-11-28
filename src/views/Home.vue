@@ -41,7 +41,7 @@ import Map from '@/components/Map.vue';
 // import Blockages from '@/components/Blockages.vue';
 import { eventBus } from "@/main";
 import Blockage from '@/components/Blockage.vue';
-import Popup from '@/components/Popup.vue';
+import Popup from '@/components/map_components/Popup.vue';
 import History from '@/components/History.vue';
 import Comments from '@/components/Comments.vue';
 

@@ -1,30 +1,28 @@
 <template>
   <div class="subscription-container">
     <h3>{{ subscription.name }}</h3>
-    <div class="days-container">
-    <div class="round" 
-      v-for="(day, index) in DAYS"
-      :key="index">
-      <input type="checkbox" 
-        :value="day"
-        v-model="subscription.schedule.days[index]" 
-        :id="`${1234}-${day}`"
-        disabled />
-      <label :for="`${1234}-${day}`">{{ day }}</label>
+    <Days 
+      :DAY_NAMES="DAY_NAMES"
+      :days="subscription.schedule.days"
+      :editable="editable"
+    />
+    <div class="time-container">
+      <input type="time" v-model="subscription.schedule.startTime" disabled />
+      <span> - </span>
+      <input type="time" v-model="subscription.schedule.endTime" disabled />
     </div>
-    </div>
-    <input type="time" v-model="subscription.schedule.startTime" disabled />
-    <input type="time" v-model="subscription.schedule.endTime" disabled />
     <input type="submit" value="delete" v-on:click.prevent="deleteSubscription" />
   </div>
 </template>
 
 <script>
 import { eventBus } from "@/main";
+import Days from "@/components/Days";
 
 export default {
   name: 'SubscriptionItem',
-  props: ['subscription', 'DAYS'],
+  props: ['subscription', 'editable', 'DAY_NAMES'],
+  components: { Days },
   methods: {
     deleteSubscription() {
       eventBus.$emit('delete-subscription', { id: this.subscription._id })
@@ -35,40 +33,28 @@ export default {
 
 <style scoped>
 .subscription-container {
-  margin: 5px;
-  background: white;
+  margin: 20px;
   border: 1px solid black;
+  background-color: rgb(186, 186, 235);
+  border: 3px solid rgb(111, 79, 199);
+  border-radius: 15px;
 }
 
-.days-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  height: 30px;
+.time-container {
+  margin: 5px;
+  color: black;
+  font-size: 20px;
 }
 
-.round {
-  position: relative;
+input[type="time"]:disabled {
+  width: fit-content;
+  color: black;
+  font-size: 20px;
+  background-color: rgba(0, 0, 0, 0);
+  border: rgba(0, 0, 0, 0);
 }
 
-.round label {
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-  height: 28px;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 28px;
-}
-
-.round input[type="checkbox"] {
-  visibility: hidden;
-}
-
-.round input[type="checkbox"]:checked + label {
-  background-color: #66bb6a;
-  border-color: #66bb6a;
+input[type="time"]:disabled::-webkit-calendar-picker-indicator {
+  display: none;
 }
 </style>

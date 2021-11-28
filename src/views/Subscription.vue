@@ -7,6 +7,12 @@
         :user='user'
         :circles='circles'>
         <template v-slot:mapItems>
+          <SubscriptionCircle
+            v-for="(circle, index) in circles"
+            :key="`circle-${index}`"
+            :circle="circle"
+            :selected="circle._id === selectedCircleId"
+          />
           <CreateCircle
             :circle="subscriptionFormData"
           />
@@ -24,7 +30,7 @@
           <div>{{ subscriptionFormData.days }}</div>
           <div class="days-container">
             <div class="round" 
-              v-for="(day, index) in DAYS"
+              v-for="(day, index) in DAY_NAMES"
               :key="index">
               <input type="checkbox" 
                 :value="day"
@@ -50,8 +56,9 @@
       <div>Current Selected Subscription:</div>
       <template v-if="selectedCircle">
         <SubscriptionItem 
-          :DAYS='DAYS'
-          :subscription='selectedCircle'/>
+          :DAY_NAMES='DAY_NAMES'
+          :subscription='selectedCircle'
+          :editable='true'/>
       </template>
       <div v-else>None selected.</div>
       <br>
@@ -59,8 +66,9 @@
         <SubscriptionItem 
           v-for='(subscription, index) in circles' 
           :key='index'
-          :DAYS='DAYS'
-          :subscription='subscription'/>
+          :DAY_NAMES='DAY_NAMES'
+          :subscription='subscription'
+          :editable='false'/>
     </div>
   </div>
 </template>
@@ -70,11 +78,12 @@ import axios from 'axios';
 import { eventBus } from "@/main";
 import MapSubscription from '@/components/MapSubscription';
 import SubscriptionItem from '@/components/SubscriptionItem';
-import CreateCircle from '@/components/CreateCircle';
+import SubscriptionCircle from '@/components/map_components/SubscriptionCircle.vue';
+import CreateCircle from '@/components/map_components/CreateCircle';
 
 export default {
   name: 'Subscription',
-  components: { MapSubscription, SubscriptionItem, CreateCircle },
+  components: { MapSubscription, SubscriptionItem, CreateCircle, SubscriptionCircle },
   props: ['loggedIn', 'user'],
   data() {
     let blankSubscriptionFormData = {
@@ -86,13 +95,13 @@ export default {
       endTime: "12:34",
     };
     return {
-      DAYS: ["S", "M", "T", "W", "Th", "F", "Sa"],
+      DAY_NAMES: ["S", "M", "T", "W", "Th", "F", "Sa"],
       blockages: [],
       subscription: [],
       circles: [],
       createEnabled: false,
       createLocation: undefined,
-      selectedCircle: undefined,
+      selectedCircleId: undefined,
       blankSubscriptionFormData: Object.assign({}, blankSubscriptionFormData),
       subscriptionFormData: Object.assign({}, blankSubscriptionFormData),
       eventListeners: [
@@ -104,6 +113,11 @@ export default {
         {name: 'activate-create-subscription', func: this.activateCreateSubscription},
         {name: 'delete-subscription', func: this.deleteSubscription},
       ],
+    }
+  },
+  computed: {
+    selectedCircle() {
+      return this.circles.filter(circle => circle._id === this.selectedCircleId)[0];
     }
   },
   created() {
@@ -157,7 +171,7 @@ export default {
     deleteSubscription(data) {
       axios.delete(`/api/subscriptions/${data.id}`)
         .then((response) => {
-          this.selectedCircle = undefined;
+          this.selectedCircleId = undefined;
           console.log(response);
           this.refreshSubscription();
         }).catch((error) => {
@@ -166,6 +180,7 @@ export default {
     },
 
     updateRegionRadius(data) {
+      this.selectRegion({ id: data.id} );
       axios.patch(`/api/subscriptions/${data.id}/radius`, { radius: data.radius })
         .then((response) => {
           console.log(response);
@@ -176,6 +191,7 @@ export default {
     },
 
     updateRegionCenter(data) {
+      this.selectRegion({ id: data.id} );
       axios.patch(`/api/subscriptions/${data.id}/center`, { center: data.center })
         .then((response) => {
           console.log(response);
@@ -194,8 +210,7 @@ export default {
     },
 
     selectRegion(data) {
-      console.log(data);
-      this.selectedCircle = this.circles.filter(circle => circle._id === data.id)[0];
+      this.selectedCircleId = data.id;
     },
 
     activateCreateSubscription(data) {
@@ -236,11 +251,6 @@ export default {
 }
 
 .subscriptions-form {
-  border: 1px solid black;
-}
-
-.subscription-item {
-  margin: 5px;
   border: 1px solid black;
 }
 

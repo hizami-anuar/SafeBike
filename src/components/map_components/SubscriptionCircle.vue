@@ -1,7 +1,7 @@
 <template>
   <MapCircle
     :circle="circle"
-    :color="'#AA0000'"
+    :color="selected ? '#00AA00' : '#AAAA00'"
     :dragEndHandler="dragEndHandler"
     :centerChangedHandler="centerChangedHandler"
     :radiusChangedHandler="radiusChangedHandler"
@@ -10,16 +10,16 @@
 </template>
 
 <script>
-import MapCircle from '@/components/MapCircle.vue';
+import MapCircle from '@/components/map_components/MapCircle.vue';
 import { eventBus } from "@/main";
 
 export default {
-  name: 'CreateCircle',
+  name: 'SubscriptionCircle',
   components: { MapCircle },
-  props: ['circle'],
+  props: ['circle', 'selected'],
   methods: {
     dragEndHandler() {
-      eventBus.$emit('create-circle-center-changed', {id: this.circle._id, center: this.center});
+      eventBus.$emit('circle-center-changed', {id: this.circle._id, center: this.center});
     },
 
     centerChangedHandler(event) { // event is lat/lng functions
@@ -28,11 +28,11 @@ export default {
     },
 
     radiusChangedHandler(event) { // event is radius
-      eventBus.$emit('create-circle-radius-changed', {id: this.circle._id, radius: event});
+      eventBus.$emit('circle-radius-changed', {id: this.circle._id, radius: event});
     },
 
     circleClickHandler() {
-      eventBus.$emit('create-circle-clicked', {id: this.circle._id});
+      eventBus.$emit('circle-clicked', {id: this.circle._id});
     },
   }
 }
