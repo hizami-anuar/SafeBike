@@ -36,52 +36,24 @@ router.get("/", async (req, res) => {
   } else {
     blockages = await Blockages.find(req.query);
   }
-  await Promise.all(blockages.map(async (blockage) => {
-    const user = await Users.findOne({_id: blockage.reporter});
-    blockage._doc.reporterUsername = user ? user.username : "[deleted user]";
+  // edit fields of blockage before returning to frontend
+  blockages = await Promise.all(blockages.map(async (blockage) => {
+    blockage = blockage.toObject(); // hopefully don't need it as a document
+    const reporter = await Users.findOne({_id: blockage.reporter});
+    blockage.reporterUsername = reporter ? reporter.username : "[deleted user]";
+    
+    const userId = req.session.user && req.session.user._id; // id or undefined
+    // console.log(userId);
+    // console.log(blockage.upvotes, blockage.downvotes)
+    blockage.upvoted = blockage.upvotes.includes(userId);
+    blockage.downvoted = blockage.downvotes.includes(userId);
+    delete blockage.upvotes;
+    delete blockage.downvotes;
+
+    return blockage;
   }));
   res.status(200).json({ blockages: blockages }).end();
 });
-
-/////////// COMMENT FUNCTIONS /////////////
-// find all comments of a post with id in param
-router.get("/comments/:id", async (req, res) => {
-  const blockage = await Blockages.findOne({_id: req.params.id});
-  const comments = [];
-  for (const comment_id of blockage.comments) {
-    const comment = await Comments.findOne({_id: comment_id});
-    comments.push(comment);
-  }
-  res.status(200).json(comments);
-});
-
-// post a new comment under a post with the given id
-router.post("/comments/:id", [validateThat.userIsLoggedIn, validateThat.userHasPermissionComment],
-  async(req, res) => {
-    const comment = {
-      userID: req.session.user._id,
-      content: req.body.content,
-      timeUsec: Date.now(),
-      username: req.session.user.username,
-      blockage: req.params.id,
-    }
-    const createdComment = await Comments.create(comment);
-    response = await Blockages.findOneAndUpdate({_id: req.params.id}, {"$push": {comments: createdComment}});
-    // blockage.comments.push(comment);
-    res.status(200).json(response).end();
-});
-
-// delete a comment object 
-// TODO: user can only delete their own comment middleware
-router.delete("/comments/:id", [validateThat.userIsLoggedIn],
-  async(req, res) => {
-    comment = await Comments.findOne({_id: req.params.id});
-    blockage = await Blockages.findOne({_id: comment.blockage});
-    let updated_comments = blockage.comments.filter((commentId) => commentId !== req.params.id);
-    updated = await Blockages.findOneAndUpdate({_id: comment.blockage}, {comments: updated_comments});
-    response = await Comments.findOneAndDelete({ _id: req.params.id });
-    res.status(200).json(response).end();
-  });
 
 /**
  * Create a blockage.
@@ -111,6 +83,9 @@ router.post("/",
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
       active: req.body.active, // all new blockages should be active
+      voteCount: 0,
+      upvotes: [],
+      downvotes: [],
       parentBlockage: req.body.parentBlockage, // parent blockage comes from body
       comments: []
     };
@@ -135,6 +110,7 @@ router.post("/",
 router.patch("/:id", 
   [
     validateThat.userIsLoggedIn,
+    validateThat.blockageExists,
     validateThat.userHasPermission,
   ], 
   async (req, res) => {
@@ -173,6 +149,7 @@ router.patch("/:id",
  */
 router.delete("/:id", [
     validateThat.userIsLoggedIn,
+    validateThat.blockageExists,
     validateThat.userHasPermission,
   ], 
     async (req, res) => {
@@ -182,3 +159,136 @@ router.delete("/:id", [
   });
 
 module.exports = router;
+
+/////////// VOTING FUNCTIONS /////////////
+/**
+ * Upvote a blockage (removing downvote if exists).
+ *
+ * @name POST /api/blockages/upvote/:id
+ *
+ * @return {Blockage} - the upvoted blockage
+ * @throws {403} - if user is not logged in
+ */
+router.post("/upvote/:id", [
+    validateThat.userIsLoggedIn,
+    validateThat.blockageExists,
+  ], async (req, res) => {
+    // https://mongoosejs.com/docs/documents.html
+    // if concurrency ever an issue, use findOneAndUpdate
+    // or wrap a retry loop for VersionError
+    const blockage = await Blockages.findOne({_id: req.params.id});
+    const userId = req.session.user._id;
+    blockage.downvotes.pull(userId);
+    if (!blockage.upvotes.includes(userId)) { 
+      blockage.upvotes.push(userId); 
+    } // else no-op
+    await blockage.calculateVoteCount(); // includes saving
+    res.status(200).json(blockage);
+  });
+
+/**
+ * Downvote a blockage (removing upvote if exists).
+ *
+ * @name POST /api/blockages/downvote/:id
+ *
+ * @return {Blockage} - the downvoted blockage
+ * @throws {403} - if user is not logged in
+ */
+router.post("/downvote/:id", [
+    validateThat.userIsLoggedIn,
+    validateThat.blockageExists,
+  ], async (req, res) => {
+    const blockage = await Blockages.findOne({_id: req.params.id});
+    const userId = req.session.user._id;
+    blockage.upvotes.pull(userId);
+    if (!blockage.downvotes.includes(userId)) { 
+      blockage.downvotes.push(userId); 
+    } // else no-op
+    await blockage.calculateVoteCount(); // includes saving
+    res.status(200).json(blockage);
+  });
+
+/**
+ * Remove upvote for a blockage.
+ *
+ * @name DELETE /api/blockages/upvote/:id
+ *
+ * @return {Blockage} - the unupvoted blockage
+ * @throws {403} - if user is not logged in
+ */
+router.delete("/upvote/:id", [
+    validateThat.userIsLoggedIn,
+    validateThat.blockageExists,
+  ], async (req, res) => {
+    const blockage = await Blockages.findOne({_id: req.params.id});
+    blockage.upvotes.pull(req.session.user._id);
+    await blockage.calculateVoteCount(); // includes saving
+    res.status(200).json(blockage);
+  });
+
+/**
+ * Remove downvote for a blockage.
+ *
+ * @name DELETE /api/blockages/downvote/:id
+ *
+ * @return {Blockage} - the undownvoted blockage
+ * @throws {403} - if user is not logged in
+ */
+router.delete("/downvote/:id", [
+    validateThat.userIsLoggedIn,
+    validateThat.blockageExists,
+  ], async (req, res) => {
+    const blockage = await Blockages.findOne({_id: req.params.id});
+    blockage.downvotes.pull(req.session.user._id);
+    await blockage.calculateVoteCount(); // includes saving
+    res.status(200).json(blockage);
+  });
+
+/////////// COMMENT FUNCTIONS /////////////
+// find all comments of a post with id in param
+router.get("/comments/:id", [
+  validateThat.blockageExists,
+], async (req, res) => {
+  const blockage = await Blockages.findOne({_id: req.params.id});
+  const comments = [];
+  for (const comment_id of blockage.comments) {
+    const comment = await Comments.findOne({_id: comment_id});
+    comments.push(comment);
+  }
+  res.status(200).json(comments);
+});
+
+// post a new comment under a post with the given id
+router.post("/comments/:id", [
+  validateThat.userIsLoggedIn, 
+  validateThat.blockageExists,
+],
+  async(req, res) => {
+    const comment = {
+      userID: req.session.user._id,
+      content: req.body.content,
+      timeUsec: Date.now(),
+      username: req.session.user.username,
+      blockage: req.params.id,
+    }
+    const createdComment = await Comments.create(comment);
+    response = await Blockages.findOneAndUpdate({_id: req.params.id}, {"$push": {comments: createdComment}});
+    // blockage.comments.push(comment);
+    res.status(200).json(response).end();
+});
+
+// delete a comment object 
+// TODO: user can only delete their own comment middleware
+router.delete("/comments/:id", [
+  validateThat.userIsLoggedIn,
+  validateThat.commentExists,
+  validateThat.userHasPermissionComment,
+],
+  async(req, res) => {
+    comment = await Comments.findOne({_id: req.params.id});
+    blockage = await Blockages.findOne({_id: comment.blockage});
+    let updated_comments = blockage.comments.filter((commentId) => commentId !== req.params.id);
+    updated = await Blockages.findOneAndUpdate({_id: comment.blockage}, {comments: updated_comments});
+    response = await Comments.findOneAndDelete({ _id: req.params.id });
+    res.status(200).json(response).end();
+  });

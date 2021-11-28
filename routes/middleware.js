@@ -91,6 +91,15 @@ const userIsNotLoggedIn = (req, res, next) => {
   next();
 };
 
+// Checks that the specified blockage exists.
+const blockageExists = async (req, res, next) => {
+  const blockage = await Blockages.findOne({ _id: req.params.id });
+  if (!blockage) {
+    return sendError(res, 404, 'Blockage not found.');
+  }
+  next();
+}
+
 // Checks that the user has permission to edit/delete a blockage
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
@@ -98,6 +107,15 @@ const userHasPermission = async (req, res, next) => {
     return sendError(res, 403, 'You do not have permission to edit or delete this blockage!');
   }
   next()
+}
+
+// Checks that the specified comment exists.
+const commentExists = async (req, res, next) => {
+  const comment = await Comments.findOne({ _id: req.params.id });
+  if (!comment) {
+    return sendError(res, 404, 'Comment not found.');
+  }
+  next();
 }
 
 // Checks that the user has permission to edit/delete a blockage
@@ -119,6 +137,8 @@ module.exports = Object.freeze({
   userIDExists,
   followingUserIDExists,
   userIsNotLoggedIn,
+  blockageExists,
   userHasPermission,
+  commentExists,
   userHasPermissionComment,
 });

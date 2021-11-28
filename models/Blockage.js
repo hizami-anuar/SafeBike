@@ -18,11 +18,17 @@ const blockageSchema = new mongoose.Schema({
     required: true
   },
   time: Number,
-  reporter: String,
+  reporter: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   description: String,
   status: String,
   active: Boolean,
-  parentBlockage: {
+  voteCount: Number,
+  upvotes: [String], // object ids of users who upvoted
+  downvotes: [String], // object ids of users who downvoted
+  parentBlockage: { 
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Blockage'
   },
@@ -31,5 +37,15 @@ const blockageSchema = new mongoose.Schema({
     ref: 'Comment'
   }]
 })
+
+blockageSchema.methods = {
+  calculateVoteCount: async function() {
+    this.voteCount = this.upvotes.length - this.downvotes.length;
+    await this.save();
+    await this.populate('reporter');
+    console.log(this.reporter);
+    await this.reporter.calculateActivity();
+  }
+}
 
 module.exports = mongoose.model('Blockage', blockageSchema);

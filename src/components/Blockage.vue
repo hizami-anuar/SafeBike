@@ -35,10 +35,10 @@
       </div>
 
       <div class="edit-delete-buttons">
-        <img v-if='!liked' class='icon' v-on:click="liked=!liked" src="@/assets/like.png"/>
-        <img v-else class='icon' v-on:click="liked=!liked" src="@/assets/liked.png"/>
-        <img v-if='!disliked' class='icon' v-on:click="disliked=!disliked" src="@/assets/dislike.png"/>
-        <img v-else class='icon' v-on:click="disliked=!disliked" src="@/assets/disliked.png"/>
+        <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
+        <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
+        <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
+        <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
         <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
@@ -80,10 +80,12 @@ export default {
       date: '', // formated time for displaying (human readable) 
       reporterUsername: this.blockageData.reporterUsername,
       reporterId: this.blockageData.reporter,
-      liked: false, // whether current post is liked by user or not
-      disliked: false, // whether current post is disliked by user or not
       updatingStatus: false // whether the user is currently updating the status
     }
+  },
+  computed: {
+    upvoted() { return this.blockageData.upvoted; },
+    downvoted() { return this.blockageData.downvoted; },
   },
   mounted() {
     // updated description and status starts off same as current to display initially
@@ -201,6 +203,28 @@ export default {
       }).catch((error) => {
         console.log(error);
       })
+    },
+    /**
+     * toggles up/downvote status
+     * sorry for the double function but LOL
+     * 
+     * @param type either "up" or "down"
+     */
+    toggleVote(type) {
+      if (!["up", "down"].includes(type)) return;
+      const route = `/api/blockages/${type}vote/${this.blockageData._id}`;
+      const alreadyVoted = this[`${type}voted`];
+      const action = alreadyVoted ? "delete" : "post";
+      console.log(type, alreadyVoted);
+      console.log(action, route);
+      axios[action](route)
+        .then(() => {
+          this.blockageData[`${type}voted`] = !alreadyVoted;
+          eventBus.$emit('refresh-blockages');
+          this.$emit('refresh-blockages');
+        }).catch((error) => {
+          console.log(error);
+        })
     },
   }
 }
