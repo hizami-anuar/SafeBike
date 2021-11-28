@@ -223,6 +223,7 @@ export default {
 .subscriptions-container {
   width: 50%;
   height: 100%;
+  overflow-y: scroll;
 }
 
 .subscriptions-form {

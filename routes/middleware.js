@@ -103,7 +103,9 @@ const blockageExists = async (req, res, next) => {
 // Checks that the user has permission to edit/delete a blockage
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
-  if (blockage.reporter !== req.session.user._id) {
+  console.log(blockage.reporter);
+  console.log(req.session.user._id);
+  if (blockage.reporter != req.session.user._id) {
     return sendError(res, 403, 'You do not have permission to edit or delete this blockage!');
   }
   next()
