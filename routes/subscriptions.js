@@ -30,11 +30,7 @@ router.post("/",
       center: req.body.center,
       radius: req.body.radius,
       user: req.session.user._id,
-      schedule: {
-        days: req.body.days,
-        startTime: req.body.startTime,
-        endTime: req.body.endTime,
-      }
+      schedule: req.body.schedule,
     }
     await Subscriptions.create(subscription);
     res.status(200).json({ subscription: subscription }).end();
@@ -51,6 +47,23 @@ router.patch("/:id/radius",
     response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { radius: req.body.radius });
     res.status(200).json(response).end();
   });
+
+/**
+ * Update a subscription.
+ */
+router.patch("/:id/",  
+  [
+    validateThat.userIsLoggedIn,
+  ],
+  async (req, res) => {
+    const updates = {};
+    updates["name"] = req.body.name;
+    updates["center.coordinates"] = req.body.center;
+    updates["radius"] = req.body.radius;
+    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, updates);
+    res.status(200).json(response).end();
+  });
+
 
 /**
  * Update a subscription's center.

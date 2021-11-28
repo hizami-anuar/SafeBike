@@ -24,32 +24,11 @@
       <template v-if="true">
         <form class="subscriptions-form">
           <h1>New Alert</h1>
-          <label>Name: </label><input type="text" v-model="subscriptionFormData.name"/>
-          <h3>Location</h3>
-          <div>{{ createLocation }}</div>
-          <div>{{ subscriptionFormData.days }}</div>
-          <div class="days-container">
-            <div class="round" 
-              v-for="(day, index) in DAY_NAMES"
-              :key="index">
-              <input type="checkbox" 
-                :value="day"
-                v-model="subscriptionFormData.days[index]" 
-                :id="`checkbox-${day}`"/>
-              <label :for="`checkbox-${day}`">{{ day }}</label>
-            </div>
-          </div>
-          <div>
-            <label>Start Time: </label>
-            <input type="time" v-model="subscriptionFormData.startTime" />
-          </div>
-          <div>
-            <label>End Time: </label>
-            <input type="time" v-model="subscriptionFormData.endTime" />
-          </div>
+          <CreateSubscriptionItem 
+            :DAY_NAMES='DAY_NAMES'
+            :subscription='subscriptionFormData'
+            :editable='true' />
         </form>
-        <input type="submit" v-on:click.prevent="addSubscription" value="Add Subscription">
-        <div>{{ subscriptionFormData }}</div>
       </template>
       <br>
       <br>
@@ -77,22 +56,25 @@
 import axios from 'axios';
 import { eventBus } from "@/main";
 import MapSubscription from '@/components/MapSubscription';
+import CreateSubscriptionItem from '@/components/CreateSubscriptionItem';
 import SubscriptionItem from '@/components/SubscriptionItem';
 import SubscriptionCircle from '@/components/map_components/SubscriptionCircle.vue';
 import CreateCircle from '@/components/map_components/CreateCircle';
 
 export default {
   name: 'Subscription',
-  components: { MapSubscription, SubscriptionItem, CreateCircle, SubscriptionCircle },
+  components: { MapSubscription, SubscriptionItem, CreateSubscriptionItem, CreateCircle, SubscriptionCircle },
   props: ['loggedIn', 'user'],
   data() {
     let blankSubscriptionFormData = {
       name: undefined,
       center: undefined,
       radius: undefined,
-      days: [false, false, false, false, false, false, false],
-      startTime: "01:23",
-      endTime: "12:34",
+      schedule: {
+        days: [false, false, false, false, false, false, false],
+        startTime: "01:23",
+        endTime: "12:34",
+      }
     };
     return {
       DAY_NAMES: ["S", "M", "T", "W", "Th", "F", "Sa"],
@@ -105,12 +87,13 @@ export default {
       blankSubscriptionFormData: Object.assign({}, blankSubscriptionFormData),
       subscriptionFormData: Object.assign({}, blankSubscriptionFormData),
       eventListeners: [
-        {name: 'circle-radius-changed', func: this.updateRegionRadius},
-        {name: 'circle-center-changed', func: this.updateRegionCenter},
+        {name: 'circle-radius-changed', func: this.updateRegion},
+        {name: 'circle-center-changed', func: this.updateRegion},
         {name: 'circle-clicked', func: this.selectRegion},
         {name: 'create-circle-radius-changed', func: this.updateCreateRegionRadius},
         {name: 'create-circle-center-changed', func: this.updateCreateRegionCenter},
         {name: 'activate-create-subscription', func: this.activateCreateSubscription},
+        {name: 'create-subscription', func: this.createSubscription},
         {name: 'delete-subscription', func: this.deleteSubscription},
       ],
     }
@@ -157,8 +140,9 @@ export default {
         })
     },
 
-    addSubscription() {
-      axios.post(`/api/subscriptions`, this.subscriptionFormData)
+    createSubscription(data) {
+      console.log(data);
+      axios.post(`/api/subscriptions`, data)
         .then((response) => {
           console.log(response);
           this.resetSubscriptionForm();
@@ -179,20 +163,9 @@ export default {
         }) 
     },
 
-    updateRegionRadius(data) {
+    updateRegion(data) {
       this.selectRegion({ id: data.id} );
-      axios.patch(`/api/subscriptions/${data.id}/radius`, { radius: data.radius })
-        .then((response) => {
-          console.log(response);
-        }).catch((error) => {
-          console.log(error);
-        })
-      this.refreshSubscription();
-    },
-
-    updateRegionCenter(data) {
-      this.selectRegion({ id: data.id} );
-      axios.patch(`/api/subscriptions/${data.id}/center`, { center: data.center })
+      axios.patch(`/api/subscriptions/${data.id}`, data)
         .then((response) => {
           console.log(response);
         }).catch((error) => {
@@ -225,9 +198,11 @@ export default {
         name: undefined,
         center: undefined,
         radius: undefined,
-        days: [false, false, false, false, false, false, false],
-        startTime: "01:23",
-        endTime: "12:34",
+        schedule: {
+          days: [false, false, false, false, false, false, false],
+          startTime: "01:23",
+          endTime: "12:34",
+        }
       };
     },
   },
