@@ -274,9 +274,10 @@ h2 {
 
 .vote-count {
   margin-right: 10px;
-  margin-top: 5px;
+  margin-top: 3px;
   display: flex;
   flex-direction: row;
+  font-size: 18px;
 }
 
 .like-buttons {
