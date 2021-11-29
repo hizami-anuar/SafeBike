@@ -193,11 +193,8 @@ export default {
      * list of blockages.
      */
     deleteBlockage() {
-      console.log('deleting blockage?');
       axios.delete(`/api/blockages/${this.blockageData._id}`)
-      .then((response) => {
-        console.log(response);
-        console.log('deleted blockage');
+      .then(() => {
         eventBus.$emit('close-marker');
         eventBus.$emit('refresh-user');
         eventBus.$emit('refresh-blockages');
@@ -217,8 +214,6 @@ export default {
       const route = `/api/blockages/${type}vote/${this.blockageData._id}`;
       const alreadyVoted = this[`${type}voted`];
       const action = alreadyVoted ? "delete" : "post";
-      console.log(type, alreadyVoted);
-      console.log(action, route);
       axios[action](route)
         .then(() => {
           if (!alreadyVoted) {
