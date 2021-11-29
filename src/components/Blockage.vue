@@ -33,14 +33,17 @@
       <div v-else>
         <span class="description" v-if='description.length!==0'>{{  description }}</span>
       </div>
-
-      <div class="edit-delete-buttons">
-        <div v-if='loggedIn'>
+      <div class='edit-delete-buttons'>
+      <p class='vote-count'>Total Votes: {{this.votes}}</p>
+              <div v-if='loggedIn' class='like-buttons'>
           <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
           <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
           <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
           <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
         </div>
+      </div>
+      <div class="edit-delete-buttons">
+        
         <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
@@ -82,7 +85,8 @@ export default {
       date: '', // formated time for displaying (human readable) 
       reporterUsername: this.blockageData.reporterUsername,
       reporterId: this.blockageData.reporter,
-      updatingStatus: false // whether the user is currently updating the status
+      updatingStatus: false, // whether the user is currently updating the status
+      votes: this.blockageData.voteCount,
     }
   },
   computed: {
@@ -222,10 +226,25 @@ export default {
             this.blockageData.upvoted = false;
             this.blockageData.downvoted = false;
           }
+          if (type == 'up') {
+            if (this.blockageData.upvoted) {
+              this.votes -= 1;
+            } else {
+              this.votes += 1;
+            }
+          } else {
+            if (this.blockageData.downvoted) {
+              this.votes += 1;
+            } else {
+              this.votes -= 1;
+            }
+          }
+
           this.blockageData[`${type}voted`] = !alreadyVoted;
           if (this.ownsBlockage) {
             eventBus.$emit('refresh-user');
           }
+          // eventBus.$emit('refresh-blockages');
           // eventBus.$emit('refresh-blockages');
           // this.$emit('refresh-blockages');
         }).catch((error) => {
@@ -251,6 +270,18 @@ h1 {
 h2 {
   margin-bottom: 5px;
   /* margin-top: 100px; */
+}
+
+.vote-count {
+  margin-right: 10px;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+}
+
+.like-buttons {
+  display: flex;
+  flex-direction: row;
 }
 
 span{
@@ -324,7 +355,8 @@ button:hover:enabled {
   width: 100%;
   justify-content: flex-end;
   margin-right: -20px;
-  margin-top: 15px;
+  margin-top: 5px;
+  margin-bottom: -8px;
 }
 
 .edit-mode-buttons {
