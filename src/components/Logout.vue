@@ -23,7 +23,7 @@
     </div>      
     <div v-if='loggedIn && popupClicked' class="popup">
     <p>Level 0</p>
-        <p>Karma: 49</p>
+        <p>Activity Points: {{ user.activityScore }}</p>
       <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
       <router-link v-if='loggedIn' to='/settings' >   
           <button class="submit-button" v-on:click="popupClicked=false">Settings</button>
