@@ -121,6 +121,10 @@ export default {
     padding: 0px 12px;
     padding-bottom: 10px;
   }
+</style>
+
+<!-- this cannot be scoped; necessary for popup styling -->
+<style> 
 	/* The location pointed to by the popup tip. */
 	.popup-tip-anchor {
 		height: 0;

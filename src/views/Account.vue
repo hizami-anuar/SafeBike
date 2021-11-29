@@ -3,7 +3,7 @@
     <div v-if='loggedIn'>
     <p>Welcome back, {{user.username}}!</p>
     <p>Level 0</p>
-    <h3>Karma: {{ user.activityScore }}</h3>
+    <h3>Activity Points: {{ user.activityScore }}</h3>
     </div>
     <h2>My Reports</h2>
     <Blockages

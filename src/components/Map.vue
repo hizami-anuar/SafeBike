@@ -92,12 +92,9 @@ export default {
       this.active = id;
       this.closeCreateBlockageMenu();
     },
-    onMarkerClick: function(pos) {
-      console.log(this.center, pos);
-      this.center = pos;
-    },
     closeAllMarkerPopups: function() {
       this.active = null;
+      eventBus.$emit('close-marker');
     },
     openCreateBlockageMenu: function(event) {
       this.createBlockageMenu = {

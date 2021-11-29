@@ -19,7 +19,7 @@ userSchema.methods = {
     const blockages = await Blockages.find({ reporter: { _id: this._id } });
     const blockageScores = blockages.map(b => b.voteCount);
     let score = blockageScores.reduce((c, x) => c+x, 0);
-    console.log(this._id, blockages, blockageScores, score);
+    // console.log(this._id, blockages, blockageScores, score);
     this.activityScore = score;
     await this.save();
   }

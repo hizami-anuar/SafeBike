@@ -8,30 +8,24 @@
         :user='user'
       />
       <Blockage
-      class="blockage-popup"
-      v-if='currBlockage'
-      :key='currBlockageId'
-      :blockageData='currBlockage'
-      :loggedIn='loggedIn'
-      :user='user'/>
+        class="blockage-popup"
+        v-if='currBlockage'
+        :key='currBlockageId'
+        :blockageData='currBlockage'
+        :loggedIn='loggedIn'
+        :user='user'/>
       <Popup v-if='historyPopupShown' @close-popup='closeHistoryPopup'>
       <History 
-      :blockageData='currBlockage'
-      :user='user'/></Popup>
+        :blockageData='currBlockage'
+        :user='user'/></Popup>
       <Popup v-if='commentsPopupShown' @close-popup='closeCommentsPopup'>
       <Comments
-      :blockageData='currBlockage'
-      :loggedIn='loggedIn'
-      :user='user'
-      />
+        :blockageData='currBlockage'
+        :loggedIn='loggedIn'
+        :user='user'
+        />
       </Popup>
     </div>
-    <!-- <Blockages
-      :blockages='blockages'
-      :loggedIn='loggedIn'
-      :user='user'
-      @refresh-blockages='refreshBlockages'
-    /> -->
   </main>
 </template>
 
@@ -103,10 +97,13 @@ export default {
     },
     refreshBlockages() {
       this.getAllBlockages(); // refresh list of blockages when edit, delete or post
+      if (this.currBlockageId) { // refresh currently viewing blockage
+        this.displayBlockage(this.currBlockageId);
+      }
     },
     displayBlockage(id) {
       this.currBlockageId = id;
-      console.log("displaying blockage " + id)
+      // console.log("displaying blockage " + id)
       this.currBlockage = this.currBlockageId ?
         this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
         : undefined;
