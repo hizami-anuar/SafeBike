@@ -284,4 +284,8 @@ legend {
   max-width: 500px;
   margin-top: 75px;
 }
+
+h2 {
+  font-size: 28px;
+}
 </style>
