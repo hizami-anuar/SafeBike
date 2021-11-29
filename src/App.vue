@@ -118,11 +118,10 @@ h1 {
   color: rgb(255, 255, 255);
   background-color: rgb(179, 127, 250);
 }
-/* 
-#logo-div a.router-link-exact-active {
-  background-color: red;
-  background: none;
-} */
+
+#logo-div {
+  background: none !important;
+}
 
 #page-content {
   width: 100%;
