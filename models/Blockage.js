@@ -43,6 +43,7 @@ blockageSchema.methods = {
     this.voteCount = this.upvotes.length - this.downvotes.length;
     await this.save();
     await this.populate('reporter');
+    if (!this.reporter) return;
     await this.reporter.calculateActivity();
   }
 }
