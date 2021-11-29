@@ -37,26 +37,29 @@ export default {
     }
   }, 
   mounted() {
+    this.refreshUser();
+
     // Register some eventBus listeners
-
-        // Check if the user is already logged in.
-    axios.get('/api/session/').then((res) => {
-      // const currentUsername = res.data.username;
-      // const currentUserId = res.data.id;
-      // Empty username means not already logged in, which is assumed
-      // if (currentUsername === "") return;
-      // Update the data fields to reflect that we are already logged in.
-      this.loggedIn = true;
-      // this.username = currentUsername;
-      this.user = res.data;
-      return ;
-    }).catch((err) => console.log(err));
-
+    eventBus.$on('refresh-user', this.refreshUser);
     eventBus.$on('login-event',  this.handleLogin);
     eventBus.$on('logout-event', this.handleLogout);
     eventBus.$on('login', this.login);
   }, 
   methods: {
+    refreshUser() {
+      // Check if the user is already logged in.
+      axios.get('/api/session/').then((res) => {
+        // const currentUsername = res.data.username;
+        // const currentUserId = res.data.id;
+        // Empty username means not already logged in, which is assumed
+        // if (currentUsername === "") return;
+        // Update the data fields to reflect that we are already logged in.
+        this.loggedIn = true;
+        // this.username = currentUsername;
+        this.user = res.data;
+        return ;
+      }).catch((err) => console.log(err));
+    },
     handleLogin(response) {
       this.loggedIn = true;
       this.user = response.data;

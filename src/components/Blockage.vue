@@ -42,10 +42,10 @@
         <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
-        <img v-if="loggedIn && user._id === reporterId && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
+        <img v-if="ownsBlockage && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
           <!-- Edit -->
         <!-- </button> -->
-        <img v-if="loggedIn && user._id === reporterId && !editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+        <img v-if="ownsBlockage && !editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
 
         <!-- <button v-on:click="deleteBlockage">Delete</button> -->
       </div>
@@ -86,6 +86,7 @@ export default {
   computed: {
     upvoted() { return this.blockageData.upvoted; },
     downvoted() { return this.blockageData.downvoted; },
+    ownsBlockage() { return this.loggedIn && this.user._id === this.reporterId; }
   },
   mounted() {
     // updated description and status starts off same as current to display initially
@@ -198,6 +199,7 @@ export default {
         console.log(response);
         console.log('deleted blockage');
         eventBus.$emit('close-marker');
+        eventBus.$emit('refresh-user');
         eventBus.$emit('refresh-blockages');
         this.$emit('refresh-blockages');
       }).catch((error) => {
@@ -219,9 +221,16 @@ export default {
       console.log(action, route);
       axios[action](route)
         .then(() => {
+          if (!alreadyVoted) {
+            this.blockageData.upvoted = false;
+            this.blockageData.downvoted = false;
+          }
           this.blockageData[`${type}voted`] = !alreadyVoted;
-          eventBus.$emit('refresh-blockages');
-          this.$emit('refresh-blockages');
+          if (this.ownsBlockage) {
+            eventBus.$emit('refresh-user');
+          }
+          // eventBus.$emit('refresh-blockages');
+          // this.$emit('refresh-blockages');
         }).catch((error) => {
           console.log(error);
         })

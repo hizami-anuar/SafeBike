@@ -46,8 +46,10 @@ router.post('/', [
  */
 router.get('/', [
   validateThat.userIsLoggedIn,
-  ], (req, res) => {
-    res.status(200).json(req.session.user);
+  ], async (req, res) => {
+    // refresh the user object in case it changed
+    const user = await Users.findById(req.session.user._id);
+    res.status(200).json(user);
   });
 
 

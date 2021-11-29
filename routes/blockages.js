@@ -154,7 +154,9 @@ router.delete("/:id", [
   ], 
     async (req, res) => {
     const id = req.params.id;
-    blockage = await Blockages.findOneAndDelete({ _id: id });
+    const blockage = await Blockages.findOneAndDelete({ _id: id });
+    await blockage.populate('reporter');
+    await blockage.reporter.calculateActivity();
     res.status(200).json(blockage).end();
   });
 
@@ -182,7 +184,7 @@ router.post("/upvote/:id", [
     if (!blockage.upvotes.includes(userId)) { 
       blockage.upvotes.push(userId); 
     } // else no-op
-    await blockage.calculateVoteCount(); // includes saving
+    await blockage.calculateVotesAndSave(); // includes saving
     res.status(200).json(blockage);
   });
 
@@ -204,7 +206,7 @@ router.post("/downvote/:id", [
     if (!blockage.downvotes.includes(userId)) { 
       blockage.downvotes.push(userId); 
     } // else no-op
-    await blockage.calculateVoteCount(); // includes saving
+    await blockage.calculateVotesAndSave(); // includes saving
     res.status(200).json(blockage);
   });
 
@@ -222,7 +224,7 @@ router.delete("/upvote/:id", [
   ], async (req, res) => {
     const blockage = await Blockages.findOne({_id: req.params.id});
     blockage.upvotes.pull(req.session.user._id);
-    await blockage.calculateVoteCount(); // includes saving
+    await blockage.calculateVotesAndSave(); // includes saving
     res.status(200).json(blockage);
   });
 
@@ -240,7 +242,7 @@ router.delete("/downvote/:id", [
   ], async (req, res) => {
     const blockage = await Blockages.findOne({_id: req.params.id});
     blockage.downvotes.pull(req.session.user._id);
-    await blockage.calculateVoteCount(); // includes saving
+    await blockage.calculateVotesAndSave(); // includes saving
     res.status(200).json(blockage);
   });
 

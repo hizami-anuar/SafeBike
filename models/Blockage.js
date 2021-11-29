@@ -39,11 +39,10 @@ const blockageSchema = new mongoose.Schema({
 })
 
 blockageSchema.methods = {
-  calculateVoteCount: async function() {
+  calculateVotesAndSave: async function() {
     this.voteCount = this.upvotes.length - this.downvotes.length;
     await this.save();
     await this.populate('reporter');
-    console.log(this.reporter);
     await this.reporter.calculateActivity();
   }
 }
