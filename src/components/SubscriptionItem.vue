@@ -10,7 +10,8 @@
       :schedule="subscription.schedule"
       :editable="editable"
     />
-    <input type="submit" value="delete" v-on:click.prevent="deleteSubscription" />
+    <input type="submit" value="Update" v-on:click.prevent="updateSubscription" />
+    <input type="submit" value="Delete" v-on:click.prevent="deleteSubscription" />
   </div>
 </template>
 
@@ -25,8 +26,11 @@ export default {
   components: { Days, Time },
   methods: {
     deleteSubscription() {
-      eventBus.$emit('delete-subscription', { id: this.subscription._id })
-    }
+      eventBus.$emit('delete-subscription', this.subscription);
+    },
+    updateSubscription() {
+      eventBus.$emit('update-subscription', this.subscription);
+    },
   },
 }
 </script>

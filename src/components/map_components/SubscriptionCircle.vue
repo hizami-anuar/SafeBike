@@ -19,7 +19,8 @@ export default {
   props: ['circle', 'selected'],
   methods: {
     dragEndHandler() {
-      eventBus.$emit('circle-center-changed', {id: this.circle._id, center: this.center});
+      this.circle.center.coordinates = this.center;
+      eventBus.$emit('circle-center-changed', this.circle );
     },
 
     centerChangedHandler(event) { // event is lat/lng functions
@@ -28,11 +29,12 @@ export default {
     },
 
     radiusChangedHandler(event) { // event is radius
-      eventBus.$emit('circle-radius-changed', {id: this.circle._id, radius: event});
+      this.circle.radius = event;
+      eventBus.$emit('circle-radius-changed', this.circle );
     },
 
     circleClickHandler() {
-      eventBus.$emit('circle-clicked', {id: this.circle._id});
+      eventBus.$emit('circle-clicked', { _id: this.circle._id });
     },
   }
 }

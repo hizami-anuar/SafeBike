@@ -63,10 +63,7 @@ router.patch("/:id/",
     validateThat.userHasPermissionSubscription,
   ],
   async (req, res) => {
-    const updates = {};
-    updates["name"] = req.body.name;
-    updates["center.coordinates"] = req.body.center;
-    updates["radius"] = req.body.radius;
+    const updates = req.body;
     response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, updates);
     res.status(200).json(response).end();
   });

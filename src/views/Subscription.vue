@@ -20,8 +20,7 @@
       </MapSubscription>
     </div>
     <div class="subscriptions-container">
-      <input type="submit" v-on:click.prevent="getSubscribedBlockages" value="Get Subscription">
-      <template v-if="true">
+      <template v-if="createEnabled">
         <form class="subscriptions-form">
           <h1>New Alert</h1>
           <CreateSubscriptionItem 
@@ -32,8 +31,8 @@
       </template>
       <br>
       <br>
-      <div>Current Selected Subscription:</div>
       <template v-if="selectedCircle">
+        <h1>Update Alert</h1>
         <SubscriptionItem 
           :DAY_NAMES='DAY_NAMES'
           :subscription='selectedCircle'
@@ -95,6 +94,7 @@ export default {
         {name: 'activate-create-subscription', func: this.activateCreateSubscription},
         {name: 'create-subscription', func: this.createSubscription},
         {name: 'delete-subscription', func: this.deleteSubscription},
+        {name: 'update-subscription', func: this.updateRegion},
       ],
     }
   },
@@ -153,7 +153,7 @@ export default {
     },
 
     deleteSubscription(data) {
-      axios.delete(`/api/subscriptions/${data.id}`)
+      axios.delete(`/api/subscriptions/${data._id}`)
         .then((response) => {
           this.selectedCircleId = undefined;
           console.log(response);
@@ -164,14 +164,16 @@ export default {
     },
 
     updateRegion(data) {
-      this.selectRegion({ id: data.id} );
-      axios.patch(`/api/subscriptions/${data.id}`, data)
+      console.log(data);
+      this.selectRegion(data);
+      axios.patch(`/api/subscriptions/${data._id}`, data)
         .then((response) => {
           console.log(response);
+          this.refreshSubscription();
         }).catch((error) => {
           console.log(error);
+          this.refreshSubscription();
         })
-      this.refreshSubscription();
     },
 
     updateCreateRegionRadius(data) {
@@ -183,7 +185,7 @@ export default {
     },
 
     selectRegion(data) {
-      this.selectedCircleId = data.id;
+      this.selectedCircleId = data._id;
     },
 
     activateCreateSubscription(data) {
