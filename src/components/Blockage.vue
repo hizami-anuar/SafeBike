@@ -35,10 +35,12 @@
       </div>
 
       <div class="edit-delete-buttons">
-        <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
-        <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
-        <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
-        <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
+        <div v-if='loggedIn'>
+          <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
+          <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
+          <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
+          <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
+        </div>
         <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
