@@ -6,7 +6,12 @@ const validateThat = require("./middleware");
 const router = express.Router();
 
 /**
- * Get a subscription
+ * Get the current user's subscription
+ * 
+ * @name GET /api/subscriptions
+ * 
+ * @return {Subscription[]} - list of user's subscriptions
+ * @throws {403} - if user is not logged in
  */
 router.get("/",
   [
@@ -19,10 +24,16 @@ router.get("/",
 
 /**
  * Create a subscription.
+ * 
+ * @name POST /api/subscriptions
+ * 
+ * @return {Subscription} - the created subscription
+ * @throws {403} - if user is not logged in
  */
 router.post("/", 
   [
     validateThat.userIsLoggedIn,
+    validateThat.hasSubscriptionFields,
   ],
   async (req, res) => {
     const subscription = {
@@ -37,23 +48,19 @@ router.post("/",
   });
 
 /**
- * Update a subscription's radius.
- */
-router.patch("/:id/radius",  
-  [
-    validateThat.userIsLoggedIn,
-  ],
-  async (req, res) => {
-    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { radius: req.body.radius });
-    res.status(200).json(response).end();
-  });
-
-/**
  * Update a subscription.
+ * 
+ * @name PATCH /api/subscriptions/:id
+ *
+ * @return {Subscription} - the updated subscription
+ * @throws {403} - if user is not logged in or does not have permission
+ * @throws {404} - if no subscription with the given id exists
  */
 router.patch("/:id/",  
   [
     validateThat.userIsLoggedIn,
+    validateThat.subscriptionExists,
+    validateThat.userHasPermissionSubscription,
   ],
   async (req, res) => {
     const updates = {};
@@ -64,26 +71,20 @@ router.patch("/:id/",
     res.status(200).json(response).end();
   });
 
-
-/**
- * Update a subscription's center.
- */
-router.patch("/:id/center",  
-  [
-    validateThat.userIsLoggedIn,
-  ],
-  async (req, res) => {
-    const center = { type: "Point", coordinates: req.body.center }
-    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, { center: center });
-    res.status(200).json(response).end();
-  });
-
 /**
  * Delete a subscription.
+ * 
+ * @name DELETE /api/subscriptions/:id
+ *
+ * @return {Subscription} - the deleted subscription
+ * @throws {403} - if user is not logged in or does not have permission
+ * @throws {404} - if no subscription with the given id exists
  */
 router.delete("/:id", 
   [
     validateThat.userIsLoggedIn,
+    validateThat.subscriptionExists,
+    validateThat.userHasPermissionSubscription,
   ],
   async (req, res) => {
     response = await Subscriptions.findOneAndDelete({ _id: req.params.id });

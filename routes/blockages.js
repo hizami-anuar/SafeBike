@@ -1,3 +1,6 @@
+const sphericalGeometry = require("spherical-geometry-js");
+const computeDistanceBetween = sphericalGeometry.computeDistanceBetween;
+
 const express = require("express");
 
 const Blockages = require("../models/Blockage");
@@ -22,12 +25,11 @@ router.get("/", async (req, res) => {
   delete req.query.subscription;
   let blockages = [];
   if (getSubscription) {
-    const square = (x) => x*x;
     function inCircle(circle, point) {
-      let xSquared = square(circle.center.coordinates[0]-point[0]);
-      let ySquared = square(circle.center.coordinates[1]-point[1]);
-      let rSquared = square(circle.radius/111111); // convert meters to degrees
-      return xSquared + ySquared <= rSquared
+      let point1 = {lat: circle.center.coordinates[0], lon: circle.center.coordinates[1]};
+      let point2 = {lat: point[0], lon: point[1]}
+      let distance = computeDistanceBetween(point1, point2);
+      return distance <= circle.radius;
     }
     blockages = await Blockages.find(req.query);
     blockages = blockages.filter(blockage => {
@@ -157,8 +159,6 @@ router.delete("/:id", [
     blockage = await Blockages.findOneAndDelete({ _id: id });
     res.status(200).json(blockage).end();
   });
-
-module.exports = router;
 
 /////////// VOTING FUNCTIONS /////////////
 /**
@@ -292,3 +292,5 @@ router.delete("/comments/:id", [
     response = await Comments.findOneAndDelete({ _id: req.params.id });
     res.status(200).json(response).end();
   });
+
+  module.exports = router;

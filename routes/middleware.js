@@ -1,6 +1,7 @@
 const Users = require('../models/User');
 const Blockages = require('../models/Blockage');
-const Comments = require('../models/Comment')
+const Comments = require('../models/Comment');
+const Subscriptions = require('../models/Subscription');
 
 const sendError = (res, status, error) => {
   res.status(status).json({error: error}).end();
@@ -103,10 +104,26 @@ const blockageExists = async (req, res, next) => {
 // Checks that the user has permission to edit/delete a blockage
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
-  console.log(blockage.reporter);
-  console.log(req.session.user._id);
   if (blockage.reporter != req.session.user._id) {
     return sendError(res, 403, 'You do not have permission to edit or delete this blockage!');
+  }
+  next()
+}
+
+// Checks that a subscription with given id exists
+const subscriptionExists = async (req, res, next) => {
+  const subscription = await Subscriptions.findOne({ _id: req.params.id });
+  if (!subscription) {
+    return sendError(res, 404, 'Subscription not found.');
+  }
+  next();
+}
+
+// Checks that the user has permission to edit/delete a subscription
+const userHasPermissionSubscription = async (req, res, next) => {
+  const subscription = await Subscriptions.findOne({ _id: req.params.id });
+  if (subscription.user != req.session.user._id) {
+    return sendError(res, 403, 'You do not have permission to edit or delete this subscription!');
   }
   next()
 }
@@ -129,6 +146,24 @@ const userHasPermissionComment = async (req, res, next) => {
   next()
 }
 
+const hasSubscriptionFields = async (req, res, next) => {
+  if (!req.body.name) {
+    return sendError(res, 400, 'Subscription is required to have a name.');
+  } else if (!req.body.center) {
+    return sendError(res, 400, 'Subscription is required to have a location center.');
+  } else if (!req.body.radius) {
+    return sendError(res, 400, 'Subscription is required to have a location radius.');
+  } else if (!req.body.schedule.days) {
+    return sendError(res, 400, 'Subscription is required to have scheduled days.');
+  } else if (!req.body.schedule.startTime) {
+    return sendError(res, 400, 'Subscription is required to have a start time.');
+  } else if (!req.body.schedule.endTime) {
+    return sendError(res, 400, 'Subscription is required to have a end time.');
+  }
+  next()
+}
+
+
 module.exports = Object.freeze({
   usernameDoesNotAlreadyExist,
   validUsername,
@@ -141,6 +176,9 @@ module.exports = Object.freeze({
   userIsNotLoggedIn,
   blockageExists,
   userHasPermission,
+  subscriptionExists,
+  userHasPermissionSubscription,
+  hasSubscriptionFields,
   commentExists,
   userHasPermissionComment,
 });
