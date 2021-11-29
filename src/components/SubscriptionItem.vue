@@ -10,8 +10,10 @@
       :schedule="subscription.schedule"
       :editable="editable"
     />
-    <input type="submit" value="Update" v-on:click.prevent="updateSubscription" />
-    <input type="submit" value="Delete" v-on:click.prevent="deleteSubscription" />
+    <template v-if="editable">
+      <input type="submit" value="Update" v-on:click.prevent="updateSubscription" />
+      <input type="submit" value="Delete" v-on:click.prevent="deleteSubscription" />
+    </template>
   </div>
 </template>
 

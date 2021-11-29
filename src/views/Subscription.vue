@@ -28,25 +28,25 @@
             :subscription='subscriptionFormData'
             :editable='true' />
         </form>
+        <button v-on:click="cancelCreate">Cancel</button>
       </template>
-      <br>
-      <br>
-      <template v-if="selectedCircle">
+      <template v-else-if="selectedCircle">
         <h1>Update Alert</h1>
         <SubscriptionItem 
           :DAY_NAMES='DAY_NAMES'
           :subscription='selectedCircle'
           :editable='true'/>
+        <button v-on:click="cancelSelect">Cancel</button>
       </template>
-      <div v-else>None selected.</div>
-      <br>
-      <br>
+      <template v-else>
+        <h1>Subscriptions</h1>
         <SubscriptionItem 
           v-for='(subscription, index) in circles' 
           :key='index'
           :DAY_NAMES='DAY_NAMES'
           :subscription='subscription'
           :editable='false'/>
+      </template>
     </div>
   </div>
 </template>
@@ -188,6 +188,15 @@ export default {
       this.selectedCircleId = data._id;
     },
 
+    cancelCreate() {
+      this.resetSubscriptionForm();
+      this.createEnabled = false;
+    },
+
+    cancelSelect() {
+      this.selectedCircleId = undefined;
+    },
+
     activateCreateSubscription(data) {
       this.createEnabled = true;
       this.createLocation = data.center;
@@ -229,7 +238,7 @@ export default {
 }
 
 .subscriptions-form {
-  border: 1px solid black;
+
 }
 
 .days-container {

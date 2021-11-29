@@ -30,7 +30,7 @@
       <slot v-if='$refs.map' name="mapItems"></slot>
     </GmapMap>
     <div class='instructions'>
-      <p>Click on an existing pin to view details on the subscription.</p>
+      <p>Click on an existing circle to view details on the subscription.</p>
       <p v-if='loggedIn'>Double click on the map to create a new subscription.</p>
       <p v-else>Please log in to create a new subscription.</p>
     </div>
