@@ -18,15 +18,21 @@
         <strong>{{this.passwordSuccess}}</strong>
       </label>
 
-      <div>
-        <label for="password">New Password:</label> <br>
-        <input type='password' v-model='password1' id="password" name="password" />
-      </div>
-      <div>
-        <label for="password2">Confirm New  Password:</label> <br>
-        <input type='password' v-model='password2' id="password2" name="password2" />
-      </div>
-      <button class='submit-button' :disabled="password1.length===0 || password2.length === 0" v-on:click.prevent='changePassword'>Update Password</button>
+      <form v-on:submit.prevent='changePassword'>
+        <div>
+          <label for="password">New Password:</label> <br>
+          <input type='password' v-model='password1' id="password" name="password" />
+        </div>
+        <div>
+          <label for="password2">Confirm New Password:</label> <br>
+          <input type='password' v-model='password2' id="password2" name="password2" />
+        </div>
+        <button 
+          type='submit' 
+          class='submit-button'
+          :disabled="password1.length===0 || password2.length === 0" 
+          >Update Password</button>
+      </form>
     </fieldset>
 
     <!-- Prompt for Changing the Username -->
@@ -40,18 +46,24 @@
         <strong>{{this.usernameSuccess}}</strong>
       </label>
       <!-- The Fields for Changing the Username -->
-      <div>
-        <label for="username">New Username:</label> <br>
-        <input id="username" v-model='newUsername'/>
-      </div>
-      <button class='submit-button' :disabled="newUsername.length === 0" v-on:click.prevent='changeUsername'>Update Username</button>
+      <form v-on:submit.prevent='changeUsername'>
+        <div>
+          <label for="username">New Username:</label> <br>
+          <input id="username" v-model='newUsername'/>
+        </div>
+        <button 
+          type='submit' 
+          class='submit-button' 
+          :disabled="newUsername.length === 0" 
+          >Update Username</button>
+      </form>
     </fieldset>
 
     <!-- Delete Account -->
     <fieldset>
       <legend>Delete Account</legend>
       <p>
-        Warning: deleting an account will delete all of your blockage reports. This is permanent and cannot be undone.
+        <b><u>Warning:</u></b> deleting your account will remove your username from your blockage reports, but will not delete them. You will also lose the ability to modify any of your blockage reports. This is permanent and cannot be undone.
       </p>
       <button class='delete-account-button' v-on:click.prevent='deleteAccount'>Delete Account</button>
     </fieldset>
@@ -143,12 +155,14 @@ export default {
       axios
         .put(`api/users/password`, { password: data["password"] })
         .then(() => {
-          this.passwordError = '';
+          this.clearMessages();
           this.passwordSuccess = 'Successfully updated password';
+          this.password1 = '';
+          this.password2 = '';
         })
         .catch((err) => {
           console.log(err.response || err);
-          this.passwordSuccess = '';
+          this.clearMessages();
           this.passwordError = err.response.data.error 
                                || err.response.data.message 
                                || "An unknown error occurred when changing your password.";
@@ -165,16 +179,25 @@ export default {
         .then((response) => {
           // Propogates up to the root that the username has changed
           eventBus.$emit('login-event', response);
-          this.usernameError = '';
+          this.clearMessages();
           this.usernameSuccess = 'Successfully changed username to: ' + this.newUsername;
+          this.newUsername = '';
         })
         .catch((err) => {
-          this.usernameSuccess = '';
+          this.clearMessages();
           this.usernameError = err.response.data.error 
                                || err.response.data.message 
                                || "An unknown error occurred when changing your username.";
         });
     },
+
+    /** clears all error/success messages */
+    clearMessages() {
+      this.usernameError = '';
+      this.usernameSuccess = '';
+      this.passwordError = '';
+      this.passwordSuccess = '';
+    }
   },
 };
 </script>
