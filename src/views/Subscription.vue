@@ -133,7 +133,6 @@ export default {
     getSubscription() {
       axios.get(`/api/subscriptions`)
         .then((response) => {
-          console.log(response);
           this.circles = response.data.subscription;
         }).catch((error) => {
           console.log(error);
@@ -145,7 +144,7 @@ export default {
       axios.post(`/api/subscriptions`, data)
         .then((response) => {
           console.log(response);
-          this.resetSubscriptionForm();
+          this.cancelCreate();
           this.refreshSubscription();
         }).catch((error) => {
           console.log(error);
@@ -169,6 +168,7 @@ export default {
       axios.patch(`/api/subscriptions/${data._id}`, data)
         .then((response) => {
           console.log(response);
+          this.cancelSelect();
           this.refreshSubscription();
         }).catch((error) => {
           console.log(error);
