@@ -20,11 +20,11 @@ const router = express.Router();
  * @return {Blockage[]} - list of blockages
  */
 router.get("/", async (req, res) => {
-  const subscriptions = await Subscriptions.find();
   const getSubscription = req.query.subscription == 'true';
   delete req.query.subscription;
   let blockages = [];
-  if (getSubscription) {
+  if (getSubscription && req.session.user._id) {
+    const subscriptions = await Subscriptions.find({ user: req.session.user._id });
     function inCircle(circle, point) {
       let point1 = {lat: circle.center.coordinates[0], lon: circle.center.coordinates[1]};
       let point2 = {lat: point[0], lon: point[1]}

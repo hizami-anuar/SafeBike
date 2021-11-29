@@ -181,7 +181,7 @@ export default {
     },
 
     updateCreateRegionCenter(data) {
-      this.subscriptionFormData.center.coordinates = data.center;
+      this.subscriptionFormData.center.coordinates = data.center.coordinates;
     },
 
     selectRegion(data) {
