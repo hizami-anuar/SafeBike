@@ -11,8 +11,8 @@
       :editable="editable"
     />
     <template v-if="editable">
-      <input type="submit" value="Update" v-on:click.prevent="updateSubscription" />
-      <input type="submit" value="Delete" v-on:click.prevent="deleteSubscription" />
+      <button v-on:click.prevent="updateSubscription">Update</button>
+      <button v-on:click.prevent="deleteSubscription">Delete</button>
     </template>
   </div>
 </template>
@@ -39,6 +39,9 @@ export default {
 
 <style scoped>
 .subscription-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 20px;
   border: 1px solid black;
   background-color: rgb(186, 186, 235);
@@ -55,5 +58,21 @@ export default {
   background-color: rgba(0, 0, 0, 0);
   border: rgba(0, 0, 0, 0);
   text-align: center;
+}
+
+button {
+  font-size: 25px;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  height: 60%;
+  margin-top: 4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(88, 44, 192);
+  color: white;
+  padding: 10px 15px;
+  border: none;
 }
 </style>

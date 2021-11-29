@@ -1,16 +1,19 @@
 <template>
   <div class="subscription-container">
-    <h3><input class="subscription-name" type="text" v-model="subscription.name" :disabled="!editable" /></h3>
+    <h3>Subscription Title</h3>
+    <input class="subscription-name" type="text" v-model="subscription.name" :disabled="!editable" />
+    <h3>Days:</h3>
     <Days 
       :DAY_NAMES="DAY_NAMES"
       :days="subscription.schedule.days"
       :editable="editable"
     />
+    <h3>Time:</h3>
     <Time
       :schedule="subscription.schedule"
       :editable="editable"
     />
-    <input type="submit" value="Add Subscription" v-on:click.prevent="createSubscription" />
+    <button v-on:click.prevent="createSubscription">Add Subscription</button>
   </div>
 </template>
 
@@ -33,6 +36,9 @@ export default {
 
 <style scoped>
 .subscription-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 20px;
   border: 1px solid black;
   background-color: rgb(186, 186, 235);
@@ -49,5 +55,21 @@ export default {
   background-color: rgba(0, 0, 0, 0);
   border: rgba(0, 0, 0, 0);
   text-align: center;
+}
+
+button {
+  font-size: 25px;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
+  height: 60%;
+  margin-top: 4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(88, 44, 192);
+  color: white;
+  padding: 10px 15px;
+  border: none;
 }
 </style>

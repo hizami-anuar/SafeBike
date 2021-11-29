@@ -25,7 +25,8 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 10px;
+  width: 80%;
+  margin: 10px 10% 10px 10%;
 }
 
 .round {
