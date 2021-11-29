@@ -1,12 +1,15 @@
 <template>
   <div class='outer-container'>
     <div class='comments'>
-     <div v-for='comment in comments' v-bind:key='comment._id'>
+     <div v-if='comments.length===0'>
+        No comments to show :/
+    </div>
+     <div v-else v-for='comment in comments' v-bind:key='comment._id'>
      <div class='single-comment'>
          <div class='profile'>{{comment.username[0].toUpperCase()}}</div>
          <p class='username'><b>@{{comment.username}}</b>  {{comment.content}}</p>
          <p class='time'>{{getTime(comment.timeUsec)}}</p>
-         <img v-if='user._id === comment.userID' v-on:click='deleteComment(comment._id)' class='icon' src="@/assets/delete.png">
+         <img v-if='user && user._id === comment.userID' v-on:click='deleteComment(comment._id)' class='icon' src="@/assets/delete.png">
      </div>
      </div>
      </div>
