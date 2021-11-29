@@ -97,6 +97,7 @@ export default {
       eventBus.$emit('close-marker');
     },
     openCreateBlockageMenu: function(event) {
+      if (!this.loggedIn) return;
       this.createBlockageMenu = {
         active: true,
         location: {
