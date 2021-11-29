@@ -83,6 +83,11 @@ h1, h2 {
   color: rgb(69, 38, 118);
 }
 
+h1 {
+  margin: 10px 0px;
+  padding: 0px;
+}
+
 .checkboxes {
   display: flex;
   flex-direction: column;
@@ -93,6 +98,7 @@ h2 {
   margin-top: 0px;
   margin-bottom: 5px;
   padding: 0px;
+  font-size: 30px;
 }
 .blockage-creator {
   display: flex;
@@ -108,7 +114,7 @@ h2 {
   font-size: 15px;
   margin: 10px auto 10px auto;
   padding: 20px;
-  padding-right: 12px;
+  /* padding-right: 12px; */
   margin-left: 10px;
 }
 
