@@ -5,8 +5,8 @@
         <router-link id='logo-div' to="/"><img class='logo' src="@/assets/navlogo.png"/></router-link>
         <h1>SafeBike</h1>
         <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
-        <router-link class='link' to="/account"><img class='icon' src="@/assets/profile.png"/>My Reports</router-link> 
-        <router-link class='link' to="/subscription"><img class='icon' src="@/assets/notification-bell.png"/>My Alerts</router-link> 
+        <router-link class='link' to="/account" v-if="loggedIn"><img class='icon' src="@/assets/profile.png"/>My Reports</router-link> 
+        <router-link class='link' to="/subscription" v-if="loggedIn"><img class='icon' src="@/assets/notification-bell.png"/>My Alerts</router-link> 
       </div>
       <Logout
         :loggedIn='loggedIn'
@@ -14,8 +14,7 @@
     </div>
     <router-view
       id="page-content"
-      v-bind:loggedIn='loggedIn'
-      v-bind:user='user'/>
+    />
   </div>
 </template>
 
@@ -30,9 +29,6 @@ export default {
   data() {
     return {
       loggedIn: false,
-      loginError: "",
-      logoutError: "",
-      // username: "",
       user: undefined,
     }
   }, 
@@ -43,22 +39,16 @@ export default {
     eventBus.$on('refresh-user', this.refreshUser);
     eventBus.$on('login-event',  this.handleLogin);
     eventBus.$on('logout-event', this.handleLogout);
-    eventBus.$on('login', this.login);
   }, 
   methods: {
+    // Check if the user is logged in.
     refreshUser() {
-      // Check if the user is already logged in.
-      axios.get('/api/session/').then((res) => {
-        // const currentUsername = res.data.username;
-        // const currentUserId = res.data.id;
-        // Empty username means not already logged in, which is assumed
-        // if (currentUsername === "") return;
-        // Update the data fields to reflect that we are already logged in.
-        this.loggedIn = true;
-        // this.username = currentUsername;
-        this.user = res.data;
-        return ;
-      }).catch((err) => console.log(err));
+      axios.get('/api/session/')
+        .then((res) => {
+          this.loggedIn = true;
+          this.user = res.data;
+        })
+        .catch((err) => console.log(err));
     },
     handleLogin(response) {
       this.loggedIn = true;

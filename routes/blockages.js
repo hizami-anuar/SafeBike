@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
   const getSubscription = req.query.subscription == 'true';
   delete req.query.subscription;
   let blockages = [];
-  if (getSubscription && req.session.user._id) {
+  if (getSubscription && req.session.user) {
     const subscriptions = await Subscriptions.find({ user: req.session.user._id });
     function inCircle(circle, point) {
       let point1 = {lat: circle.center.coordinates[0], lon: circle.center.coordinates[1]};
