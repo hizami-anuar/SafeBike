@@ -97,10 +97,20 @@ export default {
       this.commentsPopupShown = !this.commentsPopupShown;
     },
 
-    updateStatus(new_id) {
-      console.log('updating status');
-      this.currBlockageId = new_id;
-      this.refreshBlockages(); // refresh list of blockages when edit, delete or post
+    updateStatus(blockage) {
+      console.log('updating statussss', blockage._id);
+      this.currBlockageId = blockage._id;
+      // refresh list of blockages after an update status
+        axios.get(`/api/blockages?active=true`)
+        .then((response) => {
+          this.blockages = response.data.blockages;
+          this.displayBlockage(this.currBlockageId);
+        }).catch((error) => {
+          this.console.log(error);
+        });
+      // refresh history of the currently viewing blockage
+      eventBus.$emit('refresh-history', this.currBlockage);
+      console.log("RERESHING HISTORY");
     },
     // fetch list of all blockages
     getAllBlockages() {
@@ -119,12 +129,11 @@ export default {
     },
     displayBlockage(id) {
       this.currBlockageId = id;
-      console.log("displaying blockage " + id)
+      console.log("displaying blockage " + this.currBlockageId)
+      
       this.currBlockage = this.currBlockageId ?
         this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
         : undefined;
-      eventBus.$emit('refresh-history', this.currBlockage);
-      console.log("RERESHING HISTORY");
     },
     undisplayBlockage() {
       this.currBlockageId = '';

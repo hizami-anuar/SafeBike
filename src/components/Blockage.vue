@@ -178,8 +178,8 @@ export default {
         axios.post(`/api/blockages/`, fields)
           .then((res) => {
             this.errorMessage = '';
-            eventBus.$emit('updated-status', res.data.blockageData._id);
-            console.log('wassupppp', res.data.blockageData._id);
+            eventBus.$emit('updated-status', res.data.blockageData);
+            console.log('wassupppp', res.data.blockageData);
             // console.log('updated status of blockage , success request')
             // reset description and status of the create blockage
             this.newStatus = this.status;
