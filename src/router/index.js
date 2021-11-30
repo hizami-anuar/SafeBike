@@ -64,10 +64,10 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.beforeEach(async (to, from, next) => {
-  const loggedIn = await axios.get('/api/session/')
-    .then(() => true)
-    .catch(() => false); // dunno a better way to do this
-  if (!["Home", "Login", "Signup", "NotFound"].includes(to.name) && !loggedIn) {
+  const user = await axios.get('/api/session/') // dunno a better way to do this
+    .then((res) => res.data)
+    .catch(() => undefined);
+  if (!user && !["Home", "Login", "Signup", "NotFound"].includes(to.name)) {
     next({ path: '/login' });
   } else {
     next();

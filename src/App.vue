@@ -14,6 +14,8 @@
     </div>
     <router-view
       id="page-content"
+      :loggedIn="loggedIn"
+      :user="user"
     />
   </div>
 </template>
@@ -45,8 +47,12 @@ export default {
     refreshUser() {
       axios.get('/api/session/')
         .then((res) => {
-          this.loggedIn = true;
           this.user = res.data;
+          this.loggedIn = true;
+          if (!this.user) {
+            this.user = undefined;
+            this.loggedIn = false;
+          }
         })
         .catch((err) => console.log(err));
     },

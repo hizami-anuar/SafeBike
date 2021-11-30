@@ -44,13 +44,17 @@ router.post('/', [
  * @name GET /api/session
  * @throws 404 if user is not logged in
  */
-router.get('/', [
-  validateThat.userIsLoggedIn,
-  ], async (req, res) => {
-    // refresh the user object in case it changed
-    const user = await Users.findById(req.session.user._id);
+router.get('/', async (req, res) => {
+    let user = undefined;
+    if (req.session.user) {
+      // refresh user object in case it changed
+      user = await Users.findById(req.session.user._id);
+      if (!user) {
+        user = undefined;
+      }
+      req.session.user = user;
+    }
     res.status(200).json(user);
   });
-
 
 module.exports = router;
