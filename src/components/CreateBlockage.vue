@@ -86,6 +86,7 @@ h1, h2 {
 h1 {
   margin: 10px 0px;
   padding: 0px;
+  font-size: 36px;
 }
 
 .checkboxes {
@@ -98,7 +99,7 @@ h2 {
   margin-top: 0px;
   margin-bottom: 5px;
   padding: 0px;
-  font-size: 30px;
+  font-size: 24px;
 }
 .blockage-creator {
   display: flex;

@@ -34,11 +34,6 @@
         :position="createBlockageMenu.location"
       />
     </GmapMap>
-    <div class='instructions'>
-      <p>Click on an existing pin to view details on the blockage report</p>
-      <p v-if='loggedIn'>Double click on the map to report a new blockage.</p>
-      <p v-else>Please log in to report a new blockage</p>
-    </div>
     <CreateBlockage 
       class='create-blockage'
       v-if="createBlockageMenu.active"
@@ -118,21 +113,6 @@ export default {
 </script>
 
 <style scoped>
-
-.instructions {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  padding: 6px 12px;
-  z-index: 3;
-  background-color: white;
-  transform: translate(-50%, 0);
-}
-
-.instructions p {
-  margin: 0px;
-  padding: 0px;
-}
 .create-blockage {
   z-index: 1;
   position: fixed;

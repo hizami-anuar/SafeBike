@@ -5,6 +5,7 @@
     </div>
     <div v-else>
       <Blockage
+        class="blockage"
         v-for='blockage in blockages'
         v-bind:key='blockage._id'
         :blockageData='blockage'
@@ -41,3 +42,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.blockage {
+  margin-top: 20px;
+}
+</style>

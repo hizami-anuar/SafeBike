@@ -7,6 +7,19 @@
         :loggedIn='loggedIn'
         :user='user'
       />
+      <div
+        class='instructions' 
+        v-if="instructionsShown"
+        @click="closeInstructions"
+        >
+        <p>Click on an existing pin to view details on the blockage report.</p>
+        <template v-if='loggedIn'>
+          <p>Double click on the map to report a new blockage.</p>
+          <p>Subscribe to new blockages in a region in the My Alerts tab.</p>
+          <p>Access account settings via the profile icon in the top-right.</p>
+        </template>
+        <p v-else>Log in to report new blockages and subscribe to blockage alerts.</p>
+      </div>
       <Blockage
         class="blockage-popup"
         v-if='currBlockage'
@@ -56,6 +69,7 @@ export default {
       currBlockage: undefined,
       historyPopupShown: false,
       commentsPopupShown: false,
+      instructionsShown: true,
     }
   }, 
   computed: {
@@ -95,6 +109,9 @@ export default {
     },
     toggleCommentsPopup() {
       this.commentsPopupShown = !this.commentsPopupShown;
+    },
+    closeInstructions() {
+      this.instructionsShown = false;
     },
 
     updateStatus(blockage) {
@@ -150,6 +167,23 @@ main {
   align-items: center;
   margin: 0;
 }
+
+.instructions {
+  position: absolute;
+  top: 90px;
+  left: 50%;
+  padding: 6px 12px;
+  z-index: 3;
+  background-color: white;
+  transform: translate(-50%, 0);
+  cursor: pointer;
+}
+
+.instructions p {
+  margin: 0px;
+  padding: 0px;
+}
+
 .blockage-popup {
   position:fixed;
   top: 20%;

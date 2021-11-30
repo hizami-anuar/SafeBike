@@ -63,7 +63,7 @@
     <fieldset>
       <legend>Delete Account</legend>
       <p>
-        <b><u>Warning:</u></b> deleting your account will remove your username from your blockage reports, but will not delete them. You will also lose the ability to modify any of your blockage reports. This is permanent and cannot be undone.
+        <b><u>Warning:</u></b> Deleting your account will remove your username from your blockage reports, but will not delete them. You will also lose the ability to modify any of your blockage reports. This is permanent and cannot be undone.
       </p>
       <button class='delete-account-button' v-on:click.prevent='deleteAccount'>Delete Account</button>
     </fieldset>
