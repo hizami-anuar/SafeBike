@@ -34,8 +34,11 @@ export default {
     }
   },
   mounted() {
-    eventBus.$on('refresh-blockages', this.getBlockages)
+    eventBus.$on('refresh-blockages', this.getBlockages);
     this.getBlockages();
+  },
+  beforeDestroy() {
+    eventBus.$off('refresh-blockages', this.getBlockages)
   },
   methods: {
     getBlockages() {

@@ -17,6 +17,7 @@
       <Popup v-if='historyPopupShown' @close-popup='closeHistoryPopup'>
       <History 
         :blockageData='currBlockage'
+        :key='currBlockage._id'
         :user='user'/></Popup>
       <Popup v-if='commentsPopupShown' @close-popup='closeCommentsPopup'>
       <Comments
@@ -67,10 +68,19 @@ export default {
   mounted() {
     this.getAllBlockages();
     eventBus.$on('refresh-blockages', this.refreshBlockages);
+    eventBus.$on('updated-status', this.updateStatus);
     eventBus.$on('open-marker', this.displayBlockage);
     eventBus.$on('close-marker', this.undisplayBlockage);
     eventBus.$on("history-clicked", this.toggleHistoryPopup);
     eventBus.$on('comments-clicked', this.toggleCommentsPopup);
+  },
+  beforeDestroy: function() {
+    eventBus.$off('refresh-blockages', this.refreshBlockages);
+    eventBus.$off('updated-status', this.updateStatus);
+    eventBus.$off('open-marker', this.displayBlockage);
+    eventBus.$off('close-marker', this.undisplayBlockage);
+    eventBus.$off("history-clicked", this.toggleHistoryPopup);
+    eventBus.$off('comments-clicked', this.toggleCommentsPopup);
   },
   methods: {
     toggleHistoryPopup () {
@@ -85,6 +95,12 @@ export default {
     },
     toggleCommentsPopup() {
       this.commentsPopupShown = !this.commentsPopupShown;
+    },
+
+    updateStatus(new_id) {
+      console.log('updating status');
+      this.currBlockageId = new_id;
+      this.refreshBlockages(); // refresh list of blockages when edit, delete or post
     },
     // fetch list of all blockages
     getAllBlockages() {
@@ -103,10 +119,12 @@ export default {
     },
     displayBlockage(id) {
       this.currBlockageId = id;
-      // console.log("displaying blockage " + id)
+      console.log("displaying blockage " + id)
       this.currBlockage = this.currBlockageId ?
         this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
         : undefined;
+      eventBus.$emit('refresh-history', this.currBlockage);
+      console.log("RERESHING HISTORY");
     },
     undisplayBlockage() {
       this.currBlockageId = '';

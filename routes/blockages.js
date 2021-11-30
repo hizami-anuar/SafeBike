@@ -91,11 +91,13 @@ router.post("/",
       parentBlockage: req.body.parentBlockage, // parent blockage comes from body
       comments: []
     };
+    // console.log('parent blockage: ', req.body.parentBlockage);
     if (req.body.parentBlockage) {
-      Blockages.findOneAndUpdate({ _id: req.body.parentBlockage }, { active: false });
+      await Blockages.findOneAndUpdate({ _id: req.body.parentBlockage }, { active: false });
     }
-    await Blockages.create(blockage);
-    res.status(200).json(blockage).end();
+    
+    let createdBlockage = await Blockages.create(blockage);
+    res.status(200).json({blockageData: createdBlockage}).end();
   });
 
 /**

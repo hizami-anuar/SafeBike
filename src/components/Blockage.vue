@@ -176,10 +176,11 @@ export default {
           parentBlockage: this.blockageData._id,
         };
         axios.post(`/api/blockages/`, fields)
-          .then(() => {
+          .then((res) => {
             this.errorMessage = '';
-            eventBus.$emit('refresh-blockages'); // refresh the list of blockages
-            console.log('updated status of blockage , success request')
+            eventBus.$emit('updated-status', res.data.blockageData._id);
+            console.log('wassupppp', res.data.blockageData._id);
+            // console.log('updated status of blockage , success request')
             // reset description and status of the create blockage
             this.newStatus = this.status;
           })
@@ -265,6 +266,11 @@ h1 {
 }
 .checkboxes span {
   margin: 2px;
+}
+
+h2 {
+  margin-top: 0px;
+  font-size: 28px;
 }
 
 h2 {
@@ -401,7 +407,7 @@ button:hover:enabled {
   border-radius: 15px;
   color: black;
   font-size: 15px;
-  margin: 10px auto 10px auto;
+  margin: -20px auto 10px auto;
   padding: 20px;
   /* padding-right: 12px; */
 }

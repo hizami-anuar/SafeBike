@@ -21,6 +21,7 @@
 <script>
 
 import axios from 'axios';
+import { eventBus } from "@/main";
 
 export default {
   name: 'History',
@@ -39,31 +40,11 @@ export default {
   computed() {
   },
   mounted() {
-
-    axios.get(`/api/blockages`)
-    .then((response) => {
-      console.log('success fritter');
-      let blockages = response.data.blockages;
-      console.log(blockages);
-
-      let currBlockage = this.blockageData;
-      this.history = [];
-      console.log('hiii');
-      console.log(currBlockage.parentBlockage);
-      console.log(this.blockages);
-      currBlockage = currBlockage.parentBlockage ?
-          blockages.filter((blockage) => blockage._id == currBlockage.parentBlockage)[0]
-          : undefined;
-      while (currBlockage) {
-        this.history.push(currBlockage);
-        currBlockage = currBlockage.parentBlockage ?
-          blockages.filter((blockage) => blockage._id == currBlockage.parentBlockage)[0]
-          : undefined;
-      }
-    }).catch((error) => {
-      this.console.log(error);
-    });
-    console.log(this.history);
+    this.getHistory();
+    eventBus.$on('refresh-history', this.refreshHistory);
+  },
+  beforeDestroy() {
+    eventBus.$off('refresh-history', this.refreshHistory);
   },
   methods: {
     date(blockage) {
@@ -71,6 +52,36 @@ export default {
       date.setUTCSeconds(blockage.time/1000);
       return date.toLocaleString('en-US');
     },
+    refreshHistory(currBlockage) {
+      this.blockageData = currBlockage;
+      this.getHistory();
+    },
+    getHistory() {
+      console.log('getting history');
+      axios.get(`/api/blockages`)
+      .then((response) => {
+        console.log('success fritter');
+        let blockages = response.data.blockages;
+        console.log(blockages);
+
+        let currBlockage = this.blockageData;
+        this.history = [];
+        console.log(currBlockage.parentBlockage);
+        console.log(this.blockages);
+        currBlockage = currBlockage.parentBlockage ?
+            blockages.filter((blockage) => blockage._id == currBlockage.parentBlockage)[0]
+            : undefined;
+        while (currBlockage) {
+          this.history.push(currBlockage);
+          currBlockage = currBlockage.parentBlockage ?
+            blockages.filter((blockage) => blockage._id == currBlockage.parentBlockage)[0]
+            : undefined;
+        }
+      }).catch((error) => {
+        this.console.log(error);
+      });
+      console.log(this.history);
+    }
   },
 }
 </script>
