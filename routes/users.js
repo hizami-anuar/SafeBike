@@ -42,6 +42,8 @@ router.post("/",
     const user = await Users.create({
       username: req.body.username,
       password: req.body.password,
+      activityScore: 0,
+      activityLevel: 1,
     });
     delete user.password;
     req.session.user = user;

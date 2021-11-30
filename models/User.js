@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   username: String,
   password: String,
   activityScore: Number,
+  activityLevel: Number,
 })
 
 userSchema.methods = {
