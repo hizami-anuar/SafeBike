@@ -94,11 +94,15 @@ then you will find the application at `localhost:8080` in the browser
 
   - src
     - App.vue
+    - Login.vue
     - Logout.vue
+    - Signup.vue
     - main.js
   - models:
     - Blockage.js
+    - Comment.js
   - routes:
+    - blockages.js
     - index.js
     - middleware.js
     - session.js
