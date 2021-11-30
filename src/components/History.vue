@@ -1,16 +1,16 @@
 <template>
   <div class='outer-container'>
     <div v-if='history.length!==0'>
-    <div class='history' v-for='blockage in history' v-bind:key='blockage._id'>
-    <div class='reporter'>
-    <div class='profile'>{{blockage.reporterUsername[0].toUpperCase()}}</div>
-      <span class='username'>@{{blockage.reporterUsername}}</span>
-    </div>
-    <h1>{{  blockage.status.toUpperCase()  }}</h1>
-      <span class="description" v-if='blockage.description.length!==0'>{{  blockage.description }}</span>
-      <br>
-      <span>{{  date(blockage)  }}</span>
-    </div>
+      <div class='history' v-for='blockage in history' v-bind:key='blockage._id'>
+        <div class='reporter'>
+          <div class='profile'>{{blockage.reporter.username[0].toUpperCase()}}</div>
+          <span class='username'>@{{blockage.reporter.username}}</span>
+        </div>
+        <h1>{{  blockage.status.toUpperCase()  }}</h1>
+          <span class="description" v-if='blockage.description.length!==0'>{{  blockage.description }}</span>
+          <br>
+          <span>{{  date(blockage)  }}</span>
+      </div>
     </div>
     <div v-else>
       <span class='no-history'>No previous updates to show :/</span>

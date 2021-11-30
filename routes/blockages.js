@@ -42,7 +42,13 @@ router.get("/", async (req, res) => {
   blockages = await Promise.all(blockages.map(async (blockage) => {
     blockage = blockage.toObject(); // hopefully don't need it as a document
     const reporter = await Users.findOne({_id: blockage.reporter});
-    blockage.reporterUsername = reporter ? reporter.username : "[deleted user]";
+    blockage.reporter = reporter ? {
+      _id: reporter._id,
+      username: reporter.username,
+      activityLevel: reporter.activityLevel,
+    } : {
+      username: "[deleted user]",
+    };
     
     const userId = req.session.user && req.session.user._id; // id or undefined
     // console.log(userId);

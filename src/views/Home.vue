@@ -173,7 +173,7 @@ main {
   top: 90px;
   left: 50%;
   padding: 6px 12px;
-  z-index: 3;
+  /* z-index: 3; */
   background-color: white;
   transform: translate(-50%, 0);
   cursor: pointer;

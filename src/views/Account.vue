@@ -2,7 +2,7 @@
   <div class="account">
     <div v-if='loggedIn'>
     <p>Welcome back, {{user.username}}!</p>
-    <p>Level 0</p>
+    <h3>Level {{ user.activityLevel }}</h3>
     <h3>Activity Points: {{ user.activityScore }}</h3>
     </div>
     <h2>My Reports</h2>
@@ -44,7 +44,7 @@ export default {
     getBlockages() {
       axios.get(`/api/blockages`)
         .then((response) => {
-          this.blockages = response.data.blockages.filter(blockage => blockage.reporter == this.user._id);
+          this.blockages = response.data.blockages.filter(blockage => blockage.reporter._id == this.user._id);
         }).catch((error) => {
           console.log(error);
         });

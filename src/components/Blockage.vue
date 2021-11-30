@@ -1,8 +1,9 @@
 <template>
   <form action="" class="blockage-creator" @submit.prevent=''>
     <div class='reporter'>
-    <div class='profile'>{{reporterUsername[0].toUpperCase()}}</div>
-      <span class='username'>@{{reporterUsername}}</span>
+    <div class='profile'>{{reporter.username[0].toUpperCase()}}</div>
+      <span class='username'>@{{reporter.username}}</span>
+      <span v-if="reporter"> (Level {{ reporter.activityLevel }})</span>
     </div>
     <h1>{{  newStatus.toUpperCase()  }}</h1>
       <button v-if='loggedIn && !editing && !updatingStatus' v-on:click='updateStatus'>Update Status</button>
@@ -83,8 +84,7 @@ export default {
       newStatus: '', // updated status for editing mode
       newDescription: '', // updated description for edidting mode
       date: '', // formated time for displaying (human readable) 
-      reporterUsername: this.blockageData.reporterUsername,
-      reporterId: this.blockageData.reporter,
+      reporter: this.blockageData.reporter, // contains {username, activityLevel} from original reporter
       updatingStatus: false, // whether the user is currently updating the status
       votes: this.blockageData.voteCount,
     }
@@ -92,7 +92,7 @@ export default {
   computed: {
     upvoted() { return this.blockageData.upvoted; },
     downvoted() { return this.blockageData.downvoted; },
-    ownsBlockage() { return this.loggedIn && this.user._id === this.reporterId; }
+    ownsBlockage() { return this.loggedIn && this.user._id === this.reporter._id; }
   },
   mounted() {
     // updated description and status starts off same as current to display initially
