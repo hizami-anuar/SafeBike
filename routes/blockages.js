@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
     const subscriptions = await Subscriptions.find({ user: req.session.user._id });
     function inCircle(circle, point) {
       let point1 = {lat: circle.center.coordinates[0], lon: circle.center.coordinates[1]};
-      let point2 = {lat: point[0], lon: point[1]}
+      let point2 = {lat: point[0], lon: point[1]};
       let distance = computeDistanceBetween(point1, point2);
       return distance <= circle.radius;
     }

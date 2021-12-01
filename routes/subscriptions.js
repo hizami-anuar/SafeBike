@@ -29,6 +29,7 @@ router.get("/",
  * 
  * @return {Subscription} - the created subscription
  * @throws {403} - if user is not logged in
+ * @throws {400} - if subscription fields are missing
  */
 router.post("/", 
   [
