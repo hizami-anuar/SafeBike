@@ -1,5 +1,5 @@
 <template>
-  <div class="subscription-container">
+  <div :class="containerClass" v-on:click="selectSubscription">
     <h3><input class="subscription-name" type="text" v-model="subscription.name" :disabled="!editable" /></h3>
     <Days 
       :DAY_NAMES="DAY_NAMES"
@@ -11,8 +11,10 @@
       :editable="editable"
     />
     <template v-if="editable">
-      <button v-on:click.prevent="updateSubscription">Update</button>
-      <button v-on:click.prevent="deleteSubscription">Delete</button>
+      <span class="buttons-container">
+        <button class="update-button" v-on:click.prevent="updateSubscription">Update</button>
+        <button class="delete-button" v-on:click.prevent="deleteSubscription">Delete</button>
+      </span>
     </template>
   </div>
 </template>
@@ -26,6 +28,11 @@ export default {
   name: 'SubscriptionItem',
   props: ['subscription', 'editable', 'DAY_NAMES'],
   components: { Days, Time },
+  computed: {
+    containerClass () {
+      return this.editable ? "subscription-container" : "subscription-container clickable";
+    },
+  },
   methods: {
     deleteSubscription() {
       eventBus.$emit('delete-subscription', this.subscription);
@@ -33,6 +40,9 @@ export default {
     updateSubscription() {
       eventBus.$emit('update-subscription', this.subscription);
     },
+    selectSubscription() {
+      if (!this.editable) { eventBus.$emit('circle-clicked', this.subscription) };
+    }
   },
 }
 </script>
@@ -49,6 +59,10 @@ export default {
   border-radius: 15px;
 }
 
+.clickable:hover {
+  cursor: pointer;
+}
+
 .subscription-name {
   font-size: 30px;
   color: rgb(104, 27, 192);
@@ -58,6 +72,21 @@ export default {
   background-color: rgba(0, 0, 0, 0);
   border: rgba(0, 0, 0, 0);
   text-align: center;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 100%;
+}
+
+.update-button {
+  background: green;
+}
+
+.delete-button {
+  background: red;
 }
 
 button {
