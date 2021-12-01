@@ -41,7 +41,7 @@ export default {
       eventBus.$emit('update-subscription', this.subscription);
     },
     selectSubscription() {
-      if (!this.editable) { eventBus.$emit('circle-clicked', this.subscription) };
+      if (!this.editable) { eventBus.$emit('circle-clicked', this.subscription); }
     }
   },
 }
