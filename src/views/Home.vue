@@ -66,18 +66,17 @@ export default {
     return {
       blockages: [], // list of blockage objects to display 
       currBlockageId: undefined,
-      currBlockage: undefined,
       historyPopupShown: false,
       commentsPopupShown: false,
       instructionsShown: true,
     }
   }, 
   computed: {
-    // currBlockage () {
-    //   return this.currBlockageId ?
-    //     this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
-    //     : undefined;
-    // }
+    currBlockage () {
+      return this.currBlockageId ?
+        this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
+        : undefined;
+    }
   },
   mounted() {
     this.getAllBlockages();
@@ -121,7 +120,9 @@ export default {
         axios.get(`/api/blockages?active=true`)
         .then((response) => {
           this.blockages = response.data.blockages;
-          this.displayBlockage(this.currBlockageId);
+          // this.currBlockage = this.currBlockageId ?
+          //   this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
+          //   : undefined;
         }).catch((error) => {
           this.console.log(error);
         });
@@ -148,13 +149,13 @@ export default {
       this.currBlockageId = id;
       console.log("displaying blockage " + this.currBlockageId)
       
-      this.currBlockage = this.currBlockageId ?
+      /*this.currBlockage = this.currBlockageId ?
         this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
-        : undefined;
+        : undefined;*/
     },
     undisplayBlockage() {
       this.currBlockageId = '';
-      this.currBlockage = undefined;
+      //this.currBlockage = undefined;
     }
   }
 }
