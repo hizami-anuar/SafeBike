@@ -73,14 +73,6 @@ Remove downvote for a blockage.
 - @throws {403} - if user is not logged in
 - @throws {404} - if blockage with the given id does not exist
 
-# Comments - TODO
-
-**GET /api/blockages/comments/:id**
-
-**POST /api/blockages/comments/:id**
-
-**DELETE /api/blockages/comments/:id**
-
 # Users
 
 **GET /api/users**
@@ -146,6 +138,25 @@ Remove username of active user.
 Get current active user. If not logged in, a 404 shall be returned.
 
 - @throws 404 if user is not logged in
+
+# Comments
+
+**Get /api/blockages/comments/:id**
+
+Get all the comments under a post with the specified id.
+- @throws {404} - if the specified blockage does not exist
+
+**POST /api/blockages/comments/:id**
+
+Post a new comment under the post with the specified id.
+- @throws {403} - if user is not logged in
+- @throws {404} - if the blockage object doesn't exist
+
+**DELETE /api/blockages/comments/:id**
+
+Delete a comment object.
+- @throws {403} - if user is not logged in or does not have permission (user deleting someone else's comment)
+- @throws {404} - if the Comment doesn't exist.
 
 # Subscriptions
 

@@ -57,16 +57,34 @@ then you will find the application at `localhost:8080` in the browser
   - API.md
 
 - **Victor Luo**:
-
-  - src
-    - Map.vue
-    - CreateBlockage.vue
-    - MapMarker.vue
-    - Home.vue
-    - main.js
-    - definePopupClass.js
   - models:
     - Blockage.js
+    - User.js
+  - public
+    - style.css
+  - src
+    - Account.vue
+    - App.vue
+    - Blockage.vue
+    - Blockages.vue
+    - CreateBlockage.vue
+    - Debug.vue
+    - History.vue
+    - Home.vue
+    - Login.vue
+    - Settings.vue
+    - Signup.vue
+    - Map.vue
+    - MapMarker.vue
+    - definePopupClass.js
+    - main.js
+  - router
+    - index.js
+  - routes
+    - blockages.js
+    - middleware.js
+    - session.js
+    - users.js
 
 - **Karen Gao**:
 
