@@ -255,7 +255,14 @@ router.delete("/downvote/:id", [
   });
 
 /////////// COMMENT FUNCTIONS /////////////
-// find all comments of a post with id in param
+/**
+ * Get all the comments under a post with the specified id.
+ *
+ * @name GET /api/blockages/comments/:id
+ * @param {string} id - the id of the blockage to get the comments from
+ * @return {Comment[]} - list of blockages
+ * @throws {404} - if the specified blockage does not exist.
+ */
 router.get("/comments/:id", [
   validateThat.blockageExists,
 ], async (req, res) => {
@@ -268,7 +275,16 @@ router.get("/comments/:id", [
   res.status(200).json(comments);
 });
 
-// post a new comment under a post with the given id
+/**
+ * Post a new comment under the post with the specified id.
+ *
+ * @name POST /api/blockages/comments/:id
+ *
+ * @param {string} id - id of the blockage item the user is commenting on
+ * @return {Blockage} - the updated blockage item that the comment belongs to
+ * @throws {403} - if user is not logged in
+ * @throws {404} - if the blockage object doesn't exist
+ */
 router.post("/comments/:id", [
   validateThat.userIsLoggedIn, 
   validateThat.blockageExists,
@@ -287,20 +303,28 @@ router.post("/comments/:id", [
     res.status(200).json(response).end();
 });
 
-// delete a comment object 
-// TODO: user can only delete their own comment middleware
+/**
+ * Delete a comment object.
+ *
+ * @name DELETE /api/blockages/comments/:id
+ * 
+ * @param {string} id - the id of the comment to delete.
+ * @return {Comment} - the deleted comment
+ * @throws {403} - if user is not logged in or does not have permission (user deleting someone else's comment)
+ * @throws {404} - if the Comment doesn't exist.
+ */
 router.delete("/comments/:id", [
   validateThat.userIsLoggedIn,
   validateThat.commentExists,
-  // validateThat.userHasPermissionComment,
+  validateThat.userHasPermissionComment,
 ],
   async(req, res) => {
     comment = await Comments.findOne({_id: req.params.id});
     blockage = await Blockages.findOne({_id: comment.blockage});
     let updated_comments = blockage.comments.filter((commentId) => commentId !== req.params.id);
     updated = await Blockages.findOneAndUpdate({_id: comment.blockage}, {comments: updated_comments});
-    response = await Comments.findOneAndDelete({ _id: req.params.id });
-    res.status(200).json(response).end();
+    comment = await Comments.findOneAndDelete({ _id: req.params.id });
+    res.status(200).json(comment).end();
   });
 
   module.exports = router;

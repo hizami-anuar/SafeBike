@@ -140,7 +140,7 @@ const commentExists = async (req, res, next) => {
 // Checks that the user has permission to edit/delete a blockage
 const userHasPermissionComment = async (req, res, next) => {
   const comment = await Comments.findOne({ _id: req.params.id });
-  if (comment && comment._id !== req.session.user._id) {
+  if (comment && comment.userID != req.session.user._id) {
     return sendError(res, 403, 'You do not have permission to edit or delete this comment!');
   }
   next()
