@@ -35,6 +35,44 @@ Delete a blockage.
 - @return {Blockage} - the deleted blockage
 - @throws {403} - if user is not logged in or does not have permission
 
+# Voting
+
+**POST /api/blockages/upvote/:id**
+
+Upvote a blockage (removing downvote if exists).
+
+- @return {Blockage} - the upvoted blockage
+- @throws {403} - if user is not logged in
+
+**POST /api/blockages/downvote/:id**
+
+Downvote a blockage (removing upvote if exists).
+
+- @return {Blockage} - the downvoted blockage
+- @throws {403} - if user is not logged in
+
+**DELETE /api/blockages/upvote/:id**
+
+Remove upvote for a blockage.
+
+- @return {Blockage} - the unupvoted blockage
+- @throws {403} - if user is not logged in
+
+**DELETE /api/blockages/downvote/:id**
+
+Remove downvote for a blockage.
+
+- @return {Blockage} - the undownvoted blockage
+- @throws {403} - if user is not logged in
+
+# Comments - TODO
+
+**GET /api/blockages/comments/:id**
+
+**POST /api/blockages/comments/:id**
+
+**DELETE /api/blockages/comments/:id**
+
 # Users
 
 **GET /api/users**
@@ -100,3 +138,36 @@ Remove username of active user.
 Get current active user. If not logged in, a 404 shall be returned.
 
 - @throws 404 if user is not logged in
+
+# Subscriptions
+
+**GET /api/subscriptions**
+
+Get the current user's subscription
+
+- @return {Subscription[]} - list of user's subscriptions
+- @throws {403} - if user is not logged in
+
+**POST /api/subscriptions**
+
+Create a subscription.
+
+- @return {Subscription} - the created subscription
+- @throws {403} - if user is not logged in
+- @throws {400} - if subscription fields are missing
+
+**PATCH /api/subscriptions/:id**
+
+Update a subscription.
+
+- @return {Subscription} - the updated subscription
+- @throws {403} - if user is not logged in or does not have permission
+- @throws {404} - if no subscription with the given id exists
+
+**DELETE /api/subscriptions/:id**
+
+Delete a subscription.
+
+- @return {Subscription} - the deleted subscription
+- @throws {403} - if user is not logged in or does not have permission
+- @throws {404} - if no subscription with the given id exists
