@@ -15,6 +15,8 @@ Create a blockage.
 - @param {Object} location - object with latitude/longitude values
 - @param {string} description - description of blockage
 - @param {string} status - status of blockage
+- @param {Boolean} active - whether the blockage is active or not (historical)
+- @param {Blockage} parentBlockage - the blockage that this supercedes, or none
 - @return {Blockage} - the created blockage
 - @throws {403} - if user is not logged in
 
@@ -27,6 +29,7 @@ Update a blockage.
 - @param {string} status - status of blockage
 - @return {Blockage} - the updated blockage
 - @throws {403} - if user is not logged in or does not have permission
+- @throws {404} - if blockage with the given id does not exist
 
 **DELETE /api/blockages/:id**
 
@@ -34,8 +37,9 @@ Delete a blockage.
 
 - @return {Blockage} - the deleted blockage
 - @throws {403} - if user is not logged in or does not have permission
+- @throws {404} - if blockage with the given id does not exist
 
-# Voting
+# Votes
 
 **POST /api/blockages/upvote/:id**
 
@@ -43,6 +47,7 @@ Upvote a blockage (removing downvote if exists).
 
 - @return {Blockage} - the upvoted blockage
 - @throws {403} - if user is not logged in
+- @throws {404} - if blockage with the given id does not exist
 
 **POST /api/blockages/downvote/:id**
 
@@ -50,6 +55,7 @@ Downvote a blockage (removing upvote if exists).
 
 - @return {Blockage} - the downvoted blockage
 - @throws {403} - if user is not logged in
+- @throws {404} - if blockage with the given id does not exist
 
 **DELETE /api/blockages/upvote/:id**
 
@@ -57,6 +63,7 @@ Remove upvote for a blockage.
 
 - @return {Blockage} - the unupvoted blockage
 - @throws {403} - if user is not logged in
+- @throws {404} - if blockage with the given id does not exist
 
 **DELETE /api/blockages/downvote/:id**
 
@@ -64,6 +71,7 @@ Remove downvote for a blockage.
 
 - @return {Blockage} - the undownvoted blockage
 - @throws {403} - if user is not logged in
+- @throws {404} - if blockage with the given id does not exist
 
 # Comments - TODO
 
