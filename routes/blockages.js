@@ -292,7 +292,7 @@ router.post("/comments/:id", [
 router.delete("/comments/:id", [
   validateThat.userIsLoggedIn,
   validateThat.commentExists,
-  validateThat.userHasPermissionComment,
+  // validateThat.userHasPermissionComment,
 ],
   async(req, res) => {
     comment = await Comments.findOne({_id: req.params.id});
