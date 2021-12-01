@@ -65,14 +65,6 @@ Remove downvote for a blockage.
 - @return {Blockage} - the undownvoted blockage
 - @throws {403} - if user is not logged in
 
-# Comments - TODO
-
-**GET /api/blockages/comments/:id**
-
-**POST /api/blockages/comments/:id**
-
-**DELETE /api/blockages/comments/:id**
-
 # Users
 
 **GET /api/users**
