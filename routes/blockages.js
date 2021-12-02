@@ -116,6 +116,7 @@ router.post("/",
  * @param {string} status - status of blockage
  * @return {Blockage} - the updated blockage
  * @throws {403} - if user is not logged in or does not have permission
+ * @throws {404} - if blockage with the given id does not exist
  */
 router.patch("/:id", 
   [
@@ -156,6 +157,7 @@ router.patch("/:id",
  *
  * @return {Blockage} - the deleted blockage
  * @throws {403} - if user is not logged in or does not have permission
+ * @throws {404} - if blockage with the given id does not exist
  */
 router.delete("/:id", [
     validateThat.userIsLoggedIn,
@@ -178,6 +180,7 @@ router.delete("/:id", [
  *
  * @return {Blockage} - the upvoted blockage
  * @throws {403} - if user is not logged in
+ * @throws {404} - if blockage with the given id does not exist
  */
 router.post("/upvote/:id", [
     validateThat.userIsLoggedIn,
@@ -203,6 +206,7 @@ router.post("/upvote/:id", [
  *
  * @return {Blockage} - the downvoted blockage
  * @throws {403} - if user is not logged in
+ * @throws {404} - if blockage with the given id does not exist
  */
 router.post("/downvote/:id", [
     validateThat.userIsLoggedIn,
@@ -225,6 +229,7 @@ router.post("/downvote/:id", [
  *
  * @return {Blockage} - the unupvoted blockage
  * @throws {403} - if user is not logged in
+ * @throws {404} - if blockage with the given id does not exist
  */
 router.delete("/upvote/:id", [
     validateThat.userIsLoggedIn,
@@ -243,6 +248,7 @@ router.delete("/upvote/:id", [
  *
  * @return {Blockage} - the undownvoted blockage
  * @throws {403} - if user is not logged in
+ * @throws {404} - if blockage with the given id does not exist
  */
 router.delete("/downvote/:id", [
     validateThat.userIsLoggedIn,

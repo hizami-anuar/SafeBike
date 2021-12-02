@@ -31,6 +31,7 @@ then you will find the application at `localhost:8080` in the browser
 
   - src
     - App.vue
+  - src/views
     - Subscription.vue
   - src/components
     - Map.vue
@@ -40,8 +41,11 @@ then you will find the application at `localhost:8080` in the browser
     - CreateCircle.vue
     - SubscriptionCircle.vue
     - SubscriptionItem.vue
+    - Days.vue
+    - Time.vue
   - models:
     - Blockage.js
+    - Subscription.js
   - routes:
     - blockages.js
     - subscriptions.js
@@ -51,19 +55,36 @@ then you will find the application at `localhost:8080` in the browser
   - router:
     - index.js
   - API.md
-  - heuristics.md
 
 - **Victor Luo**:
-
-  - src
-    - Map.vue
-    - CreateBlockage.vue
-    - MapMarker.vue
-    - Home.vue
-    - main.js
-    - definePopupClass.js
   - models:
     - Blockage.js
+    - User.js
+  - public
+    - style.css
+  - src
+    - Account.vue
+    - App.vue
+    - Blockage.vue
+    - Blockages.vue
+    - CreateBlockage.vue
+    - Debug.vue
+    - History.vue
+    - Home.vue
+    - Login.vue
+    - Settings.vue
+    - Signup.vue
+    - Map.vue
+    - MapMarker.vue
+    - definePopupClass.js
+    - main.js
+  - router
+    - index.js
+  - routes
+    - blockages.js
+    - middleware.js
+    - session.js
+    - users.js
 
 - **Karen Gao**:
 
