@@ -26,17 +26,17 @@
           <CreateSubscriptionItem 
             :DAY_NAMES='DAY_NAMES'
             :subscription='subscriptionFormData'
+            @cancel='cancelCreate'
             :editable='true' />
         </form>
-        <button v-on:click="cancelCreate">Cancel</button>
       </template>
       <template v-else-if="selectedCircle">
         <h1>Update Alert</h1>
         <SubscriptionItem 
           :DAY_NAMES='DAY_NAMES'
           :subscription='selectedCircle'
+          @cancel='cancelSelect'
           :editable='true'/>
-        <button v-on:click="cancelSelect">Cancel</button>
       </template>
       <template v-else>
         <h1>Subscriptions</h1>

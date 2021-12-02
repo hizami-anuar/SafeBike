@@ -3,7 +3,7 @@
     <div class="round" 
       v-for="(day, index) in DAY_NAMES"
       :key="index">
-      <label :class="days[index] ? 'checked-label' : 'unchecked-label'">
+      <label :id="editable ? 'editable' : ''" :class="days[index] ? 'checked-label' : 'unchecked-label'">
         {{ day }}
         <input type="checkbox" 
           v-model="days[index]"
@@ -44,11 +44,19 @@ export default {
   border-width: 3px;
   border-style: solid;
   border-radius: 50%;
-  cursor: pointer;
+  /* cursor: pointer; */
   height: var(--day-size);
   width: var(--day-size);
   position: absolute;
   top: 0;
+}
+
+#editable {
+  cursor: pointer;
+}
+
+#editable.unchecked-label:hover {
+  background-color: #ffffb3;
 }
 
 .round input[type="checkbox"] {
@@ -56,14 +64,13 @@ export default {
 }
 
 .unchecked-label {
-  background-color: lightgrey;
-  border-color: grey;
-  color: grey;
+  border-color: #5c00e6;
+  color: #5c00e6;
 }
 
 .checked-label {
-  background-color: #66bb6a;
-  border-color: #449958;
-  color: black;
+  background-color: #5c00e6;
+  border-color: #5c00e6;
+  color: white;
 }
 </style>
