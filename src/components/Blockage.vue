@@ -28,7 +28,7 @@
         <textarea placeholder="New description here" v-model='newDescription'/>
         <div class='edit-mode-buttons'>
         <button class='cancel-button' v-on:click="cancelEdit">Cancel</button>
-        <button class='done-button' v-on:click="submitEditted">Done</button>
+        <button class='done-button' v-on:click="submitEditted">Submit</button>
         </div>
       </div>
       <div v-else>
