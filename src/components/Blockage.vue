@@ -48,10 +48,10 @@
         <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
         <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
         <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
-        <img v-if="ownsBlockage && !editing" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
+        <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
           <!-- Edit -->
         <!-- </button> -->
-        <img v-if="ownsBlockage && !editing" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+        <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
 
         <!-- <button v-on:click="deleteBlockage">Delete</button> -->
       </div>
@@ -92,7 +92,10 @@ export default {
   computed: {
     upvoted() { return this.blockageData.upvoted; },
     downvoted() { return this.blockageData.downvoted; },
-    ownsBlockage() { return this.loggedIn && this.user._id === this.reporter._id; }
+    ownsBlockage() { return this.loggedIn && this.user._id === this.reporter._id; },
+    // Can only edit or delete within thirty minutes of posting
+    canEditOrDelete() { return this.ownsBlockage && !this.editing && ((Date.now() - this.blockageData.time) < 1800000); }
+
   },
   mounted() {
     // updated description and status starts off same as current to display initially
