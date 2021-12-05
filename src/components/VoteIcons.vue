@@ -53,4 +53,8 @@ export default {
   display: flex;
   flex-direction: row;
 }
+
+.icon {
+  margin-right: 0px;
+}
 </style>
