@@ -178,8 +178,8 @@ main {
 }
 
 .blockage-popup {
-  position:fixed;
-  top: 20%;
+  position:absolute;
+  top: 24%;
   right: 2%;
 }
 
