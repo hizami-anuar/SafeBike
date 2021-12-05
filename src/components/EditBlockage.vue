@@ -18,8 +18,16 @@
     <h2>Description</h2>
     <textarea class='description-input' type='text' placeholder="New description here" v-model='newDescription'/>
     <div class='edit-mode-buttons'>
-      <button class='general-button cancel-button' v-on:click="cancelEdit">Cancel</button>
-      <button class='general-button done-button' v-on:click="submitEdited">Submit</button>
+      <button 
+        class='general-button cancel-button' 
+        v-on:click="$emit('back')">
+        Cancel
+      </button>
+      <button 
+        class='general-button done-button' 
+        v-on:click="submitEdited">
+        Submit
+      </button>
     </div>
   </div>
 </template>
@@ -44,10 +52,6 @@ export default {
     }
   },
   methods: {
-    // cancel edit blockage mode
-    cancelEdit() {
-      this.$emit('cancel-edit');
-    },
     // submit the edited blockage
     submitEdited() {
       if (this.mode === "EDIT") { // submit edited blockage
@@ -63,7 +67,7 @@ export default {
             console.log(response);
             console.log('edited blockage successfully');
             eventBus.$emit('refresh-blockages');
-            this.$emit('edited-blockage');
+            this.$emit('back');
           }).catch((error) => {
             console.log(error);
           });
@@ -78,17 +82,13 @@ export default {
             latitude: this.blockageData.location.coordinates[0],
             longitude: this.blockageData.location.coordinates[1],
           },
-          active: true,
           parentBlockage: this.blockageData._id,
         };
         axios.post(`/api/blockages/`, fields)
           .then((res) => {
             this.errorMessage = '';
             eventBus.$emit('updated-status', res.data.blockageData);
-            console.log('wassupppp', res.data.blockageData);
-            // console.log('updated status of blockage , success request')
-            // reset description and status of the create blockage
-            this.newStatus = this.status;
+            this.$emit('updated-status');
           })
           .catch(err => {
             console.log(err.response || err);

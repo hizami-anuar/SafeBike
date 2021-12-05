@@ -38,25 +38,61 @@ router.get("/", async (req, res) => {
   } else {
     blockages = await Blockages.find(req.query);
   }
+
   // edit fields of blockage before returning to frontend
   blockages = await Promise.all(blockages.map(async (blockage) => {
-    blockage = blockage.toObject(); // hopefully don't need it as a document
-    const reporter = await Users.findOne({_id: blockage.reporter});
-    blockage.reporter = reporter ? {
-      _id: reporter._id,
-      username: reporter.username,
-      activityLevel: reporter.activityLevel,
-    } : {
-      username: "[deleted user]",
-    };
-    
-    const userId = req.session.user && req.session.user._id; // id or undefined
-    // console.log(userId);
-    // console.log(blockage.upvotes, blockage.downvotes)
-    blockage.upvoted = blockage.upvotes.includes(userId);
-    blockage.downvoted = blockage.downvotes.includes(userId);
-    delete blockage.upvotes;
-    delete blockage.downvotes;
+    // id or undefined
+    const userId = req.session.user && req.session.user._id; 
+
+    // filter an object to certain properties
+    const takeFrom = (obj, names) => {
+      const res = {};
+      for (const name of names) {
+        res[name] = obj[name];
+      }
+      return res;
+    }
+
+    // processing function for both blockage and its child
+    const process = async (blockage) => {
+      // populate reporter
+      await blockage.populate('reporter');
+      const reporter = blockage.reporter;
+      blockage.reporter = reporter ? takeFrom(reporter, [
+        '_id', 'username','activityLevel',
+      ]) : {
+        username: "[deleted user]",
+      };
+
+      // convert to normal js object (hopefully don't need it as a document)
+      blockage = blockage.toObject(); 
+
+      // replace vote lists with whether they contain logged-in user
+      // (always false when not logged in)
+      blockage.upvoted = blockage.upvotes.some((user) => user._id == userId);
+      blockage.downvoted = blockage.downvotes.some((user) => user._id == userId);
+      delete blockage.upvotes;
+      delete blockage.downvotes;
+      return blockage;
+    }
+
+    // populate child blockage
+    await blockage.populate('childBlockage');
+    let childBlockage = blockage.childBlockage;
+    if (childBlockage) {
+      // process child blockage as well
+      childBlockage = await process(childBlockage);
+
+      childBlockage = takeFrom(childBlockage, [
+        '_id', 'time', 'reporter', 'status', 'description', 
+        'reputation', 'upvoted', 'downvoted',
+      ]);
+    } else {
+      childBlockage = undefined;
+    }
+
+    blockage = await process(blockage); // rest of processing
+    blockage.childBlockage = childBlockage;
 
     return blockage;
   }));
@@ -70,56 +106,61 @@ router.get("/", async (req, res) => {
  *
  * @return {Blockage[]} - list of blockages
  */
- router.get("/subscription", async (req, res) => {
-  let blockages = [];
-  let subscriptions = await Subscriptions.find({ user: req.session.user._id });
-  function inCircle(circle, point) {
-    let point1 = {lat: circle.center.coordinates[0], lon: circle.center.coordinates[1]};
-    let point2 = {lat: point[0], lon: point[1]};
-    let distance = computeDistanceBetween(point1, point2);
-    return distance <= circle.radius;
-  }
-  blockages = await Blockages.find(req.query);
-  blockages = await Promise.all(blockages.map(async (blockage) => {
-    blockage = blockage.toObject();
-    const reporter = await Users.findOne({_id: blockage.reporter});
-    blockage.reporter = reporter ? {
-      _id: reporter._id,
-      username: reporter.username,
-      activityLevel: reporter.activityLevel,
-    } : {
-      username: "[deleted user]",
-    };
-    const userId = req.session.user && req.session.user._id;
-    blockage.upvoted = blockage.upvotes.includes(userId);
-    blockage.downvoted = blockage.downvotes.includes(userId);
-    delete blockage.upvotes;
-    delete blockage.downvotes;
-    return blockage;
-  }));
-
-  subscriptions = subscriptions.map(subscription => {
-    subscription = subscription.toObject();
-    subscription.alerts = {
-      UNBLOCKED: 0,
-      UNSAFE: 0,
-      BLOCKED: 0,
+ router.get("/subscription", 
+  [
+    validateThat.userIsLoggedIn,
+  ], 
+  async (req, res) => {
+    let blockages = [];
+    let subscriptions = await Subscriptions.find({ user: req.session.user._id });
+    function inCircle(circle, point) {
+      let point1 = {lat: circle.center.coordinates[0], lon: circle.center.coordinates[1]};
+      let point2 = {lat: point[0], lon: point[1]};
+      let distance = computeDistanceBetween(point1, point2);
+      return distance <= circle.radius;
     }
-    
-    blockages.forEach((blockage) => {
-      if (inCircle(subscription, blockage.location.coordinates)) {
-        subscription.alerts[blockage.status]++;
+    blockages = await Blockages.find(req.query);
+    blockages = await Promise.all(blockages.map(async (blockage) => {
+      blockage = blockage.toObject();
+      const reporter = await Users.findOne({_id: blockage.reporter});
+      blockage.reporter = reporter ? {
+        _id: reporter._id,
+        username: reporter.username,
+        activityLevel: reporter.activityLevel,
+      } : {
+        username: "[deleted user]",
+      };
+      const userId = req.session.user && req.session.user._id;
+      blockage.upvoted = blockage.upvotes.includes(userId);
+      blockage.downvoted = blockage.downvotes.includes(userId);
+      delete blockage.upvotes;
+      delete blockage.downvotes;
+      return blockage;
+    }));
+
+    subscriptions = subscriptions.map(subscription => {
+      subscription = subscription.toObject();
+      subscription.alerts = {
+        UNBLOCKED: 0,
+        UNSAFE: 0,
+        BLOCKED: 0,
       }
+      
+      blockages.forEach((blockage) => {
+        if (inCircle(subscription, blockage.location.coordinates)) {
+          subscription.alerts[blockage.status]++;
+        }
+      });
+      
+      return subscription;
     });
-    
-    return subscription;
+
+    res.status(200).json({ alerts: subscriptions }).end();
   });
 
-  res.status(200).json({ alerts: subscriptions }).end();
-});
-
 /**
- * Create a blockage.
+ * Create a blockage, or submit a status update request.
+ * parentBlockage should be undefined if this is a new blockage.
  *
  * @name POST /api/blockages
  *
@@ -136,7 +177,7 @@ router.post("/",
     validateThat.userIsLoggedIn,
   ], 
   async (req, res) => {
-    const blockage = {
+    let blockage = {
       location: { 
         type: "Point", 
         coordinates: [req.body.location.latitude, req.body.location.longitude] // coordinates come from body
@@ -145,19 +186,31 @@ router.post("/",
       reporter: req.session.user._id, // reporter is the user currently logged in
       description: req.body.description, // description comes from body
       status: req.body.status, // status comes from body
-      active: req.body.active, // all new blockages should be active
       voteCount: 0,
-      upvotes: [],
+      upvotes: [ req.session.user._id ],
       downvotes: [],
-      parentBlockage: req.body.parentBlockage, // parent blockage comes from body
       comments: []
-    };
-    // console.log('parent blockage: ', req.body.parentBlockage);
-    if (req.body.parentBlockage) {
-      await Blockages.findOneAndUpdate({ _id: req.body.parentBlockage }, { active: false });
+    };  
+    const parentBlockage = req.body.parentBlockage;
+    if (parentBlockage) { // status update request
+      blockage = { ...blockage,
+        active: false,
+        parentBlockage: parentBlockage,
+        reputation: req.session.user.activityLevel, // starts with user's level
+      };
+    } else { // new blockage
+      blockage = { ...blockage,
+        active: true,
+      };
     }
-    
     let createdBlockage = await Blockages.create(blockage);
+    if (parentBlockage) {
+      await Blockages.findOneAndUpdate({ _id: parentBlockage }, {
+        childBlockage: createdBlockage._id,
+      });
+    }
+    await createdBlockage.checkReputation();
+    createdBlockage = await Blockages.findById(createdBlockage._id);
     res.status(200).json({blockageData: createdBlockage}).end();
   });
 
@@ -240,17 +293,19 @@ router.delete("/:id", [
 router.post("/upvote/:id", [
     validateThat.userIsLoggedIn,
     validateThat.blockageExists,
+    validateThat.blockageOrParentActive,
   ], async (req, res) => {
     // https://mongoosejs.com/docs/documents.html
     // if concurrency ever an issue, use findOneAndUpdate
     // or wrap a retry loop for VersionError
-    const blockage = await Blockages.findOne({_id: req.params.id});
+    let blockage = await Blockages.findOne({_id: req.params.id});
     const userId = req.session.user._id;
     blockage.downvotes.pull(userId);
     if (!blockage.upvotes.includes(userId)) { 
       blockage.upvotes.push(userId); 
     } // else no-op
     await blockage.calculateVotesAndSave(); // includes saving
+    blockage = await Blockages.findById(blockage._id);
     res.status(200).json(blockage);
   });
 
@@ -266,14 +321,16 @@ router.post("/upvote/:id", [
 router.post("/downvote/:id", [
     validateThat.userIsLoggedIn,
     validateThat.blockageExists,
+    validateThat.blockageOrParentActive,
   ], async (req, res) => {
-    const blockage = await Blockages.findOne({_id: req.params.id});
+    let blockage = await Blockages.findOne({_id: req.params.id});
     const userId = req.session.user._id;
     blockage.upvotes.pull(userId);
     if (!blockage.downvotes.includes(userId)) { 
       blockage.downvotes.push(userId); 
     } // else no-op
     await blockage.calculateVotesAndSave(); // includes saving
+    blockage = await Blockages.findById(blockage._id);
     res.status(200).json(blockage);
   });
 
@@ -289,10 +346,12 @@ router.post("/downvote/:id", [
 router.delete("/upvote/:id", [
     validateThat.userIsLoggedIn,
     validateThat.blockageExists,
+    validateThat.blockageOrParentActive,
   ], async (req, res) => {
-    const blockage = await Blockages.findOne({_id: req.params.id});
+    let blockage = await Blockages.findOne({_id: req.params.id});
     blockage.upvotes.pull(req.session.user._id);
     await blockage.calculateVotesAndSave(); // includes saving
+    blockage = await Blockages.findById(blockage._id);
     res.status(200).json(blockage);
   });
 
@@ -308,10 +367,12 @@ router.delete("/upvote/:id", [
 router.delete("/downvote/:id", [
     validateThat.userIsLoggedIn,
     validateThat.blockageExists,
+    validateThat.blockageOrParentActive,
   ], async (req, res) => {
-    const blockage = await Blockages.findOne({_id: req.params.id});
+    let blockage = await Blockages.findOne({_id: req.params.id});
     blockage.downvotes.pull(req.session.user._id);
     await blockage.calculateVotesAndSave(); // includes saving
+    blockage = await Blockages.findById(blockage._id);
     res.status(200).json(blockage);
   });
 
