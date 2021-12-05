@@ -11,7 +11,10 @@
     <div class='single-comment'>
       <div class='profile'>{{comment.username[0].toUpperCase()}}</div>
       <p class='username'><b>@{{comment.username}}</b>  {{comment.content}}</p>
-      <p class='time'>{{getTime(comment.timeUsec)}}</p>
+      <div class='time'>
+      <span >{{getTime(comment.timeUsec).split(',')[0]}}</span><br>
+      <span >{{getTime(comment.timeUsec).split(',')[1]}}</span>
+      </div>
       <img v-if='user && user._id === comment.userID' v-on:click='deleteComment(comment._id)' class='icon' src="@/assets/delete.png">
     </div>
     </div>

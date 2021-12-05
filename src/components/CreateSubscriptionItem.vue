@@ -1,7 +1,7 @@
 <template>
   <div class="subscription-container">
     <h2>Alert Name</h2>
-    <input placeholder='school' class="subscription-name" type="text" v-model="subscription.name" :disabled="!editable" />
+    <input placeholder='e.g. school' class="subscription-name" type="text" v-model="subscription.name" :disabled="!editable" />
     <h3>Days</h3>
     <Days 
       :DAY_NAMES="DAY_NAMES"
@@ -99,13 +99,16 @@ button {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+  height: 100px;
 }
 .add-button {
-  margin-bottom: 15px;
+  /* margin-bottom: 15px; */
   margin-right: 10px;
+  height: 75%;
 }
 .cancel-button {
   margin-left: 10px;
+  height: 75%;
   background: none;
   border: 3px rgb(88, 44, 192) solid;
   color: rgb(88, 44, 192);

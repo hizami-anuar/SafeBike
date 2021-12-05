@@ -18,8 +18,16 @@
     <h2>Description</h2>
     <textarea class='description-input' type='text' placeholder="New description here" v-model='newDescription'/>
     <div class='edit-mode-buttons'>
-      <button class='general-button cancel-button' v-on:click="cancelEdit">Cancel</button>
-      <button class='general-button done-button' v-on:click="submitEdited">Submit</button>
+      <button 
+        class='general-button cancel-button' 
+        v-on:click="$emit('back')">
+        Cancel
+      </button>
+      <button 
+        class='general-button done-button' 
+        v-on:click="submitEdited">
+        Submit
+      </button>
     </div>
   </div>
 </template>
@@ -43,21 +51,7 @@ export default {
       reporter: this.blockageData.reporter, // contains {username, activityLevel} from original reporter
     }
   },
-  computed: {},
-  mounted() {
-    // updated description and status starts off same as current to display initially
-    this.newDescription = this.description;
-    this.newStatus = this.status;
-    // convert from unix epoch time to human readable date
-    var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-    date.setUTCSeconds(this.blockageData.time/1000);
-    this.date = date.toLocaleString('en-US');
-  },
   methods: {
-    // cancel edit blockage mode
-    cancelEdit() {
-      this.$emit('cancel-edit');
-    },
     // submit the edited blockage
     submitEdited() {
       if (this.mode === "EDIT") { // submit edited blockage
@@ -73,15 +67,7 @@ export default {
             console.log(response);
             console.log('edited blockage successfully');
             eventBus.$emit('refresh-blockages');
-
-            // update the description and status displayed to the new ones
-            this.description = this.newDescription;
-            this.status = this.newStatus;
-
-            //update the frontend time
-            var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-            date.setUTCSeconds(Date.now()/1000);
-            this.date = date;
+            this.$emit('back');
           }).catch((error) => {
             console.log(error);
           });
@@ -96,17 +82,13 @@ export default {
             latitude: this.blockageData.location.coordinates[0],
             longitude: this.blockageData.location.coordinates[1],
           },
-          active: true,
           parentBlockage: this.blockageData._id,
         };
         axios.post(`/api/blockages/`, fields)
           .then((res) => {
             this.errorMessage = '';
             eventBus.$emit('updated-status', res.data.blockageData);
-            console.log('wassupppp', res.data.blockageData);
-            // console.log('updated status of blockage , success request')
-            // reset description and status of the create blockage
-            this.newStatus = this.status;
+            this.$emit('updated-status');
           })
           .catch(err => {
             console.log(err.response || err);
@@ -131,6 +113,14 @@ h2 {
   margin-top: 0px;
   font-size: 28px;
   margin-bottom: 5px;
+}
+
+textarea {
+  resize: none;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 5px;
+  height: 40px;
 }
 
 .edit-mode-buttons {

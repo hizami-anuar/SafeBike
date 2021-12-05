@@ -123,7 +123,10 @@ export default {
 
     updateStatus(blockage) {
       console.log('updating statussss', blockage._id);
-      this.currBlockageId = blockage._id;
+      // set active blockage
+      if (blockage.active) {
+        this.currBlockageId = blockage._id;
+      }
       // refresh list of blockages after an update status
         axios.get(`/api/blockages?active=true`)
         .then((response) => {

@@ -61,7 +61,6 @@ export default {
           latitude: this.location.lat,
           longitude: this.location.lng,
         },
-        active: true,
       };
       axios.post(`/api/blockages/`, fields).then(() => {
         this.errorMessage = '';
