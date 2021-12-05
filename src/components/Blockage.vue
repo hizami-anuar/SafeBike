@@ -1,12 +1,17 @@
 <template>
   <div class="blockage">
+    <div class='header-div'>
     <div class='reporter'>
       <div class='profile'>{{reporter.username[0].toUpperCase()}}</div>
       <span class='username'>@{{reporter.username}}</span>
-      <span v-if="reporter"> (Level {{ reporter.activityLevel }})</span>
+      <span v-if="reporter"> (L{{ reporter.activityLevel }})</span>
     </div>
-    <span>{{  date  }}</span>
-    <span>{{ displayLat }}°, {{ displayLng }}°</span>
+    <div class='date'>
+      <span>{{  date.split(',')[0] }}</span><br>
+      <span>{{  date.split(',')[1] }}</span>
+    </div>
+    </div>
+    <span>{{ displayLat }}°, {{ displayLng }}° TO CHANGE</span>
     <div v-if="['EDIT', 'UPDATE'].includes(mode)">
       <EditBlockage 
         :blockageData="blockageData"
@@ -21,7 +26,8 @@
       </button>
       <span class="description" v-if='description.length!==0'>{{  description }}</span>
     </div>
-    <div class='edit-delete-buttons'>
+    <div class='footer'>
+    <div class='footer-buttons vote-buttons'>
       <p class='vote-count'>Total Votes: {{this.votes}}</p>
       <div v-if='loggedIn' class='like-buttons'>
         <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
@@ -30,11 +36,12 @@
         <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
       </div>
     </div>
-    <div class="edit-delete-buttons">
+    <div class="footer-buttons edit-delete-buttons">
       <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
       <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+    </div>
     </div>
   </div>
 </template>
@@ -170,9 +177,32 @@ h1 {
   font-size: 20px;
 }
 
+.date {
+  margin-right: -12px;
+  padding: 0px;
+  width: 50%;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  width: 100%;
+  padding: 0px;
+}
+
 .vote-count {
-  margin-right: 10px;
+  /* margin-right: 10px; */
   margin-top: 3px;
+  margin-bottom: 2px;
   display: flex;
   flex-direction: row;
   font-size: 18px;
@@ -190,6 +220,7 @@ span{
 .username {
   font-weight: bold;
   font-size: 20px;
+  margin-right: 0px;
 }
 
 .reporter {
@@ -198,6 +229,7 @@ span{
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+  margin-left: 10px;
 }
 
 .profile {
@@ -218,23 +250,38 @@ span{
 .icon {
   height: 25px;
   width: 25px;
-  margin-right: 10px;
-  margin-left: -2px;
+  margin-right: 0px;
   cursor: pointer;
+}
+
+.icon + .icon {
+  margin-left: 10px;
 }
 
 .description {
   font-size: 18px;
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
+  margin-top: 35px;
+  margin-bottom: 25px;
 }
 
 .edit-delete-buttons {
   display: flex;
   flex-direction: row;
-  width: 100%;
+  align-items: flex-end;
+}
+
+.vote-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-buttons {
+  width: fit-content;
   justify-content: flex-end;
-  margin-right: -20px;
+  margin-right: 0px;
   margin-top: 5px;
   margin-bottom: -8px;
 }
@@ -249,13 +296,15 @@ span{
   /* height: 100px; */
   /* max-width: 500px; */
   height: fit-content;
-  width: 300px;
+  width: 320px;
   border: 3px solid rgb(111, 79, 199);
   border-radius: 15px;
   color: black;
   font-size: 15px;
   margin: -20px auto 10px auto;
   padding: 20px;
+  padding-right: 10px;
+  padding-left: 10px;
   /* padding-right: 12px; */
 }
 

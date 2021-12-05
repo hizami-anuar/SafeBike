@@ -133,6 +133,14 @@ h2 {
   margin-bottom: 5px;
 }
 
+textarea {
+  resize: none;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 5px;
+  height: 40px;
+}
+
 .edit-mode-buttons {
   display: flex;
   justify-content: center;
