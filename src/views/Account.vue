@@ -10,13 +10,11 @@
         :user='user'
       />
       </div>
-      <!-- <div
-        class='instructions' 
-        v-if="instructionsShown"
-        @click="closeInstructions"
-        >
-        <p>Click on an existing pin to view details on your blockage report.</p>
-      </div> -->
+      <div v-if='isLoading' class='loading'>
+      <!-- <div class='loading'> -->
+        <p class='loading-text'>Loading pins...</p>
+        <img class='loading-gif' src="@/assets/loading.gif"/>
+      </div>
       <Blockage
         class="blockage-popup"
         v-if='currBlockage'
@@ -69,6 +67,7 @@ export default {
       commentsPopupShown: false,
       instructionsShown: true,
       inHome: false,
+      isLoading: true,
     }
   }, 
   computed: {
@@ -127,10 +126,11 @@ export default {
       eventBus.$emit('refresh-history', this.currBlockage);
       console.log("RERESHING HISTORY");
     },
-    // fetch list of all blockages
+    // fetch list of all blockages belong to the user
     getAllBlockages() {
       axios.get(`/api/blockages?active=true`)
         .then((response) => {
+          this.isLoading = false;
           this.blockages = response.data.blockages.filter(blockage => blockage.reporter._id == this.user._id);
         }).catch((error) => {
           this.console.log(error);
@@ -159,6 +159,33 @@ main {
   flex-direction: column;
   align-items: center;
   margin: 0;
+}
+
+.loading-gif {
+  /* width: 200px; */
+  height: 180px;
+}
+
+.loading-text {
+  position: absolute;
+  left: 26%;
+  padding: 0px;
+  font-size: 28px;
+}
+
+.loading {
+  position: absolute;
+  top: 35%;
+  left: 30%;
+  /* padding: 15px 30px; */
+  font-size: 30px;
+  margin: 0px;
+  padding: 0px;
+  /* z-index: 3; */
+  background-color: none;
+  transform: translate(-50%, 0);
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
 }
 
 .instructions {

@@ -8,9 +8,14 @@
         :loggedIn='loggedIn'
         :user='user'
       />
+      <div v-if='isLoading' class='loading'>
+      <!-- <div class='loading'> -->
+        <p class='loading-text'>Loading pins...</p>
+        <img class='loading-gif' src="@/assets/loading.gif"/>
+      </div>
       <div
         class='instructions' 
-        v-if="instructionsShown"
+        v-if="instructionsShown && !isLoading"
         @click="closeInstructions"
         >
         <p>Click on an existing pin to view details on the blockage report.</p>
@@ -70,6 +75,8 @@ export default {
       historyPopupShown: false,
       commentsPopupShown: false,
       instructionsShown: true,
+      inHome: true,
+      isLoading: true,
     }
   }, 
   computed: {
@@ -136,6 +143,7 @@ export default {
       axios.get(`/api/blockages?active=true`)
         .then((response) => {
           this.blockages = response.data.blockages;
+          this.isLoading = false;
         }).catch((error) => {
           this.console.log(error);
         });
@@ -170,6 +178,11 @@ main {
   margin: 0;
 }
 
+.loading-gif {
+  /* width: 200px; */
+  height: 250px;
+}
+
 .instructions {
   position: absolute;
   top: 90px;
@@ -179,6 +192,28 @@ main {
   background-color: white;
   transform: translate(-50%, 0);
   cursor: pointer;
+}
+
+.loading-text {
+  position: absolute;
+  left: 26%;
+  padding: 0px;
+  font-size: 28px;
+}
+
+.loading {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  /* padding: 15px 30px; */
+  font-size: 30px;
+  margin: 0px;
+  padding: 0px;
+  /* z-index: 3; */
+  background-color: none;
+  transform: translate(-50%, 0);
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
 }
 
 .instructions p {
