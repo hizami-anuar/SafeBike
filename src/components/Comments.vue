@@ -36,7 +36,7 @@ export default {
       return {
          comment: '',
          reporterUsername: 'dumpling',
-         comments: []
+         comments: undefined
       };
    },
    mounted() {
@@ -96,8 +96,11 @@ export default {
 
 .time {
    margin-left: 10px;
-   margin-right: -20px;
-   margin-bottom: 5px;
+   margin-right: -3px;
+   margin-bottom: 0px;
+   margin-top: 4px;
+   width: 100px;
+   font-size: 14px;
 }
 .single-comment {
    margin-top: 5px;
@@ -111,7 +114,7 @@ export default {
    border-radius: 30px;
    color: rgb(254, 254, 254);
    width: 40px;
-   height: 30px;
+   height: 35px;
    display: flex;
    justify-content: center;
    align-items: center;
@@ -178,6 +181,7 @@ textarea {
    display: flex;
    align-items: center;
    width: 80%;
+   resize: none;
 }
 
 .comment {
