@@ -3,6 +3,7 @@
     <div class="home-container">
       <Map
         class='map'
+        :inHome='inHome'
         :blockages='blockages'
         :loggedIn='loggedIn'
         :user='user'

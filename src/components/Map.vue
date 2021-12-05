@@ -57,6 +57,7 @@ export default {
       loggedIn: Boolean,
       user: Object,
       circles: Array,
+      inHome: Boolean,
       // 'center' likely
   },
   mounted() {
@@ -92,7 +93,7 @@ export default {
       eventBus.$emit('close-marker');
     },
     openCreateBlockageMenu: function(event) {
-      if (!this.loggedIn) return;
+      if (!this.loggedIn || !this.inHome) return;
       this.createBlockageMenu = {
         active: true,
         location: {
