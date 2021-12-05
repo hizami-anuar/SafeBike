@@ -3,7 +3,7 @@
     <div id="navbar">
       <div id='navbar-left'>
         <router-link id='logo-div' to="/"><img class='logo' src="@/assets/navlogo.png"/></router-link>
-        <h1>SafeBike</h1>
+        <h1 class='logo-name'>SafeBike</h1>
         <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
         <router-link class='link' to="/account" v-if="loggedIn"><img class='icon' src="@/assets/profile.png"/>My Reports</router-link> 
         <router-link class='link' to="/subscription" v-if="loggedIn"><img class='icon' src="@/assets/notification-bell.png"/>My Alerts</router-link> 
@@ -86,12 +86,6 @@ export default {
   height: 100%;
 }
 
-
-h1 {
-  margin-right: 20px;
-  color: rgb(104, 27, 192);
-}
-
 #navbar {
   /* padding: 30px; */
   display: flex;
@@ -151,6 +145,11 @@ h1 {
 
 .link:hover {
   background-color: rgb(252, 242, 185);
+}
+
+.logo-name {
+  margin-right: 20px;
+  color: rgb(104, 27, 192);
 }
 
 

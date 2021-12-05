@@ -1,6 +1,12 @@
 <template>
   <div class='outer-container'>
-    <div v-if='history.length!==0'>
+    <div v-if='!history'>
+      <span class='no-history'>Loading previous status updates...</span>
+    </div>
+    <div v-else-if='history.length === 0'>
+      <span class='no-history'>No previous updates to show :/</span>
+    </div>
+    <div v-else>
       <div class='history' v-for='blockage in history' v-bind:key='blockage._id'>
         <div class='reporter'>
           <div class='profile'>{{blockage.reporter.username[0].toUpperCase()}}</div>
@@ -11,9 +17,6 @@
           <br>
           <span>{{  date(blockage)  }}</span>
       </div>
-    </div>
-    <div v-else>
-      <span class='no-history'>No previous updates to show :/</span>
     </div>
   </div>
 </template>

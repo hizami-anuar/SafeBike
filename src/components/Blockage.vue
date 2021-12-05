@@ -7,7 +7,6 @@
     </div>
     <h1>{{  newStatus.toUpperCase()  }}</h1>
     <button v-if='loggedIn && !editing && !updatingStatus' v-on:click='updateStatus'>Update Status</button>
-    <span>{{ displayLat }}°, {{ displayLng }}°</span>
     <span>{{  date  }}</span>
     <div v-if='editing || updatingStatus'>
       <div class="checkboxes">
@@ -326,7 +325,7 @@ span{
 }
 button {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  margin-right: 10px;
+  /* margin-right: 10px; */
   border: none;
   border-radius: 4px;
   padding: 4px 10px;
@@ -371,9 +370,13 @@ button:hover:enabled {
 .done-button {
   width: 40%;
   margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .cancel-button {
+  margin-right: 5px;
+  margin-left: 5px;
   width: 40%;
   margin-top: 10px;
   background: none;

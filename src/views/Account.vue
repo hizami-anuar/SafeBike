@@ -1,61 +1,196 @@
 <template>
-  <div class="account">
-    <div v-if='loggedIn'>
-    <p>Welcome back, {{user.username}}!</p>
-    <h3>Level {{ user.activityLevel }}</h3>
-    <h3>Activity Points: {{ user.activityScore }}</h3>
+  <main>
+    <div class="home-container">
+      <div class='map-container'>
+      <Map
+        class='map'
+        :inHome='inHome'
+        :blockages='blockages'
+        :loggedIn='loggedIn'
+        :user='user'
+      />
+      </div>
+      <!-- <div
+        class='instructions' 
+        v-if="instructionsShown"
+        @click="closeInstructions"
+        >
+        <p>Click on an existing pin to view details on your blockage report.</p>
+      </div> -->
+      <Blockage
+        class="blockage-popup"
+        v-if='currBlockage'
+        :key='currBlockageId'
+        :blockageData='currBlockage'
+        :loggedIn='loggedIn'
+        :user='user'/>
+      <div v-if='!currBlockageId' class='instructions'>
+        <p>Click on an existing pin to view details on your blockage report.</p>
+      </div>
+      <Popup v-if='historyPopupShown' @close-popup='closeHistoryPopup'>
+      <History 
+        :blockageData='currBlockage'
+        :key='currBlockage._id'
+        :user='user'/></Popup>
+      <Popup v-if='commentsPopupShown' @close-popup='closeCommentsPopup'>
+      <Comments
+        :blockageData='currBlockage'
+        :loggedIn='loggedIn'
+        :user='user'
+        />
+      </Popup>
     </div>
-    <h2>My Reports</h2>
-    <Blockages
-      :blockages='blockages'
-      :loggedIn='loggedIn'
-      :user='user'
-    />
-  </div>
+  </main>
 </template>
 
 <script>
-import axios from 'axios';
-import { eventBus } from "@/main";
+import Map from '@/components/Map.vue';
 
-import Blockages from '@/components/Blockages.vue';
+import { eventBus } from "@/main";
+import Blockage from '@/components/Blockage.vue';
+import Popup from '@/components/map_components/Popup.vue';
+import History from '@/components/History.vue';
+import Comments from '@/components/Comments.vue';
+
+import axios from 'axios';
+
 export default {
   name: 'Account',
-  components: {
-    Blockages
-  },
+  components: { Map, Blockage, History, Comments, Popup},
   props: {
     loggedIn: Boolean,
-    user: Object
+    user: Object,
   },
-  data() {
+  data () {
     return {
-      blockages: [], // blockages made by current user
+      blockages: [], // list of blockage objects to display 
+      currBlockageId: undefined,
+      historyPopupShown: false,
+      commentsPopupShown: false,
+      instructionsShown: true,
+      inHome: false,
+    }
+  }, 
+  computed: {
+    currBlockage () {
+      return this.currBlockageId ?
+        this.blockages.filter((blockage) => blockage._id == this.currBlockageId)[0]
+        : undefined;
     }
   },
   mounted() {
-    eventBus.$on('refresh-blockages', this.getBlockages);
-    this.getBlockages();
+    this.getAllBlockages();
+    eventBus.$on('refresh-blockages', this.refreshBlockages);
+    eventBus.$on('updated-status', this.updateStatus);
+    eventBus.$on('open-marker', this.displayBlockage);
+    eventBus.$on('close-marker', this.undisplayBlockage);
+    eventBus.$on("history-clicked", this.toggleHistoryPopup);
+    eventBus.$on('comments-clicked', this.toggleCommentsPopup);
   },
-  beforeDestroy() {
-    eventBus.$off('refresh-blockages', this.getBlockages)
+  beforeDestroy: function() {
+    eventBus.$off('refresh-blockages', this.refreshBlockages);
+    eventBus.$off('updated-status', this.updateStatus);
+    eventBus.$off('open-marker', this.displayBlockage);
+    eventBus.$off('close-marker', this.undisplayBlockage);
+    eventBus.$off("history-clicked", this.toggleHistoryPopup);
+    eventBus.$off('comments-clicked', this.toggleCommentsPopup);
   },
   methods: {
-    getBlockages() {
-      axios.get(`/api/blockages`)
+    toggleHistoryPopup () {
+      console.log('hiiii');
+      this.historyPopupShown = !this.historyPopupShown;
+    },
+    closeHistoryPopup() {
+      this.historyPopupShown = false;
+    },
+    closeCommentsPopup() {
+      this.commentsPopupShown = false;
+    },
+    toggleCommentsPopup() {
+      this.commentsPopupShown = !this.commentsPopupShown;
+    },
+    closeInstructions() {
+      this.instructionsShown = false;
+    },
+
+    updateStatus(blockage) {
+      console.log('updating statussss', blockage._id);
+      this.currBlockageId = blockage._id;
+      // refresh list of blockages after an update status
+        axios.get(`/api/blockages?active=true`)
+        .then((response) => {
+          this.blockages = response.data.blockages;
+        }).catch((error) => {
+          this.console.log(error);
+        });
+      // refresh history of the currently viewing blockage
+      eventBus.$emit('refresh-history', this.currBlockage);
+      console.log("RERESHING HISTORY");
+    },
+    // fetch list of all blockages
+    getAllBlockages() {
+      axios.get(`/api/blockages?active=true`)
         .then((response) => {
           this.blockages = response.data.blockages.filter(blockage => blockage.reporter._id == this.user._id);
         }).catch((error) => {
-          console.log(error);
+          this.console.log(error);
         });
     },
-  },
+    refreshBlockages() {
+      this.getAllBlockages(); // refresh list of blockages when edit, delete or post
+      if (this.currBlockageId) { // refresh currently viewing blockage
+        this.displayBlockage(this.currBlockageId);
+      }
+    },
+    displayBlockage(id) {
+      this.currBlockageId = id;
+      console.log("displaying blockage " + this.currBlockageId)
+    },
+    undisplayBlockage() {
+      this.currBlockageId = '';
+    }
+  }
 }
 </script>
 
 <style scoped>
-h2 {
-  font-size: 30px;
-  margin-bottom: 10px;
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+.instructions {
+  position: absolute;
+  top: 90px;
+  left: 80%;
+  width: 30%;
+  padding: 6px 12px;
+  /* z-index: 3; */
+  background-color: white;
+  transform: translate(-50%, 0);
+}
+
+.instructions p {
+  margin: 0px;
+  padding: 0px;
+}
+
+.blockage-popup {
+  position:absolute;
+  top: 24%;
+  right: 2%;
+}
+
+.home-container {
+  width: 100%;
+  height: 100%;
+}
+
+.map-container {
+  height: 100%;
+  width: 60%;
+  /* margin-left: 50%; */
 }
 </style>
