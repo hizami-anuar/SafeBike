@@ -110,12 +110,10 @@ export default {
     this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
   mounted() {
-    console.log("mounted");
     this.refreshSubscription();
   },
   methods: {
     refreshSubscription() {
-      console.log("refreshing");
       this.getSubscribedBlockages();
       this.getSubscription();
     },

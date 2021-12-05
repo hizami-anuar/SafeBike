@@ -19,6 +19,7 @@
 
     </nav>
     <div v-if='loggedIn && notificationClicked' class="notification-popup">
+      <Notifications />
       No notifications to show :(
     </div>      
     <div v-if='loggedIn && popupClicked' class="popup">
@@ -35,8 +36,11 @@
 <script>
 import { eventBus } from "@/main";
 import axios from "axios";
+import Notifications from "@/components/Notifications";
+
 export default {
   name: 'Logout',
+  components: { Notifications },
   props: {
     loggedIn: Boolean,
     user: Object,

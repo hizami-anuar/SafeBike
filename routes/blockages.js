@@ -64,6 +64,62 @@ router.get("/", async (req, res) => {
 });
 
 /**
+ * Returns blockages corresponding to subscriptions
+ *
+ * @name GET /api/blockages
+ *
+ * @return {Blockage[]} - list of blockages
+ */
+ router.get("/subscription", async (req, res) => {
+  let blockages = [];
+  let subscriptions = await Subscriptions.find({ user: req.session.user._id });
+  function inCircle(circle, point) {
+    let point1 = {lat: circle.center.coordinates[0], lon: circle.center.coordinates[1]};
+    let point2 = {lat: point[0], lon: point[1]};
+    let distance = computeDistanceBetween(point1, point2);
+    return distance <= circle.radius;
+  }
+  blockages = await Blockages.find(req.query);
+  blockages = await Promise.all(blockages.map(async (blockage) => {
+    blockage = blockage.toObject();
+    const reporter = await Users.findOne({_id: blockage.reporter});
+    blockage.reporter = reporter ? {
+      _id: reporter._id,
+      username: reporter.username,
+      activityLevel: reporter.activityLevel,
+    } : {
+      username: "[deleted user]",
+    };
+    const userId = req.session.user && req.session.user._id;
+    blockage.upvoted = blockage.upvotes.includes(userId);
+    blockage.downvoted = blockage.downvotes.includes(userId);
+    delete blockage.upvotes;
+    delete blockage.downvotes;
+    return blockage;
+  }));
+
+  subscriptions = subscriptions.map(subscription => {
+    subscription = subscription.toObject();
+    subscription.alerts = {
+      UNBLOCKED: 0,
+      UNSAFE: 0,
+      BLOCKED: 0,
+    }
+    
+    blockages.forEach((blockage) => {
+      if (inCircle(subscription, blockage.location.coordinates)) {
+        subscription.alerts[blockage.status]++;
+      }
+    });
+    
+    console.log(subscription.alerts);
+    return subscription;
+  });
+  
+  res.status(200).json({ alerts: subscriptions }).end();
+});
+
+/**
  * Create a blockage.
  *
  * @name POST /api/blockages
