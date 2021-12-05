@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if='this.blockages.length === 0'>
+    <div v-if='!this.blockages'>
+      <p>Loading your posts ... </p>
+    </div>
+    <div v-else-if='this.blockages.length === 0'>
       <p>Sorry, no blockages to show :( </p>
     </div>
     <div v-else>
@@ -25,6 +28,7 @@ export default {
     components: {
         Blockage
     },
+    // props: ['blockages', 'loggedIn', 'user'],
     props: {
         /** @type {Blockage[]} A list of Blockage items to display */
         blockages: Array,

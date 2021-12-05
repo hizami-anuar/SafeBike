@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      blockages: [], // blockages made by current user
+      blockages: undefined, // blockages made by current user
     }
   },
   mounted() {

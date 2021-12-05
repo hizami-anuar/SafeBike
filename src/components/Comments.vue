@@ -1,18 +1,21 @@
 <template>
   <div class='outer-container'>
     <div class='comments'>
-     <div v-if='comments.length===0'>
-        No comments to show :/
+    <div v-if='!comments'>
+      Loading comments...
     </div>
-     <div v-else v-for='comment in comments' v-bind:key='comment._id'>
-     <div class='single-comment'>
-         <div class='profile'>{{comment.username[0].toUpperCase()}}</div>
-         <p class='username'><b>@{{comment.username}}</b>  {{comment.content}}</p>
-         <p class='time'>{{getTime(comment.timeUsec)}}</p>
-         <img v-if='user && user._id === comment.userID' v-on:click='deleteComment(comment._id)' class='icon' src="@/assets/delete.png">
-     </div>
-     </div>
-     </div>
+    <div v-else-if='comments.length===0'>
+      No comments to show :/
+    </div>
+    <div v-else v-for='comment in comments' v-bind:key='comment._id'>
+    <div class='single-comment'>
+      <div class='profile'>{{comment.username[0].toUpperCase()}}</div>
+      <p class='username'><b>@{{comment.username}}</b>  {{comment.content}}</p>
+      <p class='time'>{{getTime(comment.timeUsec)}}</p>
+      <img v-if='user && user._id === comment.userID' v-on:click='deleteComment(comment._id)' class='icon' src="@/assets/delete.png">
+    </div>
+    </div>
+    </div>
      <div v-if='loggedIn' class='comment'>
      <textarea v-model='comment' placeholder="Say something about this blockage"></textarea>
      <button class='comment-button' :disabled='comment.length === 0' v-on:click='submitComment'>Post</button>
