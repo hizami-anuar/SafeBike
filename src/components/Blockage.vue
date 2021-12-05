@@ -1,60 +1,54 @@
 <template>
   <form action="" class="blockage-creator" @submit.prevent=''>
     <div class='reporter'>
-    <div class='profile'>{{reporter.username[0].toUpperCase()}}</div>
+      <div class='profile'>{{reporter.username[0].toUpperCase()}}</div>
       <span class='username'>@{{reporter.username}}</span>
       <span v-if="reporter"> (Level {{ reporter.activityLevel }})</span>
     </div>
     <h1>{{  newStatus.toUpperCase()  }}</h1>
-      <button v-if='loggedIn && !editing && !updatingStatus' v-on:click='updateStatus'>Update Status</button>
-      <span>{{ displayLat }}°, {{ displayLng }}°</span>
-      <span>{{  date  }}</span>
-      <div v-if='editing || updatingStatus'>
+    <button v-if='loggedIn && !editing && !updatingStatus' v-on:click='updateStatus'>Update Status</button>
+    <span>{{ displayLat }}°, {{ displayLng }}°</span>
+    <span>{{  date  }}</span>
+    <div v-if='editing || updatingStatus'>
       <div class="checkboxes">
-      <span>
-        <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
-        <label for="UNBLOCKED">Unblocked</label>
-      </span>
-      <span>
-        <input type="radio" id="unsafe" value="UNSAFE" v-model="newStatus">
-        <label for="UNSAFE">Unsafe</label>
-      </span>
-      <span>
-        <input type="radio" id="blocked" value="BLOCKED" v-model="newStatus">
-        <label for="BLOCKED">Blocked</label>
-      </span>
+        <span>
+          <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
+          <label for="UNBLOCKED">Unblocked</label>
+        </span>
+        <span>
+          <input type="radio" id="unsafe" value="UNSAFE" v-model="newStatus">
+          <label for="UNSAFE">Unsafe</label>
+        </span>
+        <span>
+          <input type="radio" id="blocked" value="BLOCKED" v-model="newStatus">
+          <label for="BLOCKED">Blocked</label>
+        </span>
       </div>
-        <h2>Description</h2>
-        <textarea class='description-input' type='text' placeholder="New description here" v-model='newDescription'/>
-        <div class='edit-mode-buttons'>
+      <h2>Description</h2>
+      <textarea class='description-input' type='text' placeholder="New description here" v-model='newDescription'/>
+      <div class='edit-mode-buttons'>
         <button class='cancel-button' v-on:click="cancelEdit">Cancel</button>
         <button class='done-button' v-on:click="submitEditted">Submit</button>
-        </div>
       </div>
-      <div v-else>
-        <span class="description" v-if='description.length!==0'>{{  description }}</span>
-      </div>
-      <div class='edit-delete-buttons'>
+    </div>
+    <div v-else>
+      <span class="description" v-if='description.length!==0'>{{  description }}</span>
+    </div>
+    <div class='edit-delete-buttons'>
       <p class='vote-count'>Total Votes: {{this.votes}}</p>
-              <div v-if='loggedIn' class='like-buttons'>
-          <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
-          <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
-          <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
-          <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
-        </div>
+      <div v-if='loggedIn' class='like-buttons'>
+        <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
+        <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
+        <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
+        <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
       </div>
-      <div class="edit-delete-buttons">
-        
-        <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
-        <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
-        <!-- <button :disabled="editing" v-on:click="editBlockage"> -->
-        <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
-          <!-- Edit -->
-        <!-- </button> -->
-        <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
-
-        <!-- <button v-on:click="deleteBlockage">Delete</button> -->
-      </div>
+    </div>
+    <div class="edit-delete-buttons">
+      <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
+      <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
+      <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
+      <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+    </div>
   </form>
 </template>
 
