@@ -22,6 +22,7 @@ export default {
   display: flex;
   justify-content: center;
   position: relative;
+  width: fit-content;
   margin: 0px;
 }
 

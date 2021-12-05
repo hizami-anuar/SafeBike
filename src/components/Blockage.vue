@@ -62,7 +62,7 @@
         :hovertext="'View History'">   
         <template v-slot:image><img class='icon' src="@/assets/history.png"/></template>
       </InteractiveIcon>
-      <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
+      <img v-if="canEditOrDelete" class='icon icon-edit' v-on:click="editBlockage" src="@/assets/edit.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
     </div>
     </div>
@@ -209,6 +209,15 @@ h1 {
   font-size: 20px;
 }
 
+.icon {
+  margin-left: 6px;
+  margin-right: 0px;
+}
+
+.icon-edit {
+  width: 27px;
+  height: 27px;
+}
 .date {
   margin-right: -12px;
   padding: 0px;
