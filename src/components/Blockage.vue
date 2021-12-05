@@ -1,36 +1,24 @@
 <template>
-  <form action="" class="blockage-creator" @submit.prevent=''>
+  <div class="blockage">
     <div class='reporter'>
       <div class='profile'>{{reporter.username[0].toUpperCase()}}</div>
       <span class='username'>@{{reporter.username}}</span>
       <span v-if="reporter"> (Level {{ reporter.activityLevel }})</span>
     </div>
-    <h1>{{  newStatus.toUpperCase()  }}</h1>
-    <button v-if='loggedIn && !editing && !updatingStatus' v-on:click='updateStatus'>Update Status</button>
     <span>{{  date  }}</span>
-    <div v-if='editing || updatingStatus'>
-      <div class="checkboxes">
-        <span>
-          <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
-          <label for="UNBLOCKED">Unblocked</label>
-        </span>
-        <span>
-          <input type="radio" id="unsafe" value="UNSAFE" v-model="newStatus">
-          <label for="UNSAFE">Unsafe</label>
-        </span>
-        <span>
-          <input type="radio" id="blocked" value="BLOCKED" v-model="newStatus">
-          <label for="BLOCKED">Blocked</label>
-        </span>
-      </div>
-      <h2>Description</h2>
-      <textarea class='description-input' type='text' placeholder="New description here" v-model='newDescription'/>
-      <div class='edit-mode-buttons'>
-        <button class='cancel-button' v-on:click="cancelEdit">Cancel</button>
-        <button class='done-button' v-on:click="submitEditted">Submit</button>
-      </div>
+    <span>{{ displayLat }}°, {{ displayLng }}°</span>
+    <div v-if="['EDIT', 'UPDATE'].includes(mode)">
+      <EditBlockage 
+        :blockageData="blockageData"
+        :mode="mode"
+        @cancel-edit="cancelEdit"
+      />
     </div>
-    <div v-else>
+    <div v-else class="blockage-content">
+      <h1>{{  status.toUpperCase()  }}</h1>
+      <button v-if='loggedIn' v-on:click='updateStatus' class="general-button">
+        Update Status
+      </button>
       <span class="description" v-if='description.length!==0'>{{  description }}</span>
     </div>
     <div class='edit-delete-buttons'>
@@ -48,17 +36,19 @@
       <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
     </div>
-  </form>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { eventBus } from "@/main";
 
+import EditBlockage from '@/components/EditBlockage.vue';
 
 export default {
   name: 'Blockage',
   components: {
+    EditBlockage,
   },
   props: {
     /** @type {Blockage} The blockage object to display */
@@ -68,17 +58,13 @@ export default {
   },
   data () {
     return {
-      errorMessage: '',
       description: this.blockageData.description, 
       status: this.blockageData.status, 
       displayLat: this.blockageData.location.coordinates[0].toFixed(2), // round latitude to 2 decimals
       displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
-      editing: false, // whether we're in editing mode or not
-      newStatus: '', // updated status for editing mode
-      newDescription: '', // updated description for edidting mode
-      date: '', // formated time for displaying (human readable) 
+      mode: 'VIEW', // DEFAULT, EDIT, UPDATE, VIEW_PENDING_UPDATE
+      date: '', // formatted time for displaying (human readable) 
       reporter: this.blockageData.reporter, // contains {username, activityLevel} from original reporter
-      updatingStatus: false, // whether the user is currently updating the status
       votes: this.blockageData.voteCount,
     }
   },
@@ -87,13 +73,9 @@ export default {
     downvoted() { return this.blockageData.downvoted; },
     ownsBlockage() { return this.loggedIn && this.user._id === this.reporter._id; },
     // Can only edit or delete within thirty minutes of posting
-    canEditOrDelete() { return this.ownsBlockage && !this.editing && ((Date.now() - this.blockageData.time) < 1800000); }
-
+    canEditOrDelete() { return this.ownsBlockage && ((Date.now() - this.blockageData.time) < 1800000); }
   },
   mounted() {
-    // updated description and status starts off same as current to display initially
-    this.newDescription = this.description;
-    this.newStatus = this.status;
     // convert from unix epoch time to human readable date
     var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
     date.setUTCSeconds(this.blockageData.time/1000);
@@ -110,88 +92,18 @@ export default {
     },
     // enter edit blockage mode
     editBlockage() {
-      this.editing = true;
+      this.mode = "EDIT";
     },
     // update status button clicked
     updateStatus() {
-      this.updatingStatus = true;
+      this.mode = "UPDATE";
     },
     // cancel edit blockage mode
     cancelEdit() {
-      this.editing = false;
-      this.updatingStatus = false;
-      this.newStatus = this.status;
-    },
-    // submit the editted blockage
-    submitEditted() {
-      
-      if (this.editing) {
-        console.log('submitting editted');
-      }
-      else if (this.updatingStatus) {
-        console.log('submitting updated status');
-      }
-
-      if (this.editing) { // submit editted blockage
-        // updated blockage info: right now can't edit location (to do?)
-        let updatedBlockageData = {
-          description: this.newDescription,
-          status: this.newStatus
-        }
-
-        // request to submit editted blockage
-        axios.patch(`/api/blockages/${this.blockageData._id}`, updatedBlockageData)
-          .then((response) => {
-            console.log(response);
-            console.log('edited blockage successfully');
-            eventBus.$emit('refresh-blockages');
-
-            // update the description and status displayed to the new ones
-            this.description = this.newDescription;
-            this.status = this.newStatus;
-
-            //update the frontend time
-            var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-            date.setUTCSeconds(Date.now()/1000);
-            this.date = date;
-          }).catch((error) => {
-            console.log(error);
-          });
-      }
-
-      else if (this.updatingStatus) {
-        // submit request to update status
-        let fields = { 
-          status: this.newStatus, 
-          description: this.newDescription,
-          location: {
-            latitude: this.blockageData.location.coordinates[0],
-            longitude: this.blockageData.location.coordinates[1],
-          },
-          active: true,
-          parentBlockage: this.blockageData._id,
-        };
-        axios.post(`/api/blockages/`, fields)
-          .then((res) => {
-            this.errorMessage = '';
-            eventBus.$emit('updated-status', res.data.blockageData);
-            console.log('wassupppp', res.data.blockageData);
-            // console.log('updated status of blockage , success request')
-            // reset description and status of the create blockage
-            this.newStatus = this.status;
-          })
-          .catch(err => {
-            console.log(err.response || err);
-            this.errorMessage = err.response.data.error 
-                  || err.response.data.message 
-                  || "An unknown error occurred when updating status of this Blockage.";
-          });
-      }
-      this.editing = false; // exit blockage mode
-      this.updatingStatus = false;
+      this.mode = "DEFAULT";
     },
     /**
-     * Makes an API request to delete blcoakge. If successful, triggers the callback 
+     * Makes an API request to delete blockage. If successful, triggers the callback 
      * for the parent element to update its view as necessary, such as by reloading the
      * list of blockages.
      */
@@ -253,25 +165,9 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  color: rgb(69, 38, 118);
-  /* margin-top: -40px; */
-}
 h1 {
+  color: rgb(69, 38, 118);
   font-size: 20px;
-}
-.checkboxes span {
-  margin: 2px;
-}
-
-h2 {
-  margin-top: 0px;
-  font-size: 28px;
-}
-
-h2 {
-  margin-bottom: 5px;
-  /* margin-top: 100px; */
 }
 
 .vote-count {
@@ -288,13 +184,14 @@ h2 {
 }
 
 span{
-  margin: 10px;
+  margin: 5px 10px;
 }
 
 .username {
   font-weight: bold;
   font-size: 20px;
 }
+
 .reporter {
   display: flex;
   flex-direction: row;
@@ -315,35 +212,15 @@ span{
   font-size: 25px;
   margin-right: 10px;
   font-weight: bold;
+  cursor: default;
 }
+
 .icon {
   height: 25px;
   width: 25px;
   margin-right: 10px;
   margin-left: -2px;
   cursor: pointer;
-}
-button {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  /* margin-right: 10px; */
-  border: none;
-  border-radius: 4px;
-  padding: 4px 10px;
-  background-color: rgb(208, 252, 255);
-  font-size: 17px;
-  font-weight: bold;
-  color: rgb(94, 36, 133);
-  cursor: pointer;
-}
-
-button:disabled {
-  color: grey;
-  background-color: rgb(216, 216, 245);
-  cursor: not-allowed;
-}
-
-button:hover:enabled {
-  background-color: rgb(255, 254, 204);
 }
 
 .description {
@@ -362,37 +239,7 @@ button:hover:enabled {
   margin-bottom: -8px;
 }
 
-.edit-mode-buttons {
-  display: flex;
-  justify-content: center;
-}
-
-.done-button {
-  width: 40%;
-  margin-top: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-.cancel-button {
-  margin-right: 5px;
-  margin-left: 5px;
-  width: 40%;
-  margin-top: 10px;
-  background: none;
-  color: rgb(131, 33, 131);
-  font-weight: bold;
-  border: 3px rgb(171, 93, 216) solid;
-}
-
-.checkboxes {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 30%;
-}
-
-.blockage-creator {
+.blockage {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -410,6 +257,13 @@ button:hover:enabled {
   margin: -20px auto 10px auto;
   padding: 20px;
   /* padding-right: 12px; */
+}
+
+.blockage-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .feed-icon {
