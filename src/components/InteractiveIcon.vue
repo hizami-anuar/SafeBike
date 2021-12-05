@@ -22,6 +22,7 @@ export default {
   display: flex;
   justify-content: center;
   position: relative;
+  margin: 0px;
 }
 
 .icon-container .hovertext {
