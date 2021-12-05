@@ -25,7 +25,7 @@
       </span>
       </div>
         <h2>Description</h2>
-        <textarea placeholder="New description here" v-model='newDescription'/>
+        <textarea class='description-input' type='text' placeholder="New description here" v-model='newDescription'/>
         <div class='edit-mode-buttons'>
         <button class='cancel-button' v-on:click="cancelEdit">Cancel</button>
         <button class='done-button' v-on:click="submitEditted">Submit</button>
@@ -419,11 +419,12 @@ button:hover:enabled {
 
 textarea {
   width: 90%;
-  /* resize: none; */
+  height: auto;
   padding: 8px;
   margin: 0 8px 0 8px;
   border-radius: 5px;
   border: none;
+  resize: none;
 }
 
 .textboxes {
