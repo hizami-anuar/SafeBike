@@ -66,7 +66,7 @@ router.get("/", async (req, res) => {
 /**
  * Returns blockages corresponding to subscriptions
  *
- * @name GET /api/blockages
+ * @name GET /api/blockages/subscription
  *
  * @return {Blockage[]} - list of blockages
  */
@@ -112,10 +112,9 @@ router.get("/", async (req, res) => {
       }
     });
     
-    console.log(subscription.alerts);
     return subscription;
   });
-  
+
   res.status(200).json({ alerts: subscriptions }).end();
 });
 

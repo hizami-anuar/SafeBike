@@ -17,6 +17,7 @@
         :blockageData="blockageData"
         :mode="mode"
         @cancel-edit="cancelEdit"
+        @edited-blockage="mode = 'DEFAULT'"
       />
     </div>
     <div v-else class="blockage-content">
@@ -65,28 +66,29 @@ export default {
   },
   data () {
     return {
-      description: this.blockageData.description, 
-      status: this.blockageData.status, 
       displayLat: this.blockageData.location.coordinates[0].toFixed(2), // round latitude to 2 decimals
       displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
       mode: 'VIEW', // DEFAULT, EDIT, UPDATE, VIEW_PENDING_UPDATE
-      date: '', // formatted time for displaying (human readable) 
-      reporter: this.blockageData.reporter, // contains {username, activityLevel} from original reporter
-      votes: this.blockageData.voteCount,
     }
   },
   computed: {
     upvoted() { return this.blockageData.upvoted; },
     downvoted() { return this.blockageData.downvoted; },
+    description() { return this.blockageData.description; },
+    status() { return this.blockageData.status; },
+    reporter() { return this.blockageData.reporter; },
+    votes() { return this.blockageData.voteCount; },
     ownsBlockage() { return this.loggedIn && this.user._id === this.reporter._id; },
     // Can only edit or delete within thirty minutes of posting
-    canEditOrDelete() { return this.ownsBlockage && ((Date.now() - this.blockageData.time) < 1800000); }
-  },
-  mounted() {
-    // convert from unix epoch time to human readable date
-    var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-    date.setUTCSeconds(this.blockageData.time/1000);
-    this.date = date.toLocaleString('en-US');
+    canEditOrDelete() {
+      return this.ownsBlockage && ((Date.now() - this.blockageData.time) < 1800000); 
+    },
+    date() { // formatted time for displaying (human readable) 
+      // convert from unix epoch time to human readable date
+      var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
+      date.setUTCSeconds(this.blockageData.time/1000);
+      return date.toLocaleString('en-US');
+    },
   },
   methods: {
     openHistory() {

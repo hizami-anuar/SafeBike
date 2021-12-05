@@ -43,16 +43,6 @@ export default {
       reporter: this.blockageData.reporter, // contains {username, activityLevel} from original reporter
     }
   },
-  computed: {},
-  mounted() {
-    // updated description and status starts off same as current to display initially
-    this.newDescription = this.description;
-    this.newStatus = this.status;
-    // convert from unix epoch time to human readable date
-    var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-    date.setUTCSeconds(this.blockageData.time/1000);
-    this.date = date.toLocaleString('en-US');
-  },
   methods: {
     // cancel edit blockage mode
     cancelEdit() {
@@ -73,15 +63,7 @@ export default {
             console.log(response);
             console.log('edited blockage successfully');
             eventBus.$emit('refresh-blockages');
-
-            // update the description and status displayed to the new ones
-            this.description = this.newDescription;
-            this.status = this.newStatus;
-
-            //update the frontend time
-            var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
-            date.setUTCSeconds(Date.now()/1000);
-            this.date = date;
+            this.$emit('edited-blockage');
           }).catch((error) => {
             console.log(error);
           });

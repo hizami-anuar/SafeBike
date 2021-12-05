@@ -1,50 +1,41 @@
 <template>
   <div>
-    <div>{{currentTime}}</div>
-    <div 
-      v-for="alert in alerts"
+    <div class="notification-container"
+      v-for="alert in filteredAlerts"
       :key="alert._id">
-      {{alert.name}}: {{alert.alerts}}
+      {{alert.name}}
+      <div v-if="alert.alerts.BLOCKED">
+        BLOCKED: {{alert.alerts.BLOCKED}}
+      </div>
+      <div v-if="alert.alerts.UNSAFE">
+        UNSAFE: {{alert.alerts.UNSAFE}}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+
 export default {
+  props: ['alerts'],
   data() {
     return {
-      alerts: [],
-      timer: undefined,
-      currentTime: undefined,
+
     }
   },
 
-  mounted() {
-    this.timer = setInterval(() => {
-      this.refreshNotifications();
-    }, 1000);
+  computed: {
+    filteredAlerts () {
+      return this.alerts.filter((alert) => {
+        return alert.alerts.UNSAFE || alert.alerts.BLOCKED;
+      });
+    }
   },
-
-  beforeDestroy() {
-    clearInterval(this.timer);
-  },
-
-  methods: {
-    refreshNotifications() {
-      this.currentTime = Date.now();
-      axios.get(`/api/blockages/subscription`)
-        .then((response) => {
-          console.log(response);
-          this.alerts = response.data.alerts;
-        }).catch((error) => {
-          console.log(error);
-        })
-    },
-  }
 }
 </script>
 
 <style scoped>
-
+.notification-container {
+  border: 1px solid black;
+}
 </style>
