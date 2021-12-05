@@ -101,6 +101,16 @@ const blockageExists = async (req, res, next) => {
   next();
 }
 
+// Checks that the specified blockage or its parent is active.
+const blockageOrParentActive = async (req, res, next) => {
+  const blockage = await Blockages.findOne({ _id: req.params.id });
+  await blockage.populate('parentBlockage');
+  if (!blockage || (!blockage.active && !blockage.parentBlockage.active)) {
+    return sendError(res, 403, 'Operations on this blockage are not allowed.');
+  }
+  next();
+}
+
 // Checks that the user has permission to edit/delete a blockage
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
@@ -185,6 +195,7 @@ module.exports = Object.freeze({
   followingUserIDExists,
   userIsNotLoggedIn,
   blockageExists,
+  blockageOrParentActive,
   userHasPermission,
   subscriptionExists,
   userHasPermissionSubscription,

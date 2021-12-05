@@ -49,3 +49,14 @@ button:enabled {
 .general-button:hover:enabled {
   background-color: rgb(255, 254, 204);
 }
+
+.icon {
+  height: 25px;
+  width: 25px;
+  margin-right: 0px;
+  cursor: pointer;
+}
+
+.icon + .icon {
+  margin-left: 10px;
+}

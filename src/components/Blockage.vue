@@ -12,30 +12,39 @@
     </div> -->
     </div>
     <span>{{ displayLat }}°, {{ displayLng }}° TO CHANGE</span>
-    <div v-if="['EDIT', 'UPDATE'].includes(mode)">
-      <EditBlockage 
-        :blockageData="blockageData"
-        :mode="mode"
-        @cancel-edit="cancelEdit"
-        @edited-blockage="mode = 'DEFAULT'"
-      />
-    </div>
+    <EditBlockage 
+      v-if="['EDIT', 'UPDATE'].includes(mode)"
+      :blockageData="blockageData"
+      :mode="mode"
+      @back="viewDefault"
+      @updated-status="viewPendingStatusUpdate"
+    />
+    <PendingBlockage
+      v-else-if="child && mode === 'VIEW_PENDING_CHILD'"
+      :blockageData="blockageData"
+      :loggedIn="loggedIn"
+      :user="user"
+      @back="viewDefault"
+    />
     <div v-else class="blockage-content">
       <h1>{{  status.toUpperCase()  }}</h1>
-      <button v-if='loggedIn' v-on:click='updateStatus' class="general-button">
-        Update Status
+      <button v-if='child' v-on:click='viewPendingStatusUpdate' class="general-button">
+        View Pending Status Update
+      </button>
+      <button v-else-if='loggedIn' v-on:click='updateStatus' class="general-button">
+        Request Status Update
       </button>
       <span class="description" v-if='description.length!==0'>{{  description }}</span>
     </div>
     <div class='footer'>
     <div class='footer-buttons vote-buttons'>
       <p class='vote-count'>Total Votes: {{this.votes}}</p>
-      <div v-if='loggedIn' class='like-buttons'>
-        <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
-        <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
-        <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
-        <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
-      </div>
+      <VoteIcons
+        v-if="loggedIn"
+        :blockageData="blockageData"
+        :loggedIn="loggedIn"
+        :user="user"
+      />
     </div>
     <div class="footer-right">
     <div class='date'>
@@ -43,8 +52,16 @@
       <span class='time'>{{  date.split(',')[1] }}</span>
     </div>
     <div class="footer-buttons edit-delete-buttons">
-      <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
-      <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
+      <InteractiveIcon
+        :handler="openComments"
+        :hovertext="'View Comments'">   
+        <template v-slot:image><img class='icon' src="@/assets/comment.png"/></template>
+      </InteractiveIcon>
+      <InteractiveIcon
+        :handler="openHistory"
+        :hovertext="'View History'">   
+        <template v-slot:image><img class='icon' src="@/assets/history.png"/></template>
+      </InteractiveIcon>
       <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
     </div>
@@ -58,11 +75,17 @@ import axios from 'axios';
 import { eventBus } from "@/main";
 
 import EditBlockage from '@/components/EditBlockage.vue';
+import InteractiveIcon from '@/components/InteractiveIcon.vue';
+import PendingBlockage from '@/components/PendingBlockage.vue';
+import VoteIcons from '@/components/VoteIcons.vue';
 
 export default {
   name: 'Blockage',
   components: {
     EditBlockage,
+    InteractiveIcon,
+    PendingBlockage,
+    VoteIcons,
   },
   props: {
     /** @type {Blockage} The blockage object to display */
@@ -74,16 +97,15 @@ export default {
     return {
       displayLat: this.blockageData.location.coordinates[0].toFixed(2), // round latitude to 2 decimals
       displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
-      mode: 'VIEW', // DEFAULT, EDIT, UPDATE, VIEW_PENDING_UPDATE
+      mode: 'DEFAULT', // DEFAULT, EDIT, UPDATE, VIEW_PENDING_CHILD
     }
   },
   computed: {
-    upvoted() { return this.blockageData.upvoted; },
-    downvoted() { return this.blockageData.downvoted; },
     description() { return this.blockageData.description; },
     status() { return this.blockageData.status; },
     reporter() { return this.blockageData.reporter; },
     votes() { return this.blockageData.voteCount; },
+    child() { return this.blockageData.childBlockage; },
     ownsBlockage() { return this.loggedIn && this.user._id === this.reporter._id; },
     // Can only edit or delete within thirty minutes of posting
     canEditOrDelete() {
@@ -113,8 +135,10 @@ export default {
     updateStatus() {
       this.mode = "UPDATE";
     },
-    // cancel edit blockage mode
-    cancelEdit() {
+    viewPendingStatusUpdate() {
+      this.mode = "VIEW_PENDING_CHILD";
+    },
+    viewDefault() {
       this.mode = "DEFAULT";
     },
     /**
@@ -267,17 +291,6 @@ span{
   font-weight: bold;
   cursor: default;
   margin-right: 10px;
-}
-
-.icon {
-  height: 25px;
-  width: 25px;
-  margin-right: 0px;
-  cursor: pointer;
-}
-
-.icon + .icon {
-  margin-left: 10px;
 }
 
 .description {

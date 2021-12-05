@@ -1,11 +1,14 @@
 <template>
   <div>
     <nav class="header">
-        <img v-if='loggedIn' class='notification-icon' v-on:click.prevent="notificationClicked=!notificationClicked; popupClicked=false" src="@/assets/notification-bell.png"/>
+      <div class='notification-icon-container'>
+        <img v-if='loggedIn' class='notification-icon' v-on:click.prevent="notificationClicked" src="@/assets/notification-bell.png"/>
+        <div v-if='newAlerts' class='notification-circle'></div>
+      </div>
   <!-- Information on the right side of the navigation bar -->
       <div class='header-right'>
         <h1 v-if='loggedIn' class='username'>Welcome, {{user.username}}</h1>
-        <img v-if='loggedIn' v-on:click.prevent="popupClicked=!popupClicked; notificationClicked=false" src="@/assets/profile.png" class='account-icon'/>
+        <img v-if='loggedIn' v-on:click.prevent="popupClicked" src="@/assets/profile.png" class='account-icon'/>
           
         <div v-else class='guest-view'>
             <router-link v-if='onRegister || (!onLogin && !onRegister)' to='/login' class='account-info'> 
@@ -18,18 +21,18 @@
       </div>
 
     </nav>
-    <div v-if='loggedIn && notificationClicked' class="notification-popup">
+    <div v-if='loggedIn && notificationEnabled' class="notification-popup">
       <Notifications 
         :alerts='alerts'
       />
       No notifications to show :(
     </div>      
-    <div v-if='loggedIn && popupClicked' class="popup">
+    <div v-if='loggedIn && popupEnabled' class="popup">
       <p>Level {{ user.activityLevel }}</p>
       <p>Activity Points: {{ user.activityScore }}</p>
       <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
       <router-link v-if='loggedIn' to='/settings' >   
-        <button class="submit-button" v-on:click="popupClicked=false">Settings</button>
+        <button class="submit-button" v-on:click="settingsClicked">Settings</button>
       </router-link>
     </div>
   </div>
@@ -47,11 +50,12 @@ export default {
     loggedIn: Boolean,
     user: Object,
     alerts: Array,
+    newAlerts: Boolean,
   },
   data() {
     return {
-      popupClicked:false,
-      notificationClicked:false,
+      popupEnabled:false,
+      notificationEnabled:false,
       numNotifications: 0, // number of new notifications
     }
   }, 
@@ -64,6 +68,19 @@ export default {
     }
   },
   methods: {
+    notificationClicked() {
+      this.notificationEnabled = !this.notificationEnabled;
+      this.popupEnabled = false;
+      eventBus.$emit('clear-alerts');
+    },
+    popupClicked() {
+      this.notificationEnabled = false;
+      this.popupEnabled = !this.popupEnabled;
+    },
+    settingsClicked() {
+      this.notificationEnabled = false;
+      this.popupEnabled = false;
+    },
     logout() {
       axios.delete('/api/session')
         .then((response) => {
@@ -81,6 +98,20 @@ export default {
 </script>
 
 <style scoped>
+
+.notification-icon-container {
+  position: relative;
+}
+
+.notification-circle {
+  border-radius: 5px;
+  background: #f00;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
 
 .header {
     /* background-color: #474973; */
