@@ -31,8 +31,16 @@
       </div>
     </div>
     <div class="edit-delete-buttons">
-      <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
-      <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
+      <InteractiveIcon
+        :handler="openComments"
+        :hovertext="'View Comments'">   
+        <template v-slot:image><img class='icon' src="@/assets/comment.png"/></template>
+      </InteractiveIcon>
+      <InteractiveIcon
+        :handler="openHistory"
+        :hovertext="'View History'">   
+        <template v-slot:image><img class='icon' src="@/assets/history.png"/></template>
+      </InteractiveIcon>
       <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
     </div>
@@ -44,11 +52,13 @@ import axios from 'axios';
 import { eventBus } from "@/main";
 
 import EditBlockage from '@/components/EditBlockage.vue';
+import InteractiveIcon from '@/components/InteractiveIcon.vue';
 
 export default {
   name: 'Blockage',
   components: {
     EditBlockage,
+    InteractiveIcon,
   },
   props: {
     /** @type {Blockage} The blockage object to display */

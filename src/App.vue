@@ -11,7 +11,8 @@
       <Logout
         :loggedIn='loggedIn'
         :user='user'
-        :alerts='alerts'/>
+        :alerts='alerts'
+        :newAlerts='newAlerts'/>
     </div>
     <router-view
       id="page-content"
@@ -35,6 +36,7 @@ export default {
       user: undefined,
       timer: undefined,
       alerts: [],
+      newAlerts: true,
     }
   }, 
   mounted() {
@@ -48,6 +50,7 @@ export default {
     eventBus.$on('refresh-user', this.refreshUser);
     eventBus.$on('login-event',  this.handleLogin);
     eventBus.$on('logout-event', this.handleLogout);
+    eventBus.$on('clear-alerts', this.clearAlerts);
   }, 
   beforeDestroy() {
     clearInterval(this.timer);
@@ -79,10 +82,14 @@ export default {
         .then((response) => {
           console.log(response);
           this.alerts = response.data.alerts;
+          this.newAlerts = true; // TODO - CHECK IF NEW ALERTS FIRST
         }).catch((error) => {
           console.log(error);
         })
     },
+    clearAlerts() {
+      this.newAlerts = false;
+    }
   }
 }
 </script>
