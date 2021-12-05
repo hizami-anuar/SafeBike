@@ -6,10 +6,10 @@
       <span class='username'>@{{reporter.username}}</span>
       <span v-if="reporter"> (L{{ reporter.activityLevel }})</span>
     </div>
-    <div class='date'>
+    <!-- <div class='date'>
       <span>{{  date.split(',')[0] }}</span><br>
       <span>{{  date.split(',')[1] }}</span>
-    </div>
+    </div> -->
     </div>
     <span>{{ displayLat }}°, {{ displayLng }}° TO CHANGE</span>
     <div v-if="['EDIT', 'UPDATE'].includes(mode)">
@@ -37,11 +37,17 @@
         <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
       </div>
     </div>
+    <div class="footer-right">
+    <div class='date'>
+      <span class='time'>{{  date.split(',')[0] }}</span><br>
+      <span class='time'>{{  date.split(',')[1] }}</span>
+    </div>
     <div class="footer-buttons edit-delete-buttons">
       <img class='icon' v-on:click="openComments" src="@/assets/comment.png"/>
       <img class='icon' v-on:click="openHistory" src="@/assets/history.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="editBlockage" src="@/assets/edit.png"/>
       <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+    </div>
     </div>
     </div>
   </div>
@@ -182,7 +188,7 @@ h1 {
 .date {
   margin-right: -12px;
   padding: 0px;
-  width: 50%;
+  width: fit-content;
 }
 
 .footer {
@@ -190,6 +196,12 @@ h1 {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .header-div {
@@ -210,6 +222,12 @@ h1 {
   font-size: 18px;
 }
 
+.time {
+  margin: 0px;
+  white-space: nowrap;
+  margin-right: 10px;
+}
+
 .like-buttons {
   display: flex;
   flex-direction: row;
@@ -223,6 +241,8 @@ span{
   font-weight: bold;
   font-size: 20px;
   margin-right: 0px;
+  margin-left: 0px;
+  /* padding-left: 5px; */
 }
 
 .reporter {
@@ -244,9 +264,9 @@ span{
   justify-content: center;
   align-items: center;
   font-size: 25px;
-  margin-right: 10px;
   font-weight: bold;
   cursor: default;
+  margin-right: 10px;
 }
 
 .icon {

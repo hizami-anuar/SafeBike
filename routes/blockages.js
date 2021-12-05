@@ -70,7 +70,11 @@ router.get("/", async (req, res) => {
  *
  * @return {Blockage[]} - list of blockages
  */
- router.get("/subscription", async (req, res) => {
+ router.get("/subscription", 
+  [
+    validateThat.userIsLoggedIn,
+  ], 
+  async (req, res) => {
   let blockages = [];
   let subscriptions = await Subscriptions.find({ user: req.session.user._id });
   function inCircle(circle, point) {
