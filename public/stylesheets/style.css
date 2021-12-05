@@ -27,3 +27,25 @@ button{
 button:enabled {
   cursor: pointer;
 }
+
+.general-button {
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  background-color: rgb(208, 252, 255);
+  font-size: 17px;
+  font-weight: bold;
+  color: rgb(94, 36, 133);
+  cursor: pointer;
+  min-width: fit-content;
+}
+
+.general-button:disabled {
+  color: grey;
+  background-color: rgb(216, 216, 245);
+  cursor: not-allowed;
+}
+
+.general-button:hover:enabled {
+  background-color: rgb(255, 254, 204);
+}
