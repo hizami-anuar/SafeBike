@@ -123,13 +123,13 @@ router.patch("/:id",
     validateThat.userIsLoggedIn,
     validateThat.blockageExists,
     validateThat.userHasPermission,
+    validateThat.blockageWithinEditGracePeriod
   ], 
   async (req, res) => {
     const id = req.params.id;
 
     // const latitude = req.body.location.latitude;
     // const longitude = req.body.location.longitude;
-    const time = Date.now();
     const reporter = req.session.user._id;
     const description = req.body.description;
     const status = req.body.status;
@@ -138,7 +138,6 @@ router.patch("/:id",
       location = { type: "Point", coordinates: [req.body.location.latitude, req.body.location.longitude] };
     const updates = {
       location: location,
-      time: time,
       reporter: reporter,
       description: description,
       status: status,
@@ -163,6 +162,7 @@ router.delete("/:id", [
     validateThat.userIsLoggedIn,
     validateThat.blockageExists,
     validateThat.userHasPermission,
+    validateThat.blockageWithinEditGracePeriod
   ], 
     async (req, res) => {
     const id = req.params.id;

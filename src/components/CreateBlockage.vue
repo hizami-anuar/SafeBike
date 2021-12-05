@@ -22,6 +22,10 @@
             <textarea v-model="description" placeholder="Details about the blockage..."/>
         <label v-if='this.errorMessage' for='creator-textbox' class='error'>{{this.errorMessage}}</label>
         <button :disabled='status.length === 0' class="post-button" v-on:click="createBlockage">SUBMIT</button>
+        <span class="grace-period-disclaimer">
+            Blockages cannot be modified or deleted after thirty minutes of posting
+        </span>
+
     </form>
   </div>
 </template>
@@ -165,5 +169,11 @@ textarea {
 
 .error{
   color: red;
+}
+
+.grace-period-disclaimer {
+  font-style: italic;
+  font-size: smaller;
+  padding-top: 10px;
 }
 </style>

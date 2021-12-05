@@ -110,6 +110,16 @@ const userHasPermission = async (req, res, next) => {
   next()
 }
 
+// Checks that the blockage can still be edited or deleted
+const blockageWithinEditGracePeriod = async (req, res, next) => {
+  const blockage = await Blockages.findOne({ _id: req.params.id });
+  console.log(Date.now(), blockage.time)
+  if ((Date.now() - blockage.time) > 1800000) {
+    return sendError(res, 403, 'You cannot edit blockages that are more than thirty minutes old.');
+  }
+  next()
+}
+
 // Checks that a subscription with given id exists
 const subscriptionExists = async (req, res, next) => {
   const subscription = await Subscriptions.findOne({ _id: req.params.id });
@@ -181,4 +191,5 @@ module.exports = Object.freeze({
   hasSubscriptionFields,
   commentExists,
   userHasPermissionComment,
+  blockageWithinEditGracePeriod
 });
