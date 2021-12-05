@@ -19,7 +19,9 @@
 
     </nav>
     <div v-if='loggedIn && notificationClicked' class="notification-popup">
-      <Notifications />
+      <Notifications 
+        :alerts='alerts'
+      />
       No notifications to show :(
     </div>      
     <div v-if='loggedIn && popupClicked' class="popup">
@@ -44,6 +46,7 @@ export default {
   props: {
     loggedIn: Boolean,
     user: Object,
+    alerts: Array,
   },
   data() {
     return {

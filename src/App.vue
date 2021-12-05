@@ -10,7 +10,8 @@
       </div>
       <Logout
         :loggedIn='loggedIn'
-        :user='user'/>
+        :user='user'
+        :alerts='alerts'/>
     </div>
     <router-view
       id="page-content"
@@ -32,16 +33,25 @@ export default {
     return {
       loggedIn: false,
       user: undefined,
+      timer: undefined,
+      alerts: [],
     }
   }, 
   mounted() {
     this.refreshUser();
+    this.refreshNotifications();
+    this.timer = setInterval(() => {
+      this.refreshNotifications();
+    }, 30000);
 
     // Register some eventBus listeners
     eventBus.$on('refresh-user', this.refreshUser);
     eventBus.$on('login-event',  this.handleLogin);
     eventBus.$on('logout-event', this.handleLogout);
   }, 
+  beforeDestroy() {
+    clearInterval(this.timer);
+  },
   methods: {
     // Check if the user is logged in.
     refreshUser() {
@@ -63,6 +73,15 @@ export default {
     handleLogout(/*response*/) {
       this.loggedIn = false;
       this.user = undefined;
+    },
+    refreshNotifications() {
+      axios.get(`/api/blockages/subscription?active=true`)
+        .then((response) => {
+          console.log(response);
+          this.alerts = response.data.alerts;
+        }).catch((error) => {
+          console.log(error);
+        })
     },
   }
 }

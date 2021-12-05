@@ -15,13 +15,12 @@
 </template>
 
 <script>
-import axios from "axios";
+
 export default {
+  props: ['alerts'],
   data() {
     return {
-      alerts: [],
-      timer: undefined,
-      currentTime: undefined,
+
     }
   },
 
@@ -32,29 +31,6 @@ export default {
       });
     }
   },
-
-  mounted() {
-    this.refreshNotifications();
-    this.timer = setInterval(() => {
-      this.refreshNotifications();
-    }, 30000);
-  },
-
-  beforeDestroy() {
-    clearInterval(this.timer);
-  },
-
-  methods: {
-    refreshNotifications() {
-      axios.get(`/api/blockages/subscription?active=true`)
-        .then((response) => {
-          console.log(response);
-          this.alerts = response.data.alerts;
-        }).catch((error) => {
-          console.log(error);
-        })
-    },
-  }
 }
 </script>
 
