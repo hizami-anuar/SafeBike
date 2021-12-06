@@ -17,6 +17,11 @@
                 <input type="radio" id="blocked" value="BLOCKED" v-model="status">
                 <label for="blocked">Blocked</label>
             </span>
+            <span>
+                <input type="datetime-local" id="effectiveTime" name="effectiveTime"
+                       required v-model="effectiveTime">
+                <label for="effectiveTime">Effective Date</label>
+            </span>
             </div>
             <h2>Description</h2>
             <textarea v-model="description" placeholder="Details about the blockage..."/>
@@ -43,6 +48,7 @@ export default {
       errorMessage: '',
       status: '',
       description: '',
+      effectiveTime: new Date()
   }
   },
   emits: [
