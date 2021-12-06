@@ -198,16 +198,18 @@ button:disabled {
 .notification-popup {
     position: absolute;
     width: 21%;
-    height: 100%;
+    max-height: 80%;
     right: 33px;
     /* top: 100%; */
     /* left: 88%; */
     background-color: rgb(229, 198, 250);
     z-index: 1;
-    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
     display: flex;
+    padding-bottom: 20px;
     flex-direction: column;
-    border-radius: 2px;
+    border-radius: 10px;
     overflow: auto;
 }
 

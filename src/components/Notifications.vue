@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Notifications</h1>
+    <h1 class='notification-heading'>Notifications</h1>
     <NotificationItem
       v-for="alert in filteredAlerts"
       :key="alert._id"
@@ -34,5 +34,8 @@ export default {
 </script>
 
 <style scoped>
-
+.notification-heading {
+  font-size: 30px;
+  text-align: left;
+}
 </style>

@@ -1,10 +1,10 @@
 <template>
   <div class="notification-container">
     <div v-if="anyBlockedAlerts">
-      BLOCKED: {{alert.alerts.BLOCKED.length}}
+      <span class='blocked'>BLOCKED: {{alert.alerts.BLOCKED.length}}</span>
     </div>
     <div v-if="anyUnsafeAlerts">
-      UNSAFE: {{alert.alerts.UNSAFE.length}}
+      <span class='unsafe'>UNSAFE: {{alert.alerts.UNSAFE.length}}</span>
     </div>
   </div>
 </template>
@@ -26,6 +26,19 @@ export default {
 
 <style scoped>
 .notification-container {
-  border: 1px solid black;
+  border: 3px solid rgb(255, 251, 198);
+  padding: 5px;
+  border-radius: 2px;
+  background-color: rgb(195, 159, 254);
+}
+
+.blocked {
+  color: rgb(122, 17, 187);
+  font-weight: bold;
+}
+
+.unsafe {
+  color: rgb(250, 250, 78);
+  font-weight: bold;
 }
 </style>
