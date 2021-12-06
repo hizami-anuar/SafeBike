@@ -1,6 +1,6 @@
 <template>
   <div class="notification-container">
-    <div>{{alert.name}}</div>
+    <div class='alert-name'>{{alert.name}}</div>
     <div v-if="anyBlockedAlerts">
       <span class='blocked'>{{alert.alerts.BLOCKED.length}} BLOCKED</span>
     </div>
@@ -33,6 +33,17 @@ export default {
   border-radius: 2px;
   background-color: rgb(195, 159, 254);
   text-align: left;
+}
+
+.alert-name {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 2px 10px;
+  color: rgb(122, 17, 187);
+  text-align: center;
+  border: 3px rgb(122, 17, 187) solid;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 .blocked {
