@@ -85,7 +85,7 @@ import axios from 'axios';
 import { eventBus } from "@/main";
 
 import EditBlockage from '@/components/EditBlockage.vue';
-import InteractiveIcon from '@/components/InteractiveIcon.vue';
+import InteractiveIcon from '@/components/input_components/InteractiveIcon.vue';
 import PendingBlockage from '@/components/PendingBlockage.vue';
 import VoteIcons from '@/components/VoteIcons.vue';
 

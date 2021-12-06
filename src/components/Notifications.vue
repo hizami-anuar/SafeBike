@@ -1,22 +1,21 @@
 <template>
   <div>
-    <div class="notification-container"
+    <h1>Notifications</h1>
+    <NotificationItem
       v-for="alert in filteredAlerts"
-      :key="alert._id">
-      {{alert.name}}
-      <div v-if="alert.alerts.BLOCKED.length">
-        BLOCKED: {{alert.alerts.BLOCKED.length}}
-      </div>
-      <div v-if="alert.alerts.UNSAFE.length">
-        UNSAFE: {{alert.alerts.UNSAFE.length}}
-      </div>
+      :key="alert._id"
+      :alert="alert"/>
+    <div v-if="!filteredAlerts.length">
+      No notifications to show.
     </div>
   </div>
 </template>
 
 <script>
+import NotificationItem from "@/components/NotificationItem";
 
 export default {
+  components: { NotificationItem },
   props: ['alerts'],
   data() {
     return {
@@ -35,7 +34,5 @@ export default {
 </script>
 
 <style scoped>
-.notification-container {
-  border: 1px solid black;
-}
+
 </style>

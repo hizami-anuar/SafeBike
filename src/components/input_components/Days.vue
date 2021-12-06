@@ -1,0 +1,76 @@
+<template>
+  <div class="days-container">
+    <div class="round" 
+      v-for="(day, index) in DAY_NAMES"
+      :key="index">
+      <label :id="editable ? 'editable' : ''" :class="days[index] ? 'checked-label' : 'unchecked-label'">
+        {{ day }}
+        <input type="checkbox" 
+          v-model="days[index]"
+          :disabled="!editable"/>
+      </label>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Days',
+  props: ['days', 'editable', 'DAY_NAMES'],
+}
+</script>
+
+<style scoped>
+.days-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 80%;
+  margin: 10px 10% 10px 10%;
+}
+
+.round {
+  --day-size: 30px;
+  position: relative;
+  height: var(--day-size);
+  width: var(--day-size);
+}
+
+.round label {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  font-weight: bold;
+  border-width: 3px;
+  border-style: solid;
+  border-radius: 50%;
+  /* cursor: pointer; */
+  height: var(--day-size);
+  width: var(--day-size);
+  position: absolute;
+  top: 0;
+}
+
+#editable {
+  cursor: pointer;
+}
+
+#editable.unchecked-label:hover {
+  background-color: #ffffb3;
+}
+
+.round input[type="checkbox"] {
+  display: none;
+}
+
+.unchecked-label {
+  border-color: #5c00e6;
+  color: #5c00e6;
+}
+
+.checked-label {
+  background-color: #5c00e6;
+  border-color: #5c00e6;
+  color: white;
+}
+</style>

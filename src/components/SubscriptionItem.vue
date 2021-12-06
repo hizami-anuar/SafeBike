@@ -11,8 +11,18 @@
       :editable="editable"
     />
     <div class="edit-delete-buttons">
-      <img v-if="!editable" class='icon' v-on:click="selectSubscription" src="@/assets/edit.png"/>
-      <img v-if="!editable" class='icon' v-on:click.prevent="deleteSubscription" src="@/assets/delete.png"/>
+      <template v-if=!editable>
+        <InteractiveIcon
+          :handler="selectSubscription"
+          :hovertext="'Edit'">   
+          <template v-slot:image><img class='icon' src="@/assets/edit.png"/></template>
+        </InteractiveIcon>
+        <InteractiveIcon
+          :handler="deleteSubscription"
+          :hovertext="'Delete'">   
+          <template v-slot:image><img class='icon' src="@/assets/delete.png"/></template>
+        </InteractiveIcon>
+      </template>
     </div>
     <template v-if="editable">
       <span class="buttons-container">
@@ -25,13 +35,14 @@
 
 <script>
 import { eventBus } from "@/main";
-import Days from "@/components/Days";
-import Time from "@/components/Time";
+import Days from "@/components/input_components/Days";
+import Time from "@/components/input_components/Time";
+import InteractiveIcon from '@/components/input_components/InteractiveIcon.vue';
 
 export default {
   name: 'SubscriptionItem',
   props: ['subscription', 'editable', 'DAY_NAMES'],
-  components: { Days, Time },
+  components: { Days, Time, InteractiveIcon },
   computed: {
     containerClass () {
       return this.editable ? "subscription-container" : "subscription-container clickable";

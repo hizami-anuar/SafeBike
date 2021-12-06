@@ -27,8 +27,8 @@
 
 <script>
 import { eventBus } from "@/main";
-import Days from "@/components/Days";
-import Time from "@/components/Time";
+import Days from "@/components/input_components/Days";
+import Time from "@/components/input_components/Time";
 
 export default {
   name: 'SubscriptionItem',

@@ -25,7 +25,6 @@
       <Notifications 
         :alerts='alerts'
       />
-      No notifications to show :(
     </div>      
     <div v-if='loggedIn && popupEnabled' class="popup">
       <p>Level {{ user.activityLevel }}</p>
