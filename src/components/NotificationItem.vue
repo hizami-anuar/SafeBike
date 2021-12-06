@@ -1,5 +1,6 @@
 <template>
   <div class="notification-container">
+    <div>{{alert.name}}</div>
     <div v-if="anyBlockedAlerts">
       <span class='blocked'>{{alert.alerts.BLOCKED.length}} BLOCKED</span>
     </div>

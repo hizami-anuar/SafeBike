@@ -43,6 +43,12 @@ then you will find the application at `localhost:8080` in the browser
     - SubscriptionItem.vue
     - Days.vue
     - Time.vue
+    - NavBar.vue
+    - Logout.vue
+    - CreateSubscription.vue
+    - Notification.vue
+    - NotificationItem.vue
+    - InteractiveIcon.vue
   - models:
     - Blockage.js
     - Subscription.js
@@ -57,6 +63,7 @@ then you will find the application at `localhost:8080` in the browser
   - API.md
 
 - **Victor Luo**:
+
   - models:
     - Blockage.js
     - User.js
