@@ -3,7 +3,7 @@
     <nav class="header">
       <div class='notification-icon-container'>
         <img v-if='loggedIn' class='notification-icon' v-on:click.prevent="notificationClicked" src="@/assets/notification-bell.png"/>
-        <div v-if='newAlerts' class='notification-circle'></div>
+        <div v-if='newAlerts && loggedIn' class='notification-circle'></div>
       </div>
   <!-- Information on the right side of the navigation bar -->
       <div class='header-right'>
