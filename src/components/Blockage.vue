@@ -4,7 +4,7 @@
     <div class='reporter'>
       <div class='profile'>{{reporter.username[0].toUpperCase()}}</div>
       <span class='username'>@{{reporter.username}}</span>
-      <span v-if="reporter"> (L{{ reporter.activityLevel }})</span>
+      <span v-if="reporter"> (Level {{ reporter.activityLevel }})</span>
     </div>
     <!-- <div class='date'>
       <span>{{  date.split(',')[0] }}</span><br>

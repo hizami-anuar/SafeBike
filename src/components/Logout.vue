@@ -27,8 +27,8 @@
       />
     </div>      
     <div v-if='loggedIn && popupEnabled' class="popup">
-      <p>Level {{ user.activityLevel }}</p>
-      <p>Activity Points: {{ user.activityScore }}</p>
+      <h2>Level {{ user.activityLevel }}</h2>
+      <p class='activity-points'>{{ user.activityScore }} Activity Points</p>
       <button class='submit-button' v-on:click.prevent='logout'>Logout</button>
       <router-link v-if='loggedIn' to='/settings' >   
         <button class="submit-button" v-on:click="settingsClicked">Settings</button>
@@ -112,6 +112,14 @@ export default {
   right: 5px;
 }
 
+h2 {
+  font-size: 20px;
+  margin: 0px;
+}
+
+.activity-points {
+  font-style: italic;
+}
 .header {
     /* background-color: #474973; */
     height: 70px;
