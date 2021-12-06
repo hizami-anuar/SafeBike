@@ -62,8 +62,18 @@
         :hovertext="'View History'">   
         <template v-slot:image><img class='icon' src="@/assets/history.png"/></template>
       </InteractiveIcon>
-      <img v-if="canEditOrDelete" class='icon icon-edit' v-on:click="editBlockage" src="@/assets/edit.png"/>
-      <img v-if="canEditOrDelete" class='icon' v-on:click="deleteBlockage" src="@/assets/delete.png"/>
+      <template v-if="canEditOrDelete">
+      <InteractiveIcon
+        :handler="editBlockage"
+        :hovertext="'Edit'">   
+        <template v-slot:image><img class='icon icon-edit' src="@/assets/edit.png"/></template>
+      </InteractiveIcon>
+      <InteractiveIcon
+        :handler="deleteBlockage"
+        :hovertext="'Delete'">   
+        <template v-slot:image><img class='icon' src="@/assets/delete.png"/></template>
+      </InteractiveIcon>
+      </template>
     </div>
     </div>
     </div>
