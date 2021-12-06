@@ -57,8 +57,6 @@ export default {
           if (!this.user) {
             this.user = undefined;
             this.loggedIn = false;
-          } else {
-            this.refreshNotifications();
           }
         })
         .catch((err) => console.log(err));

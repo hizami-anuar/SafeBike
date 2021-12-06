@@ -138,7 +138,7 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
       if (!s.schedule.days[dayOfWeek]) {
           return false;
       }
-      console.log(s,startTimeInSeconds,endTimeInSeconds,secondsNow)
+      // console.log(s,startTimeInSeconds,endTimeInSeconds,secondsNow)
       return (secondsNow > startTimeInSeconds && secondsNow < endTimeInSeconds)
   })
   function inCircle(circle, point) {
