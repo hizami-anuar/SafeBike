@@ -13,6 +13,11 @@
       :schedule="subscription.schedule"
       :editable="editable"
     />
+    <select v-model="subscription.alertPrior">
+      <option value="0">Alert me at the time of blockage</option>
+      <option value="5">Alert me five minutes prior</option>
+      <option value="10">Alert me ten minutes prior</option>
+    </select>
     <div class='buttons-div'>
     <button class='cancel-button' v-on:click="cancelCreate">Cancel</button>
     <button class='add-button' :disabled='!addEnabled' v-on:click.prevent="createSubscription">Add Subscription</button>

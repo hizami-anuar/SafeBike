@@ -69,6 +69,7 @@ export default {
       name: undefined,
       center: undefined,
       radius: undefined,
+      alertPrior: 0,
       schedule: {
         days: [false, false, false, false, false, false, false],
         startTime: "01:23",
