@@ -4,11 +4,11 @@
       v-for="alert in filteredAlerts"
       :key="alert._id">
       {{alert.name}}
-      <div v-if="alert.alerts.BLOCKED">
-        BLOCKED: {{alert.alerts.BLOCKED}}
+      <div v-if="alert.alerts.BLOCKED.length">
+        BLOCKED: {{alert.alerts.BLOCKED.length}}
       </div>
-      <div v-if="alert.alerts.UNSAFE">
-        UNSAFE: {{alert.alerts.UNSAFE}}
+      <div v-if="alert.alerts.UNSAFE.length">
+        UNSAFE: {{alert.alerts.UNSAFE.length}}
       </div>
     </div>
   </div>
@@ -27,7 +27,7 @@ export default {
   computed: {
     filteredAlerts () {
       return this.alerts.filter((alert) => {
-        return alert.alerts.UNSAFE || alert.alerts.BLOCKED;
+        return alert.alerts.UNSAFE.length || alert.alerts.BLOCKED.length;
       });
     }
   },

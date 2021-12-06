@@ -151,7 +151,7 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
     return distance <= circle.radius;
   }
 
-  let oneWeekAgo = new Date(Date.now());
+  let oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   oneWeekAgo = oneWeekAgo.valueOf();
   req.query.time = { $gte: oneWeekAgo }
