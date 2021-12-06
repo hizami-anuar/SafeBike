@@ -138,6 +138,11 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
     let distance = computeDistanceBetween(point1, point2);
     return distance <= circle.radius;
   }
+
+  let oneWeekAgo = new Date(Date.now());
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  oneWeekAgo = oneWeekAgo.valueOf();
+  req.query.time = { $gte: oneWeekAgo }
   blockages = await Blockages.find(req.query);
   blockages = await Promise.all(
     blockages.map(async (blockage) => {

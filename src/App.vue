@@ -57,6 +57,8 @@ export default {
           if (!this.user) {
             this.user = undefined;
             this.loggedIn = false;
+          } else {
+            this.refreshNotifications();
           }
         })
         .catch((err) => console.log(err));
@@ -64,10 +66,12 @@ export default {
     handleLogin(response) {
       this.loggedIn = true;
       this.user = response.data;
+      this.refreshNotifications();
     },
     handleLogout(/*response*/) {
       this.loggedIn = false;
       this.user = undefined;
+      this.refreshNotifications();
     },
     refreshNotifications() {
       axios.get(`/api/blockages/subscription?active=true`)
