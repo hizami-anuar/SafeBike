@@ -27,6 +27,7 @@ const subscriptionSchema = new mongoose.Schema({
   radius: Number,
   user: String,
   schedule: scheduleSchema,
+  alertPrior: Number
 })
 
 module.exports = mongoose.model('Subscription', subscriptionSchema);

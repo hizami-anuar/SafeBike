@@ -129,6 +129,18 @@ router.get("/", async (req, res) => {
 router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
   let blockages = [];
   let subscriptions = await Subscriptions.find({ user: req.session.user._id });
+  subscriptions = subscriptions.filter((s) => {
+      const startTimeInSeconds = Number.parseInt(s.schedule.startTime.split(':')[0])*3600 + Number.parseInt(s.schedule.startTime.split(':')[1])*60
+      const endTimeInSeconds = Number.parseInt(s.schedule.endTime.split(':')[0])*3600 + Number.parseInt(s.schedule.endTime.split(':')[1])*60
+      const dt = new Date();
+      const secondsNow = dt.getSeconds() + (60 * dt.getMinutes()) + (60 * 60 * dt.getHours());
+      const dayOfWeek = dt.getDay();
+      if (!s.schedule.days[dayOfWeek]) {
+          return false;
+      }
+      console.log(s,startTimeInSeconds,endTimeInSeconds,secondsNow)
+      return (secondsNow > startTimeInSeconds && secondsNow < endTimeInSeconds)
+  })
   function inCircle(circle, point) {
     let point1 = {
       lat: circle.center.coordinates[0],
@@ -169,14 +181,14 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
   subscriptions = subscriptions.map((subscription) => {
     subscription = subscription.toObject();
     subscription.alerts = {
-      UNBLOCKED: 0,
-      UNSAFE: 0,
-      BLOCKED: 0,
+      UNBLOCKED: [],
+      UNSAFE: [],
+      BLOCKED: [],
     };
 
     blockages.forEach((blockage) => {
       if (inCircle(subscription, blockage.location.coordinates)) {
-        subscription.alerts[blockage.status]++;
+        subscription.alerts[blockage.status].push(blockage);
       }
     });
 

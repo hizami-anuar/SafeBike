@@ -41,6 +41,7 @@ router.post("/",
       name: req.body.name,
       center: req.body.center,
       radius: req.body.radius,
+      alertPrior: req.body.alertPrior,
       user: req.session.user._id,
       schedule: req.body.schedule,
     }
@@ -65,7 +66,7 @@ router.patch("/:id/",
   ],
   async (req, res) => {
     const updates = req.body;
-    response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, updates);
+    const response = await Subscriptions.findOneAndUpdate({ _id: req.params.id }, updates);
     res.status(200).json(response).end();
   });
 
