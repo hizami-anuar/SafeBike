@@ -12,7 +12,11 @@ const pointSchema = new mongoose.Schema({
   coordinates: {
     type: [Number],
     required: true
-  }
+  },
+  name: {
+    type: String,
+    required: true
+  },
 });
 
 const blockageSchema = new mongoose.Schema({

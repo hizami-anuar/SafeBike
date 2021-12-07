@@ -66,7 +66,7 @@ export default {
         location: {
           latitude: this.location.lat,
           longitude: this.location.lng,
-          // name: this.location.name,
+          name: this.location.name, // insecure but whatever for now
         },
       };
       axios.post(`/api/blockages/`, fields).then(() => {

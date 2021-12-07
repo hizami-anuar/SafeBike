@@ -118,6 +118,7 @@ router.post("/", [validateThat.userIsLoggedIn], async (req, res) => {
     location: {
       type: "Point",
       coordinates: [req.body.location.latitude, req.body.location.longitude], // coordinates come from body
+      name: req.body.location.name,
     },
     time: Date.now(), // uses current time
     reporter: req.session.user._id, // reporter is the user currently logged in
