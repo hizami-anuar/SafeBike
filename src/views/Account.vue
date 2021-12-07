@@ -10,11 +10,6 @@
         :user='user'
       />
       </div>
-      <div v-if='isLoading' class='loading'>
-      <!-- <div class='loading'> -->
-        <p class='loading-text'>Loading pins...</p>
-        <img class='loading-gif' src="@/assets/loading.gif"/>
-      </div>
       <Blockage
         class="blockage-popup"
         v-if='currBlockage'
@@ -24,6 +19,11 @@
         :user='user'/>
       <div v-if='!currBlockageId' class='instructions'>
         <p>Click on an existing pin to view details on your blockage report.</p>
+      </div>
+    </div>
+      <div v-if='isLoading' class='loading'>
+        <p class='loading-text'>Loading pins...</p>
+        <img class='loading-gif' src="@/assets/loading.gif"/>
       </div>
       <Popup v-if='historyPopupShown' @close-popup='closeHistoryPopup'>
       <History 
@@ -37,7 +37,6 @@
         :user='user'
         />
       </Popup>
-    </div>
   </main>
 </template>
 
@@ -205,14 +204,19 @@ main {
 }
 
 .blockage-popup {
-  position:absolute;
-  top: 24%;
-  right: 2%;
+  /* position:absolute; */
+  width: 35%;
+  /* height: 70%; */
+  margin-top: 20px;
+  /* top: 24%; */
+  /* right: 2%; */
 }
 
 .home-container {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 .map-container {
