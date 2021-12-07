@@ -58,6 +58,7 @@
         :hovertext="'View Comments'">   
         <template v-slot:image><img class='icon' src="@/assets/comment.png"/></template>
       </InteractiveIcon>
+      <span v-if='history' class='num-history'>{{history.length}}</span>
       <InteractiveIcon
         :handler="openHistory"
         :hovertext="'View History'">   
@@ -100,6 +101,7 @@ export default {
   },
   mounted() {
     this.getAllComments();
+    this.getHistory();
     eventBus.$on('new-comment', this.getAllComments);
     eventBus.$on('delete-comment', this.getAllComments);
   },
@@ -115,6 +117,7 @@ export default {
       displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
       mode: 'DEFAULT', // DEFAULT, EDIT, UPDATE, VIEW_PENDING_CHILD
       comments: undefined,
+      history: undefined,
     }
   },
   computed: {
@@ -228,6 +231,33 @@ export default {
             || "An unknown error occurred when posting this comment.";
         });
     },
+
+    getHistory() {
+      console.log('getting history');
+      axios.get(`/api/blockages`)
+      .then((response) => {
+        console.log('success fritter');
+        let blockages = response.data.blockages;
+        console.log(blockages);
+
+        let currBlockage = this.blockageData;
+        this.history = [];
+        console.log(currBlockage.parentBlockage);
+        console.log(this.blockages);
+        currBlockage = currBlockage.parentBlockage ?
+            blockages.filter((blockage) => blockage._id == currBlockage.parentBlockage)[0]
+            : undefined;
+        while (currBlockage) {
+          this.history.push(currBlockage);
+          currBlockage = currBlockage.parentBlockage ?
+            blockages.filter((blockage) => blockage._id == currBlockage.parentBlockage)[0]
+            : undefined;
+        }
+      }).catch((error) => {
+        this.console.log(error);
+      });
+      console.log(this.history);
+    }
   }
 }
 </script>
@@ -248,6 +278,15 @@ h1 {
   margin: 0px;
   padding: 0px;
   margin-bottom: 4px;
+}
+
+.num-history {
+  font-size: 18px;
+  margin: 0px;
+  padding: 0px;
+  margin-bottom: 4px;
+  margin-left: 15px;
+  margin-right: -5px;
 }
 
 .icon-edit {
