@@ -6,7 +6,7 @@
       v-for="alert in filteredAlerts"
       :key="alert._id"
       :alert="alert"/>
-    <div v-if="filteredAlerts === undefined">
+    <div class='loading' v-if="filteredAlerts === undefined">
       Loading...
     </div>
     <div v-else-if="!filteredAlerts.length">
@@ -57,5 +57,10 @@ export default {
   margin: 10px 0;
   text-align: left;
   margin-bottom: -5px;
+}
+
+.loading {
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 </style>
