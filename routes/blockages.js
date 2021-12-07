@@ -152,6 +152,7 @@ router.post("/", [validateThat.userIsLoggedIn], async (req, res) => {
     );
   }
   await createdBlockage.checkReputation();
+  await createdBlockage.notify();
   createdBlockage = await Blockages.findById(createdBlockage._id);
   res
     .status(200)
@@ -161,6 +162,7 @@ router.post("/", [validateThat.userIsLoggedIn], async (req, res) => {
 
 /**
  * Update a blockage.
+ * TODO: if updating time becomes allowed, remember to notify()
  *
  * @name PATCH /api/blockages/:id
  *

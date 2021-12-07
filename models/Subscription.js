@@ -77,7 +77,8 @@ subscriptionSchema.methods = {
    * @param {Blockage} blockage 
    * @returns time in unix ms
    */
-  nextNotificationTimeFor: async function(blockage) {
+  nextNotificationTimeFor: function(blockage) {
+    console.log(this.name);
     if (!this.containsBlockage(blockage)) { return null; }
     const nowTime = new Date().getTime();
     // get bounds of schedule
@@ -88,7 +89,8 @@ subscriptionSchema.methods = {
     if (this.containsTime(bStartDt)) { // alert for start of blockage
       dTime = 0;
     } else { // alert for start of next scheduled period
-      for (let dDays = 0; dDays < 7; dDays++) {
+      let dDays = 0;
+      for (; dDays < 7; dDays++) {
         const bDayOfWeek = bStartDt.getDay();
         const dayOfWeek = (bDayOfWeek + dDays) % 7;
         if (this.schedule.days[dayOfWeek]) {
@@ -106,7 +108,11 @@ subscriptionSchema.methods = {
       dTime = 1000 * (86400 * dDays + dSeconds);
     }
     const alertTime = bStartTime + dTime - 60000 * this.alertPrior;
+    console.log(bStartTime, dTime, this.alertPrior, alertTime);
     return Math.max(alertTime, nowTime); // prevent past alerts
+  },
+  isEmpty: function() {
+    return this.schedule.days.every(x => !x);
   },
 };
 

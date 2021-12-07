@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const Subscriptions = require("../models/Subscription");
+const Notifications = require("../models/Notification");
 
 const pointSchema = new mongoose.Schema({
   type: {
@@ -93,8 +94,36 @@ blockageSchema.methods = {
       await this.checkReputation();
     }
   },
+  /**
+   * makes a new notification for every user that should be notified
+   */
   notify: async function() {
-
+    let subscriptions = await Subscriptions.find({});
+    subscriptions = subscriptions.filter((s) => {
+      if (s.isEmpty()) { return false; }
+      return s.containsBlockage(this);
+    });
+    const notifs = {};
+    subscriptions.forEach((s) => {
+      const time = s.nextNotificationTimeFor(this);
+      const key = [s.user._id, time].join(',');
+      console.log(key);
+      if (notifs[key]) {
+        notifs[key].subscriptions.push(s._id);
+      } else {
+        const notif = {
+          user: s.user._id,
+          subscriptions: [s._id],
+          blockage: this._id,
+          time: time,
+          read: false,
+        };
+        notifs[key] = notif;
+      }
+    });
+    let createdNotifs = await Notifications.insertMany(Object.values(notifs));
+    console.log(createdNotifs);
+    return createdNotifs;
   },
   /**
    * converts this document to an object for frontend
