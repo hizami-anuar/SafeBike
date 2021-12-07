@@ -96,6 +96,72 @@ blockageSchema.methods = {
   notify: async function() {
 
   },
+  /**
+   * converts this document to an object for frontend
+   * may populate some stuff
+   * 
+   * @param {ObjectId} userId logged-in user id, or undefined
+   * @returns object
+   */
+  asObject: async function(userId) {
+    // filter an object to certain properties
+    const takeFrom = (obj, names) => {
+      const res = {};
+      for (const name of names) {
+        res[name] = obj[name];
+      }
+      return res;
+    };
+
+    // processing function for both blockage and its child
+    const process = async (blockage) => {
+      // populate reporter
+      await blockage.populate("reporter");
+      const reporter = blockage.reporter;
+      blockage.reporter = reporter
+        ? takeFrom(reporter, ["_id", "username", "activityLevel"])
+        : {
+            username: "[deleted user]",
+          };
+
+      // convert to normal js object (hopefully don't need it as a document)
+      blockage = blockage.toObject();
+
+      // replace vote lists with whether they contain logged-in user
+      // (always false when not logged in)
+      blockage.upvoted = blockage.upvotes.some((user) => user._id == userId);
+      blockage.downvoted = blockage.downvotes.some((user) => user._id == userId);
+      delete blockage.upvotes;
+      delete blockage.downvotes;
+      return blockage;
+    };
+
+    // populate child blockage
+    await this.populate("childBlockage");
+    let childBlockage = this.childBlockage;
+    if (childBlockage) {
+      // process child blockage as well
+      childBlockage = await process(childBlockage);
+
+      childBlockage = takeFrom(childBlockage, [
+        "_id",
+        "time",
+        "reporter",
+        "status",
+        "description",
+        "reputation",
+        "upvoted",
+        "downvoted",
+      ]);
+    } else {
+      childBlockage = undefined;
+    }
+
+    const blockage = await process(this); // rest of processing
+    blockage.childBlockage = childBlockage;
+
+    return blockage;
+  },
 }
 
 module.exports = mongoose.model('Blockage', blockageSchema);

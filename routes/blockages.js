@@ -32,71 +32,13 @@ router.get("/", async (req, res) => {
     });
   }
 
+  // id or undefined
+  const userId = req.session.user && req.session.user._id;
+  
   // edit fields of blockage before returning to frontend
   blockages = await Promise.all(
     blockages.map(async (blockage) => {
-      // id or undefined
-      const userId = req.session.user && req.session.user._id;
-
-      // filter an object to certain properties
-      const takeFrom = (obj, names) => {
-        const res = {};
-        for (const name of names) {
-          res[name] = obj[name];
-        }
-        return res;
-      };
-
-      // processing function for both blockage and its child
-      const process = async (blockage) => {
-        // populate reporter
-        await blockage.populate("reporter");
-        const reporter = blockage.reporter;
-        blockage.reporter = reporter
-          ? takeFrom(reporter, ["_id", "username", "activityLevel"])
-          : {
-              username: "[deleted user]",
-            };
-
-        // convert to normal js object (hopefully don't need it as a document)
-        blockage = blockage.toObject();
-
-        // replace vote lists with whether they contain logged-in user
-        // (always false when not logged in)
-        blockage.upvoted = blockage.upvotes.some((user) => user._id == userId);
-        blockage.downvoted = blockage.downvotes.some(
-          (user) => user._id == userId
-        );
-        delete blockage.upvotes;
-        delete blockage.downvotes;
-        return blockage;
-      };
-
-      // populate child blockage
-      await blockage.populate("childBlockage");
-      let childBlockage = blockage.childBlockage;
-      if (childBlockage) {
-        // process child blockage as well
-        childBlockage = await process(childBlockage);
-
-        childBlockage = takeFrom(childBlockage, [
-          "_id",
-          "time",
-          "reporter",
-          "status",
-          "description",
-          "reputation",
-          "upvoted",
-          "downvoted",
-        ]);
-      } else {
-        childBlockage = undefined;
-      }
-
-      blockage = await process(blockage); // rest of processing
-      blockage.childBlockage = childBlockage;
-
-      return blockage;
+      return blockage.asObject(userId);
     })
   );
   res
@@ -124,26 +66,13 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
   // oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   // oneWeekAgo = oneWeekAgo.valueOf();
   // req.query.time = { $gte: oneWeekAgo }
+  
+  // id or undefined
+  const userId = req.session.user && req.session.user._id;
   blockages = await Blockages.find(req.query);
   blockages = await Promise.all(
     blockages.map(async (blockage) => {
-      blockage = blockage.toObject();
-      const reporter = await Users.findOne({ _id: blockage.reporter });
-      blockage.reporter = reporter
-        ? {
-            _id: reporter._id,
-            username: reporter.username,
-            activityLevel: reporter.activityLevel,
-          }
-        : {
-            username: "[deleted user]",
-          };
-      const userId = req.session.user && req.session.user._id;
-      blockage.upvoted = blockage.upvotes.includes(userId);
-      blockage.downvoted = blockage.downvotes.includes(userId);
-      delete blockage.upvotes;
-      delete blockage.downvotes;
-      return blockage;
+      return blockage.asObject(userId);
     })
   );
 
