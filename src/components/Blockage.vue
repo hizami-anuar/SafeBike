@@ -229,9 +229,12 @@ h1 {
   height: 27px;
 }
 .date {
-  margin-right: -12px;
   padding: 0px;
   width: fit-content;
+  color: rgb(90, 0, 128);
+  font-style: italic;
+  text-align: right;
+  margin-right: -10px;
 }
 
 .footer {

@@ -11,11 +11,12 @@
         <div class='reporter'>
           <div class='profile'>{{blockage.reporter.username[0].toUpperCase()}}</div>
           <span class='username'>@{{blockage.reporter.username}}</span>
+          <span>(Level {{blockage.reporter.activityLevel}})</span>
         </div>
         <h1>{{  blockage.status.toUpperCase()  }}</h1>
           <span class="description" v-if='blockage.description.length!==0'>{{  blockage.description }}</span>
           <br>
-          <span>{{  date(blockage)  }}</span>
+          <div class='date'>{{  date(blockage)  }}</div>
       </div>
     </div>
   </div>
@@ -111,6 +112,15 @@ export default {
   width: 100%;
   height: 100%; */
   z-index: 6;
+}
+
+.date {
+  text-align:right;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: -5px;
+  color: rgb(90, 0, 128);
+  font-style: italic;
 }
 
 .no-history {

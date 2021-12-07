@@ -58,6 +58,7 @@ export default {
         axios.post(`/api/blockages/comments/` + this.blockageData._id, fields).then(() => {
           console.log('posted comment!');
           this.getAllComments();
+          this.comment = '';
         }).catch(err => {
           console.log(err.response || err);
           this.errorMessage = err.response.data.error 
@@ -102,17 +103,19 @@ export default {
 
 .time {
    margin-left: 10px;
-   margin-right: -3px;
+   margin-right: 5px;
    margin-bottom: 0px;
-   margin-top: 4px;
+   margin-top: 0px;
    width: 100px;
    font-size: 14px;
+   font-style: italic;
+   text-align: right;
 }
 .single-comment {
-   margin-top: 5px;
+   margin-bottom: 15px;
    display: flex;
    flex-direction: row;
-   align-items: center;
+   align-items: flex-start;
    justify-content: flex-start;
 }
 .profile {
@@ -147,6 +150,7 @@ export default {
 }
 
 .comments {
+  margin-top: 5px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
