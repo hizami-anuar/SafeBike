@@ -112,6 +112,17 @@ const blockageOrParentActive = async (req, res, next) => {
   next();
 }
 
+// Checks that blockage status is different from parent or has no parent
+const statusChangeIfUpdate = async (req, res, next) => {
+  if (req.body.parentBlockage) {
+    const parent = await Blockages.findOne({ _id: req.body.parentBlockage });
+    if (req.body.status === parent.status) {
+      return sendError(res, 400, 'Blockage status updates must have a status change.');
+    }
+  }
+  next();
+}
+
 // Checks that the user has permission to edit/delete a blockage
 const userHasPermission = async (req, res, next) => {
   const blockage = await Blockages.findOne({ _id: req.params.id });
@@ -213,5 +224,6 @@ module.exports = Object.freeze({
   commentExists,
   userHasPermissionComment,
   userHasPermissionNotification,
-  blockageWithinEditGracePeriod
+  blockageWithinEditGracePeriod,
+  statusChangeIfUpdate,
 });
