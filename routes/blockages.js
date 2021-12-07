@@ -124,7 +124,7 @@ router.post("/", [validateThat.userIsLoggedIn], async (req, res) => {
     reporter: req.session.user._id, // reporter is the user currently logged in
     description: req.body.description, // description comes from body
     status: req.body.status, // status comes from body
-    voteCount: 0,
+    voteCount: 1,
     upvotes: [req.session.user._id],
     downvotes: [],
     comments: [],

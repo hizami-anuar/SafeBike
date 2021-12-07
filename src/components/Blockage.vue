@@ -11,7 +11,7 @@
       <span>{{  date.split(',')[1] }}</span>
     </div> -->
     </div>
-    <span>{{ displayLat }}°, {{ displayLng }}° TO CHANGE</span>
+    <span>{{ blockageData.location.name }}</span>
     <EditBlockage 
       v-if="['EDIT', 'UPDATE'].includes(mode)"
       :blockageData="blockageData"
@@ -52,13 +52,13 @@
       <span class='time'>{{  date.split(',')[1] }}</span>
     </div>
     <div class="footer-buttons edit-delete-buttons">
-      <span class='num-comments'>{{comments.length}}</span>
+      <span class='num-comments'>{{ commentsLength }}</span>
       <InteractiveIcon
         :handler="openComments"
         :hovertext="'View Comments'">   
         <template v-slot:image><img class='icon' src="@/assets/comment.png"/></template>
       </InteractiveIcon>
-      <span v-if='history' class='num-history'>{{history.length}}</span>
+      <span v-if='history' class='num-history'>{{ historyLength }}</span>
       <InteractiveIcon
         :handler="openHistory"
         :hovertext="'View History'">   
@@ -113,8 +113,8 @@ export default {
   },
   data () {
     return {
-      displayLat: this.blockageData.location.coordinates[0].toFixed(2), // round latitude to 2 decimals
-      displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
+      // displayLat: this.blockageData.location.coordinates[0].toFixed(2), // round latitude to 2 decimals
+      // displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
       mode: 'DEFAULT', // DEFAULT, EDIT, UPDATE, VIEW_PENDING_CHILD
       comments: undefined,
       history: undefined,
@@ -137,6 +137,8 @@ export default {
       date.setUTCSeconds(this.blockageData.time/1000);
       return date.toLocaleString('en-US');
     },
+    commentsLength() { return this.comments ? this.comments.length : 0; },
+    historyLength() { return this.history ? this.history.length : 0; },
   },
   methods: {
     openHistory() {
