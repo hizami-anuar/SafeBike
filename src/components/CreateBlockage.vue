@@ -2,8 +2,8 @@
   <div>
     <form action="" class="blockage-creator" @submit.prevent=''>
         <h1>Report Blockage</h1>
-            <h2>Status</h2>
-            <span v-if='status.length!==0'>Status: {{ status }}</span>
+            <h2 v-if='status.length==0'>Status</h2>
+            <h2 v-else>Status: {{ status }}</h2>
             <div class="checkboxes">
             <span>
                 <input type="radio" id="unblocked" value="UNBLOCKED" v-model="status">
@@ -17,11 +17,10 @@
                 <input type="radio" id="blocked" value="BLOCKED" v-model="status">
                 <label for="blocked">Blocked</label>
             </span>
-            <span>
+            <span class='effective-date'>
+                <label for="effectiveTime" class='effective-date-label'>Effective Date (optional):</label>
                 <input type="datetime-local" id="effectiveTime" name="effectiveTime"
-                       required v-model="effectiveTime">
-                <label for="effectiveTime">Effective Date</label>
-            </span>
+                       required v-model="effectiveTime">            </span>
             </div>
             <h2>Description</h2>
             <textarea v-model="description" placeholder="Details about the blockage..."/>
@@ -93,9 +92,30 @@ h1, h2 {
 }
 
 h1 {
-  margin: 10px 0px;
+  margin: 20px 0px;
+  margin-top: 0px;
   padding: 0px;
-  font-size: 36px;
+  font-size: 30px;
+  font-style: italic;
+  color: rgb(60, 60, 60);
+}
+
+.effective-date {
+  margin-top: 10px;
+  text-align: left;
+  margin-left: 8px;
+}
+
+.effective-date-label {
+  font-style: italic;
+  /* font-weight: bold; */
+}
+#effectiveTime {
+  border: none;
+  margin: 2px 0px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  text-decoration: none;
 }
 
 .checkboxes {
@@ -134,7 +154,7 @@ h2 {
 }
 
 textarea {
-  width: 70%;
+  width: 90%;
   resize: none;
   padding: 8px;
   margin: 0 8px 0 8px;

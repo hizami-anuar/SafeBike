@@ -103,6 +103,9 @@ export default {
 </script>
 
 <style scoped>
+.edit-blockage-content {
+  margin-bottom: 16px;
+}
 h1 {
   color: rgb(69, 38, 118);
   font-size: 20px;

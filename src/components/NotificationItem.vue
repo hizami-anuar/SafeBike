@@ -1,6 +1,5 @@
 <template>
   <div class="notification-container">
-    <!-- <div class='alert-name'>{{alert.name}}</div> -->
     <router-link class='link-alert' to='/subscription'><button class='alert-name'>{{alert.name}}</button></router-link>
     <div v-if="anyBlockedAlerts">
       <span class='blocked'>{{alert.alerts.BLOCKED.length}} BLOCKED</span>
