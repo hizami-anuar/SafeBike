@@ -113,6 +113,7 @@ then you will find the application at `localhost:8080` in the browser
     - Comments.vue
     - History.vue
     - NotificationItem.vue
+    - PendingBlockage.vue
   - routes:
     - blockages.js
     - users.js
