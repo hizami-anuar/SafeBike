@@ -13,7 +13,7 @@
       :schedule="subscription.schedule"
       :editable="editable"
     />
-    <select v-model="subscription.alertPrior">
+    <select class='select-alert' v-model="subscription.alertPrior">
       <option value="0">Alert me at the time of blockage</option>
       <option value="5">Alert me five minutes prior</option>
       <option value="10">Alert me ten minutes prior</option>
@@ -61,6 +61,8 @@ export default {
   background-color: rgb(186, 186, 235);
   border: 3px solid rgb(111, 79, 199);
   border-radius: 15px;
+  padding: 10px;
+  padding-top: 0px;
 }
 
 .subscription-name {
@@ -79,6 +81,17 @@ export default {
   text-align: center;
 }
 
+.select-alert {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  /* font-weight: bold; */
+}
+
 h2 {
   font-size: 25px;
   margin-bottom: 8px;
@@ -89,7 +102,7 @@ button {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-weight: bold;
   border-radius: 10px;
-  height: 60%;
+  height: 50%;
   margin-top: 4%;
   display: flex;
   align-items: center;
@@ -99,13 +112,15 @@ button {
   padding: 10px 15px;
   border: none;
 }
+
 .buttons-div {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  height: 100px;
+  height: 80px;
 }
+
 .add-button {
   /* margin-bottom: 15px; */
   margin-right: 10px;
