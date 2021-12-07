@@ -113,7 +113,10 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
  * @return {Blockage} - the created blockage
  * @throws {403} - if user is not logged in
  */
-router.post("/", [validateThat.userIsLoggedIn], async (req, res) => {
+router.post("/", [
+    validateThat.userIsLoggedIn,
+    validateThat.statusChangeIfUpdate,
+  ], async (req, res) => {
   let blockage = {
     location: {
       type: "Point",
@@ -234,6 +237,7 @@ router.delete(
     const blockage = await Blockages.findOneAndDelete({ _id: id });
     await blockage.populate("reporter");
     await blockage.reporter.calculateActivity();
+    await blockage.unnotify();
     res
       .status(200)
       .json(blockage)

@@ -4,11 +4,13 @@ const Subscriptions = require("../models/Subscription");
 const Notifications = require("../models/Notification");
 
 const pointSchema = new mongoose.Schema({
+  /*
   type: {
     type: String,
     enum: ['Point'],
     required: true
   },
+  */
   coordinates: {
     type: [Number],
     required: true
@@ -128,6 +130,13 @@ blockageSchema.methods = {
     let createdNotifs = await Notifications.insertMany(Object.values(notifs));
     // console.log(createdNotifs);
     return createdNotifs;
+  },
+  /**
+   * pulls all notifications for this blockage
+   */
+  unnotify: async function() {
+    let notifs = await Notifications.deleteMany({ blockage: { _id: this._id } });
+    return notifs;
   },
   /**
    * converts this document to an object for frontend

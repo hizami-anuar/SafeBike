@@ -73,7 +73,8 @@ export default {
         this.errorMessage = '';
         this.$emit('created-blockage'); // tells map to close the report blockage window
         eventBus.$emit('refresh-blockages'); // refresh the list of blockages
-
+        eventBus.$emit('refresh-notifs');
+        
         // reset description and status of the create blockage
         this.description = '';
         this.status = '';
