@@ -20,7 +20,7 @@ router.get("/",
   async (req, res) => {
     const notifications = await Notifications.find({ 
       user: req.session.user._id,
-      time: { $lt: Date.now() }, // only notifications that already happened
+      time: { $lte: Date.now() }, // only notifications that already happened
     });
     res.status(200).json({ notification: notifications }).end();
   });

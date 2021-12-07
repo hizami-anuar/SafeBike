@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const Subscriptions = require("../models/Subscription");
+
 const pointSchema = new mongoose.Schema({
   type: {
     type: String,
@@ -90,6 +92,9 @@ blockageSchema.methods = {
     if (!this.active) {
       await this.checkReputation();
     }
+  },
+  notify: async function() {
+
   },
 }
 

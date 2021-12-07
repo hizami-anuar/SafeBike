@@ -1,6 +1,3 @@
-const sphericalGeometry = require("spherical-geometry-js");
-const computeDistanceBetween = sphericalGeometry.computeDistanceBetween;
-
 const express = require("express");
 
 const Blockages = require("../models/Blockage");
@@ -22,28 +19,17 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   const getSubscription = req.query.subscription == "true";
   delete req.query.subscription;
-  let blockages = [];
+  let blockages = await Blockages.find(req.query);
+  
   if (getSubscription && req.session.user) {
     const subscriptions = await Subscriptions.find({
       user: req.session.user._id,
     });
-    function inCircle(circle, point) {
-      let point1 = {
-        lat: circle.center.coordinates[0],
-        lon: circle.center.coordinates[1],
-      };
-      let point2 = { lat: point[0], lon: point[1] };
-      let distance = computeDistanceBetween(point1, point2);
-      return distance <= circle.radius;
-    }
-    blockages = await Blockages.find(req.query);
     blockages = blockages.filter((blockage) => {
-      return subscriptions.some((circle) =>
-        inCircle(circle, blockage.location.coordinates)
+      return subscriptions.some((s) =>
+        s.containsBlockage(blockage)
       );
     });
-  } else {
-    blockages = await Blockages.find(req.query);
   }
 
   // edit fields of blockage before returning to frontend
@@ -120,41 +106,24 @@ router.get("/", async (req, res) => {
 });
 
 /**
- * Returns blockages corresponding to subscriptions
+ * Returns blockages corresponding to currently active subscriptions
  *
  * @name GET /api/blockages/subscription
  *
  * @return {Blockage[]} - list of blockages
  */
 router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
-  let blockages = [];
+  let blockages;
   let subscriptions = await Subscriptions.find({ user: req.session.user._id });
+  let now = new Date();
   subscriptions = subscriptions.filter((s) => {
-      const startTimeInSeconds = Number.parseInt(s.schedule.startTime.split(':')[0])*3600 + Number.parseInt(s.schedule.startTime.split(':')[1])*60
-      const endTimeInSeconds = Number.parseInt(s.schedule.endTime.split(':')[0])*3600 + Number.parseInt(s.schedule.endTime.split(':')[1])*60
-      const dt = new Date();
-      const secondsNow = dt.getSeconds() + (60 * dt.getMinutes()) + (60 * 60 * dt.getHours());
-      const dayOfWeek = dt.getDay();
-      if (!s.schedule.days[dayOfWeek]) {
-          return false;
-      }
-      // console.log(s,startTimeInSeconds,endTimeInSeconds,secondsNow)
-      return (secondsNow > startTimeInSeconds && secondsNow < endTimeInSeconds)
+    return s.containsTime(now);
   })
-  function inCircle(circle, point) {
-    let point1 = {
-      lat: circle.center.coordinates[0],
-      lon: circle.center.coordinates[1],
-    };
-    let point2 = { lat: point[0], lon: point[1] };
-    let distance = computeDistanceBetween(point1, point2);
-    return distance <= circle.radius;
-  }
 
-  let oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  oneWeekAgo = oneWeekAgo.valueOf();
-  req.query.time = { $gte: oneWeekAgo }
+  // let oneWeekAgo = new Date();
+  // oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  // oneWeekAgo = oneWeekAgo.valueOf();
+  // req.query.time = { $gte: oneWeekAgo }
   blockages = await Blockages.find(req.query);
   blockages = await Promise.all(
     blockages.map(async (blockage) => {
@@ -179,19 +148,20 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
   );
 
   subscriptions = subscriptions.map((subscription) => {
-    subscription = subscription.toObject();
-    subscription.alerts = {
+    console.log(subscription)
+    subscription._doc.alerts = {
       UNBLOCKED: [],
       UNSAFE: [],
       BLOCKED: [],
     };
 
     blockages.forEach((blockage) => {
-      if (inCircle(subscription, blockage.location.coordinates)) {
-        subscription.alerts[blockage.status].push(blockage);
+      if (subscription.containsBlockage(blockage)) {
+        subscription._doc.alerts[blockage.status].push(blockage);
       }
     });
 
+    subscription = subscription.toObject();
     return subscription;
   });
 

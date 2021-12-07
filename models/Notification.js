@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const notificationSchema = new mongoose.Schema({
-  user: { 
+  subscription: { 
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Subscription',
   },
   blockage: { // there's only notifications for blockages right now
     type: mongoose.Schema.Types.ObjectId,
