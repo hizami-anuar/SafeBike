@@ -28,6 +28,7 @@
 
 <script>
 import axios from 'axios';
+import { eventBus } from "@/main";
 
 export default {
    name: 'Comments',
@@ -36,7 +37,7 @@ export default {
       user: Object,
       loggedIn: Boolean,
    },
-   emits: [
+   emits: ['new-comment', 'delete-comment'
    ],
    data () {
       return {
@@ -59,6 +60,7 @@ export default {
           console.log('posted comment!');
           this.getAllComments();
           this.comment = '';
+          eventBus.$emit('new-comment');
         }).catch(err => {
           console.log(err.response || err);
           this.errorMessage = err.response.data.error 
@@ -71,6 +73,7 @@ export default {
           console.log('successfully deleted comment');
           console.log(res);
           this.getAllComments();
+          eventBus.$emit('delete-comment');
         }).catch(err => {
           console.log(err.response || err);
           this.errorMessage = err.response.data.error 

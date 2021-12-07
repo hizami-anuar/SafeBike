@@ -52,6 +52,7 @@
       <span class='time'>{{  date.split(',')[1] }}</span>
     </div>
     <div class="footer-buttons edit-delete-buttons">
+      <span class='num-comments'>{{comments.length}}</span>
       <InteractiveIcon
         :handler="openComments"
         :hovertext="'View Comments'">   
@@ -97,6 +98,11 @@ export default {
     PendingBlockage,
     VoteIcons,
   },
+  mounted() {
+    this.getAllComments();
+    eventBus.$on('new-comment', this.getAllComments);
+    eventBus.$on('delete-comment', this.getAllComments);
+  },
   props: {
     /** @type {Blockage} The blockage object to display */
     blockageData: Object,
@@ -108,6 +114,7 @@ export default {
       displayLat: this.blockageData.location.coordinates[0].toFixed(2), // round latitude to 2 decimals
       displayLng: this.blockageData.location.coordinates[1].toFixed(2), // round longitude to 2 decimals
       mode: 'DEFAULT', // DEFAULT, EDIT, UPDATE, VIEW_PENDING_CHILD
+      comments: undefined,
     }
   },
   computed: {
@@ -209,6 +216,18 @@ export default {
           console.log(error);
         })
     },
+    getAllComments() {
+        axios.get('/api/blockages/comments/' + this.blockageData._id).then((res) => {
+          console.log('got all comments!');
+          this.comments = res.data.filter( comment => comment); // filter out null deleted comments
+          console.log(this.comments);
+        }).catch(err => {
+          console.log(err.response || err);
+          this.errorMessage = err.response.data.error 
+            || err.response.data.message 
+            || "An unknown error occurred when posting this comment.";
+        });
+    },
   }
 }
 </script>
@@ -222,6 +241,13 @@ h1 {
 .icon {
   margin-left: 6px;
   margin-right: 0px;
+}
+
+.num-comments {
+  font-size: 18px;
+  margin: 0px;
+  padding: 0px;
+  margin-bottom: 4px;
 }
 
 .icon-edit {
