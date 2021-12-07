@@ -2,6 +2,7 @@
   <div>
     <form action="" class="blockage-creator" @submit.prevent=''>
         <h1>Report Blockage</h1>
+            {{ location.name }}
             <h2 v-if='status.length==0'>Status</h2>
             <h2 v-else>Status: {{ status }}</h2>
             <div class="checkboxes">
@@ -65,6 +66,7 @@ export default {
         location: {
           latitude: this.location.lat,
           longitude: this.location.lng,
+          // name: this.location.name,
         },
       };
       axios.post(`/api/blockages/`, fields).then(() => {

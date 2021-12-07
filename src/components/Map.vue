@@ -29,9 +29,11 @@
       />
       <GmapMarker
         v-if="createBlockageMenu.active"
+        ref="create-blockage-marker"
         :clickable="false"
-        :draggable="false"
+        :draggable="true"
         :position="createBlockageMenu.location"
+        @dragend="openCreateBlockageMenu"
       />
     </GmapMap>
     <CreateBlockage 
@@ -71,7 +73,7 @@ export default {
       active: null,  // which marker is active
       createBlockageMenu: {
         active: false,
-        location: null,  // {lat, lng}
+        location: null,  // {lat, lng, name}
       },
       eventListeners: [
         {name: 'location-name-found', func: this.locationNameFound},
@@ -101,8 +103,12 @@ export default {
     },
     closeAllMarkerPopups: function() {
       this.active = null;
+      this.closeCreateBlockageMenu();
       eventBus.$emit('close-marker');
     },
+    /**
+     * @param position gmaps position supporting lat() and lng()
+     */
     openCreateBlockageMenu: function(event) {
       if (!this.loggedIn || !this.inHome) return;
 
