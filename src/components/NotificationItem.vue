@@ -1,5 +1,5 @@
 <template>
-  <div class="notification-container">
+  <div class="notification-container" @click="toggleRead">
     <router-link
       class='link-alert' 
       :to="`/?blockage=${blockage._id}`">
@@ -18,10 +18,17 @@
 </template>
 
 <script> // fix these styles for me thanks
+import axios from 'axios';
+import { eventBus } from "@/main";
 
 export default {
   name: 'NotificationItem',
   props: ['alert'], // type Notification
+  data() {
+    return {
+      read: this.alert.read,
+    };
+  },
   computed: {
     blockage() { console.log(this.alert); return this.alert.blockage; },
     subscriptions() { 
@@ -29,6 +36,25 @@ export default {
       // (notifs from two subscriptions are combined if they're at the same time)
       return this.alert.subscriptions.map(s => s.name);
     },
+  },
+  mounted() {
+    this.read = true;
+    this.setRead();
+  },
+  methods: {
+    setRead: function() {
+      const action = this.read ? 'read' : 'unread';
+      axios.get(`/api/notifications/${action}/${this.alert._id}`)
+        .then(() => {
+          eventBus.$emit('refresh-notifs');
+        }).catch((error) => {
+          console.log(error);
+        });
+    },
+    toggleRead: function() {
+      this.read = !this.read;
+      this.setRead();
+    }
   },
 }
 </script>

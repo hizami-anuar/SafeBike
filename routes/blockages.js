@@ -234,6 +234,7 @@ router.delete(
     const blockage = await Blockages.findOneAndDelete({ _id: id });
     await blockage.populate("reporter");
     await blockage.reporter.calculateActivity();
+    await blockage.unnotify();
     res
       .status(200)
       .json(blockage)

@@ -67,6 +67,7 @@ export default {
             console.log(response);
             console.log('edited blockage successfully');
             eventBus.$emit('refresh-blockages');
+            eventBus.$emit('refresh-notifs');
             this.$emit('back');
           }).catch((error) => {
             console.log(error);

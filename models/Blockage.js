@@ -130,6 +130,13 @@ blockageSchema.methods = {
     return createdNotifs;
   },
   /**
+   * pulls all notifications for this blockage
+   */
+  unnotify: async function() {
+    let notifs = await Notifications.deleteMany({ blockage: { _id: this._id } });
+    return notifs;
+  },
+  /**
    * converts this document to an object for frontend
    * may populate some stuff
    * 

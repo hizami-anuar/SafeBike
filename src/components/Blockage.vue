@@ -174,6 +174,7 @@ export default {
         eventBus.$emit('close-marker');
         eventBus.$emit('refresh-user');
         eventBus.$emit('refresh-blockages');
+        eventBus.$emit('refresh-notifs');
         this.$emit('refresh-blockages');
       }).catch((error) => {
         console.log(error);

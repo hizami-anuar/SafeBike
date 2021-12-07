@@ -2,6 +2,7 @@ const Users = require('../models/User');
 const Blockages = require('../models/Blockage');
 const Comments = require('../models/Comment');
 const Subscriptions = require('../models/Subscription');
+const Notifications = require('../models/Notification');
 
 const sendError = (res, status, error) => {
   res.status(status).json({error: error}).end();
@@ -166,6 +167,15 @@ const userHasPermissionComment = async (req, res, next) => {
   next()
 }
 
+// Checks that the user has permission to read/unread a notification
+const userHasPermissionNotification = async (req, res, next) => {
+  const notif = await Notifications.findOne({ _id: req.params.id });
+  if (notif && notif.user._id != req.session.user._id) {
+    return sendError(res, 403, 'You do not have permission to read or unread this notification!');
+  }
+  next()
+}
+
 const hasSubscriptionFields = async (req, res, next) => {
   if (!req.body.name) {
     return sendError(res, 400, 'Subscription is required to have a name.');
@@ -202,5 +212,6 @@ module.exports = Object.freeze({
   hasSubscriptionFields,
   commentExists,
   userHasPermissionComment,
+  userHasPermissionNotification,
   blockageWithinEditGracePeriod
 });

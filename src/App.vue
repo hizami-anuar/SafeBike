@@ -29,6 +29,13 @@ export default {
       timer: undefined,
       alerts: {},
       newAlerts: true,
+      eventListeners: [
+        {name: 'refresh-user', func: this.refreshUser},
+        {name: 'refresh-notifs', func: this.refreshNotifications},
+        {name: 'login-event', func: this.handleLogin},
+        {name: 'logout-event', func: this.handleLogout},
+        {name: 'clear-alerts', func: this.clearAlerts},
+      ],
     }
   }, 
   async mounted() {
@@ -38,14 +45,11 @@ export default {
       this.refreshNotifications();
     }, 30000);
 
-    // Register some eventBus listeners
-    eventBus.$on('refresh-user', this.refreshUser);
-    eventBus.$on('login-event',  this.handleLogin);
-    eventBus.$on('logout-event', this.handleLogout);
-    eventBus.$on('clear-alerts', this.clearAlerts);
+    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
   }, 
   beforeDestroy() {
     clearInterval(this.timer);
+    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
   methods: {
     // Check if the user is logged in.
