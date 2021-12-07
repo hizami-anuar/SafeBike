@@ -1,19 +1,36 @@
 <template>
   <div class='vote-icons'>
-    <img v-if='!upvoted' class='icon' v-on:click="toggleVote('up')" src="@/assets/like.png"/>
-    <img v-else class='icon' v-on:click="toggleVote('up')" src="@/assets/liked.png"/>
-    <img v-if='!downvoted' class='icon' v-on:click="toggleVote('down')" src="@/assets/dislike.png"/>
-    <img v-else class='icon' v-on:click="toggleVote('down')" src="@/assets/disliked.png"/>
+    <InteractiveIcon v-if="!upvoted"
+      :handler="() => toggleVote('up')"
+      :hovertext="'Upvote'">   
+      <template v-slot:image><img class='icon' src="@/assets/like.png"/></template>
+    </InteractiveIcon>
+    <InteractiveIcon v-else
+      :handler="() => toggleVote('up')"
+      :hovertext="'Remove Upvote'">   
+      <template v-slot:image><img class='icon' src="@/assets/liked.png"/></template>
+    </InteractiveIcon>
+    <InteractiveIcon v-if="!downvoted"
+      :handler="() => toggleVote('down')"
+      :hovertext="'Downvote'">   
+      <template v-slot:image><img class='icon' src="@/assets/dislike.png"/></template>
+    </InteractiveIcon>
+    <InteractiveIcon v-else
+      :handler="() => toggleVote('down')"
+      :hovertext="'Remove Downvote'">   
+      <template v-slot:image><img class='icon' src="@/assets/disliked.png"/></template>
+    </InteractiveIcon>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { eventBus } from "@/main";
+import InteractiveIcon from "@/components/input_components/InteractiveIcon.vue";
 
 export default {
   name: 'VoteIcons',
-  components: {},
+  components: { InteractiveIcon },
   props: {
     /** @type {Blockage} The blockage object to display */
     blockageData: Object,
@@ -52,6 +69,8 @@ export default {
 .vote-icons {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
 }
 
 .icon {

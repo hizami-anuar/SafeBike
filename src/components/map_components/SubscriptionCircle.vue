@@ -20,7 +20,7 @@ export default {
   methods: {
     dragEndHandler() {
       this.circle.center.coordinates = this.center;
-      eventBus.$emit('circle-center-changed', this.circle );
+      eventBus.$emit('circle-center-changed', { _id: this.circle._id, center: this.circle.center } );
     },
 
     centerChangedHandler(event) { // event is lat/lng functions
@@ -30,7 +30,7 @@ export default {
 
     radiusChangedHandler(event) { // event is radius
       this.circle.radius = event;
-      eventBus.$emit('circle-radius-changed', this.circle );
+      eventBus.$emit('circle-radius-changed', { _id: this.circle._id, radius: this.circle.radius } );
     },
 
     circleClickHandler() {
