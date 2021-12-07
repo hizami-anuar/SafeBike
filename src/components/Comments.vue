@@ -20,7 +20,7 @@
     </div>
     </div>
      <div v-if='loggedIn' class='comment'>
-     <textarea v-model='comment' placeholder="Say something about this blockage"></textarea>
+     <textarea v-model='comment' placeholder="Say something about this blockage report..."></textarea>
      <button class='comment-button' :disabled='comment.length === 0' v-on:click='submitComment'>Post</button>
      </div>
   </div>
