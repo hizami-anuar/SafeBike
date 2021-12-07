@@ -27,12 +27,12 @@ export default {
       loggedIn: false,
       user: undefined,
       timer: undefined,
-      alerts: [],
+      alerts: {},
       newAlerts: true,
     }
   }, 
-  mounted() {
-    this.refreshUser();
+  async mounted() {
+    await this.refreshUser();
     this.refreshNotifications();
     this.timer = setInterval(() => {
       this.refreshNotifications();
@@ -49,8 +49,8 @@ export default {
   },
   methods: {
     // Check if the user is logged in.
-    refreshUser() {
-      axios.get('/api/session/')
+    async refreshUser() {
+      await axios.get('/api/session/')
         .then((res) => {
           this.user = res.data;
           this.loggedIn = true;
@@ -71,15 +71,25 @@ export default {
       this.user = undefined;
       this.refreshNotifications();
     },
-    refreshNotifications() {
-      axios.get(`/api/blockages/subscription?active=true`)
-        .then((response) => {
-          console.log(response);
-          this.alerts = response.data.alerts;
-          this.newAlerts = true; // TODO - CHECK IF NEW ALERTS FIRST
+    async refreshNotifications() {
+      if (!this.loggedIn) {
+        return;
+      }
+      await axios.get(`/api/blockages/subscription?active=true`)
+        .then((res) => {
+          // console.log(res);
+          this.alerts.summaryAlerts = res.data.alerts;
         }).catch((error) => {
           console.log(error);
-        })
+        });
+      await axios.get(`/api/notifications`)
+        .then((res) => {
+          const alerts = res.data.notifications;
+          this.newAlerts = alerts.some((a) => !a.read);
+          this.alerts.blockageAlerts = alerts;
+        }).catch((error) => {
+          console.log(error);
+        });
     },
     clearAlerts() {
       this.newAlerts = false;

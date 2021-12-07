@@ -78,7 +78,7 @@ subscriptionSchema.methods = {
    * @returns time in unix ms
    */
   nextNotificationTimeFor: function(blockage) {
-    console.log(this.name);
+    // console.log(this.name);
     if (!this.containsBlockage(blockage)) { return null; }
     const nowTime = new Date().getTime();
     // get bounds of schedule
@@ -108,7 +108,7 @@ subscriptionSchema.methods = {
       dTime = 1000 * (86400 * dDays + dSeconds);
     }
     const alertTime = bStartTime + dTime - 60000 * this.alertPrior;
-    console.log(bStartTime, dTime, this.alertPrior, alertTime);
+    // console.log(bStartTime, dTime, this.alertPrior, alertTime);
     return Math.max(alertTime, nowTime); // prevent past alerts
   },
   isEmpty: function() {
