@@ -6,19 +6,9 @@
         <span class='username'>@{{reporter.username}}</span>
         <span v-if="reporter"> (L{{ reporter.activityLevel }})</span>
       </div>
-      <div class='date'>
-        <span>{{  date.split(',')[0] }}</span><br>
-        <span>{{  date.split(',')[1] }}</span>
-      </div>
-      <span>(copy styles from blockage)</span>
     </div>
     <h1><s>{{ status.toUpperCase() }}</s> ⮕ {{ newStatus.toUpperCase()  }}</h1>
     <span class="description" v-if='newDescription.length!==0'>{{ newDescription }}</span>
-    <button
-      class='general-button back-button'
-      @click="$emit('back')">
-      Back
-    </button>
     <span>Total Reputation: {{ reputation }}/3</span>
     <VoteIcons
       v-if="loggedIn"
@@ -26,6 +16,17 @@
       :loggedIn="loggedIn"
       :user="user"
     />
+    <div class='bottom-div'>
+    <button
+      class='general-button back-button'
+      @click="$emit('back')">
+      Back
+    </button>
+    <div class='date'>
+      <span>{{  date.split(',')[0] }}</span><br>
+      <span>{{  date.split(',')[1] }}</span>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -75,8 +76,10 @@ h1 {
   justify-content: flex-start;
   align-items: center;
   background-color: rgb(169, 138, 218);
-  padding: 10px;
+  padding: 10px 15px;
   border-radius: 10px;
+  margin-bottom: 10px;
+  margin-top: 8px;
 }
 
 .description {
@@ -85,5 +88,67 @@ h1 {
   font-weight: bold;
   margin-top: 35px;
   margin-bottom: 25px;
+}
+
+.header-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  width: 100%;
+  padding: 0px;
+  margin-top: 5px;
+}
+
+.bottom-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+
+.reporter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  margin-left: 10px;
+}
+
+.profile {
+  background-color: rgb(90, 0, 128);
+  border-radius: 30px;
+  color: rgb(254, 254, 254);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  font-weight: bold;
+  cursor: default;
+  margin-right: 10px;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 20px;
+  margin-right: 10px;
+  margin-left: 0px;
+  /* padding-left: 5px; */
+}
+
+.date {
+  text-align: right;
+  font-style: italic;
+  color: rgb(90, 0, 128);
+  margin-right: -5px;
+  margin-bottom: -5px;
+}
+.back-button {
+  height: 30px;
 }
 </style>
