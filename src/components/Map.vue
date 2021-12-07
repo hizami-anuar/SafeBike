@@ -47,6 +47,7 @@
 import CreateBlockage from '@/components/CreateBlockage.vue';
 import MapMarker from '@/components/map_components/MapMarker.vue';
 import { eventBus } from "@/main";
+import {gmapApi} from 'vue2-google-maps';
 
 export default {
   name: 'Map',
@@ -72,16 +73,26 @@ export default {
         active: false,
         location: null,  // {lat, lng}
       },
+      eventListeners: [
+        {name: 'location-name-found', func: this.locationNameFound},
+      ]
     };
   },
   computed: {
-    displayMarkers: function() {  // [(blockage, marker)]
+    displayMarkers() {  // [(blockage, marker)]
       let markers = this.blockages.map(b => {
         const [lat, lng] = b.location.coordinates;
         return [b, {location: {lat, lng}}];
       });
       return markers;
     },
+    google: gmapApi,
+  },
+  created() {
+    this.eventListeners.forEach((e) => eventBus.$on(e.name, e.func));
+  },
+  beforeDestroy: function() {
+    this.eventListeners.forEach((e) => eventBus.$off(e.name, e.func));
   },
   methods: {
     clickBlockageMarker (id) {
@@ -94,16 +105,32 @@ export default {
     },
     openCreateBlockageMenu: function(event) {
       if (!this.loggedIn || !this.inHome) return;
-      this.createBlockageMenu = {
-        active: true,
-        location: {
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng(),
-        },
+
+      let google = this.google;
+      let geocoder = new google.maps.Geocoder();
+      let location = {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
       };
       eventBus.$emit('close-marker');
+      geocoder.geocode({'location': location }, function(results, status) {
+        if (status === 'OK') {
+          if (results[0]) {
+            location.name = results[0].formatted_address;
+          } else {
+            location.name = "Unknown Location";
+          }
+          eventBus.$emit('location-name-found', location);
+        }
+      });
     },
-    closeCreateBlockageMenu: function() {
+    locationNameFound (location) {
+      this.createBlockageMenu = {
+        active: true,
+        location: location,
+      }
+    },
+    closeCreateBlockageMenu () {
       this.createBlockageMenu = {
         active: false,
         location: null,

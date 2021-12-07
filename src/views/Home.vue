@@ -148,7 +148,7 @@ export default {
           this.blockages = response.data.blockages;
           this.isLoading = false;
         }).catch((error) => {
-          this.console.log(error);
+          console.log(error);
         });
     },
     refreshBlockages() {

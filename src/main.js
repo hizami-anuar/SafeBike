@@ -3,7 +3,8 @@ import * as VueGoogleMaps from 'vue2-google-maps'
  
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyAfaY0wp5E27nFpF4B2FMNWrrvbKpJXsJo',
+    //key: 'AIzaSyAfaY0wp5E27nFpF4B2FMNWrrvbKpJXsJo',
+    key: 'AIzaSyCqv_UuwiTl4nLPH4DxLRjsX1isAWJkcKQ',
     libraries: 'places,drawing,visualization'
     // (as you require)
     //// If you want to set the version, you can do so:
