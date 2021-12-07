@@ -72,8 +72,8 @@ export default {
       alertPrior: 0,
       schedule: {
         days: [false, false, false, false, false, false, false],
-        startTime: "01:23",
-        endTime: "12:34",
+        startTime: "09:00",
+        endTime: "17:00",
       }
     };
     return {

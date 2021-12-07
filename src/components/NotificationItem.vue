@@ -1,23 +1,30 @@
 <template>
   <div class="notification-container">
+    <div class='reporter'>
+      <div class='profile'>{{blockage.reporter.username[0].toUpperCase()}}</div>
+      <span class='username'>@{{blockage.reporter.username}}</span>
+      <span class='level'>(L{{blockage.reporter.activityLevel}})</span>
+    </div>
+    <div>
+      <span class='regions'>Regions: {{subscriptions.join(', ')}}</span>
+    </div>
+    <div>
+      <div class='blocked'>{{blockage.status}}</div>
+      <div class='description'>{{blockage.description}}</div>    
+    </div>
     <router-link
       class='link-alert' 
       :to="`/?blockage=${blockage._id}`">
-      <button class='alert-name'>{{blockage.location}}</button>
+      <button class='alert-name'>{{blockage.location.name}}</button>
     </router-link>
-    <div>
-      <span class='blocked'>{{subscriptions}}</span>
-    </div>
-    <div>
-      <span class='blocked'>{{blockage.reporter.username}}</span>
-    </div>
-    <div>
-      <span class='unsafe'>{{blockage.description}}</span>
-    </div>
+    <div class='date'>{{  date(blockage)  }}</div>
   </div>
 </template>
 
 <script> // fix these styles for me thanks
+
+var moment = require('moment'); // require
+moment().format(); 
 
 export default {
   name: 'NotificationItem',
@@ -28,6 +35,13 @@ export default {
       // list of all names of subscriptions that caused this notification
       // (notifs from two subscriptions are combined if they're at the same time)
       return this.alert.subscriptions.map(s => s.name);
+    },
+  },
+  methods: {
+    date(blockage) {
+      var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
+      date.setUTCSeconds(blockage.time/1000);
+      return moment(date).fromNow()
     },
   },
 }
@@ -42,6 +56,33 @@ export default {
   background-color: rgb(195, 159, 254);
   text-align: left;
   margin-top: 6px;
+}
+
+.profile {
+  background-color: rgb(90, 0, 128);
+  border-radius: 30px;
+  color: rgb(254, 254, 254);
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30x;
+  margin-right: 10px;
+  /* font-weight: bold; */
+}
+
+.username {
+  font-weight: bold;
+  font-size: 20px;
+  margin-right: 10px;
+}
+.reporter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .alert-name {
@@ -69,6 +110,9 @@ export default {
   cursor: pointer;
 }
 
+.regions {
+  font-style: italic;
+}
 
 #navbar a.router-link-exact-active {
   background-color: rgb(195, 159, 254);
@@ -78,10 +122,31 @@ export default {
 .blocked {
   color: rgb(122, 17, 187);
   font-weight: bold;
+  text-align: center;
 }
 
 .unsafe {
   color: rgb(250, 250, 78);
   font-weight: bold;
+}
+
+.description {
+  font-size: 18px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  text-align: center;
+}
+
+.level {
+  font-style: italic;
+}
+
+.date {
+  text-align:right;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: -5px;
+  color: rgb(90, 0, 128);
+  font-style: italic;
 }
 </style>
