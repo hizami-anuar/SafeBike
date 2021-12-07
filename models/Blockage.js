@@ -107,7 +107,7 @@ blockageSchema.methods = {
     subscriptions.forEach((s) => {
       const time = s.nextNotificationTimeFor(this);
       const key = [s.user._id, time].join(',');
-      console.log(key);
+      // console.log(key);
       if (notifs[key]) {
         notifs[key].subscriptions.push(s._id);
       } else {
@@ -122,7 +122,7 @@ blockageSchema.methods = {
       }
     });
     let createdNotifs = await Notifications.insertMany(Object.values(notifs));
-    console.log(createdNotifs);
+    // console.log(createdNotifs);
     return createdNotifs;
   },
   /**

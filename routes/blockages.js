@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
   
   // edit fields of blockage before returning to frontend
   blockages = await Promise.all(
-    blockages.map(async (blockage) => {
+    blockages.map((blockage) => {
       return blockage.asObject(userId);
     })
   );
@@ -77,7 +77,6 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
   );
 
   subscriptions = subscriptions.map((subscription) => {
-    console.log(subscription)
     subscription._doc.alerts = {
       UNBLOCKED: [],
       UNSAFE: [],

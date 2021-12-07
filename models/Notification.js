@@ -17,4 +17,24 @@ const notificationSchema = new mongoose.Schema({
   read: Boolean, // whether user has read the notif
 })
 
+notificationSchema.methods = { 
+  /**
+   * converts this document to an object for frontend
+   * may populate some stuff
+   * 
+   * @returns object
+   */
+  asObject: async function() {
+    await this.populate("subscriptions");
+    await this.populate("blockage");
+    const blockage = await this.blockage.asObject();
+    const notif = this.toObject();
+    notif.subscriptions = notif.subscriptions.map((s) => {
+      return { name: s.name };
+    });
+    notif.blockage = blockage;
+    return notif;
+  },
+};
+
 module.exports = mongoose.model('Notification', notificationSchema);

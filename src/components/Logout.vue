@@ -48,7 +48,7 @@ export default {
   props: {
     loggedIn: Boolean,
     user: Object,
-    alerts: Array,
+    alerts: Object,
     newAlerts: Boolean,
   },
   data() {

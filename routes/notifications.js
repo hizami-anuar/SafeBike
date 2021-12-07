@@ -18,11 +18,19 @@ router.get("/",
     validateThat.userIsLoggedIn,
   ],
   async (req, res) => {
-    const notifications = await Notifications.find({ 
+    let notifications = await Notifications.find({ 
       user: req.session.user._id,
       time: { $lte: Date.now() }, // only notifications that already happened
     });
-    res.status(200).json({ notification: notifications }).end();
+    
+    // edit fields before returning to frontend
+    notifications = await Promise.all(
+      notifications.map((notification) => {
+        return notification.asObject();
+      })
+    );
+
+    res.status(200).json({ notifications: notifications }).end();
   });
 
 module.exports = router;

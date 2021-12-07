@@ -1,33 +1,26 @@
 <template>
   <div class="notification-container">
-    <router-link
-      class='link-alert' 
-      :to="`/?blockage=${blockage._id}`">
-      <button class='alert-name'>{{blockage.location}}</button>
-    </router-link>
-    <div>
-      <span class='blocked'>{{subscriptions}}</span>
+    <router-link class='link-alert' to='/subscription'><button class='alert-name'>{{alert.name}}</button></router-link>
+    <div v-if="anyBlockedAlerts">
+      <span class='blocked'>{{alert.alerts.BLOCKED.length}} BLOCKED</span>
     </div>
-    <div>
-      <span class='blocked'>{{blockage.reporter.username}}</span>
-    </div>
-    <div>
-      <span class='unsafe'>{{blockage.description}}</span>
+    <div v-if="anyUnsafeAlerts">
+      <span class='unsafe'>{{alert.alerts.UNSAFE.length}} UNSAFE</span>
     </div>
   </div>
 </template>
 
-<script> // fix these styles for me thanks
+<script>
 
 export default {
-  name: 'NotificationItem',
-  props: ['alert'], // type Notification
+  name: 'NotificationSummaryItem',
+  props: ['alert'], // type Subscription
   computed: {
-    blockage() { console.log(this.alert); return this.alert.blockage; },
-    subscriptions() { 
-      // list of all names of subscriptions that caused this notification
-      // (notifs from two subscriptions are combined if they're at the same time)
-      return this.alert.subscriptions.map(s => s.name);
+    anyBlockedAlerts() {
+      return this.alert.alerts.BLOCKED.length > 0;
+    },
+    anyUnsafeAlerts() {
+      return this.alert.alerts.UNSAFE.length > 0;
     },
   },
 }
