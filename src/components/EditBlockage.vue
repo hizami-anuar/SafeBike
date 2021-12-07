@@ -1,6 +1,6 @@
 <template>
   <div class="edit-blockage-content">
-    <h1>{{  newStatus.toUpperCase()  }}</h1>
+    <h1>{{ this.blockageData.status.toUpperCase() }} ⮕ {{ newStatus.toUpperCase() }}</h1>
     <div class="checkboxes">
       <span>
         <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
@@ -25,7 +25,8 @@
       </button>
       <button 
         class='general-button done-button' 
-        v-on:click="submitEdited">
+        v-on:click="submitEdited"
+        :disabled="submitDisabled">
         Submit
       </button>
     </div>
@@ -49,6 +50,11 @@ export default {
       newStatus: this.blockageData.status, // updated status for editing mode
       newDescription: this.blockageData.description, // updated description for editing mode
       reporter: this.blockageData.reporter, // contains {username, activityLevel} from original reporter
+    }
+  },
+  computed: {
+    submitDisabled() {
+      return this.blockageData.status === this.newStatus;
     }
   },
   methods: {
@@ -80,6 +86,7 @@ export default {
           status: this.newStatus, 
           description: this.newDescription,
           location: {
+            name: this.blockageData.location.name,
             latitude: this.blockageData.location.coordinates[0],
             longitude: this.blockageData.location.coordinates[1],
           },

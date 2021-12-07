@@ -69,11 +69,13 @@ export default {
 .vote-icons {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  width: 100%;
 }
 
 .icon {
   margin-right: 0px;
+}
+
+.icon-container + .icon-container {
+  margin-left: 10px;
 }
 </style>
