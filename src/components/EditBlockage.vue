@@ -61,7 +61,7 @@ export default {
     modeHeading() { 
       return this.mode === "EDIT" 
         ? "Editing Blockage"
-        : "Proposing Status Update"
+        : "Suggesting Status Update"
     },
   },
   methods: {
