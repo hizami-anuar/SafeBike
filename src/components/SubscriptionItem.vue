@@ -49,7 +49,7 @@ export default {
     },
     // whether we can update the currently editing subscription (check title and days are nonempty)
     updateSubEnabled() {
-     return this.subscription.schedule.days.some((bool) => bool) && this.subscriptionName;
+     return this.subscription.schedule.days.some((bool) => bool) && this.subscription.name;
     }
   },
   emits: ['cancel'],
