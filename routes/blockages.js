@@ -151,8 +151,8 @@ router.post(
           childBlockage: createdBlockage._id,
         }
       );
+      await createdBlockage.checkReputation();
     }
-    await createdBlockage.checkReputation();
     await createdBlockage.notify();
     createdBlockage = await Blockages.findById(createdBlockage._id);
     res
