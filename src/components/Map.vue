@@ -25,7 +25,7 @@
         :marker="m"
         :active="active === b._id"
         @open-marker="clickBlockageMarker"
-        @close-marker="active = null"
+        @close-marker="closeAllMarkerPopups"
       />
       <GmapMarker
         v-if="createBlockageMenu.active"

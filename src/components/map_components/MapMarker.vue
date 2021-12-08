@@ -1,11 +1,15 @@
 <template>
-  <div id="marker-container">
+  <div 
+    id="marker-container"
+  >
     <GmapMarker
       :clickable="true"
       :draggable="false"
       :position="marker.location"
       :icon="markerImage"
       @click="toggleBlockageView"
+      @mouseover="hoverMarker = true"
+      @mouseout="hoverMarker = false"
     />
     <GmapMarker v-if="blockage.childBlockage"
       :clickable="false"
@@ -13,7 +17,11 @@
       :position="marker.location"
       :icon="updateImage"
     />
-    <div v-if="active" class='popup' ref="popup">
+    <div 
+      v-if="activeOrHovering" 
+      class='popup' 
+      ref="popup"
+      >
       <h2>{{blockage.status}}</h2>
       <p>{{blockage.description}}</p>
       <!-- <Blockage
@@ -51,10 +59,16 @@ export default {
         UNSAFE: "#AAAA00",
         UNBLOCKED: "#00AA00",
       },
+      hoverMarker: false,
+      hoverCircle: false,
+      hoverPopup: false,
     };
   },
   computed: {
     google: gmapApi,
+    activeOrHovering() { 
+      return this.active || this.hoverMarker; 
+    },
     markerImage () {
       var pinSVGHole = "M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z";
       var labelOriginHole = new this.google.maps.Point(12,15);
@@ -96,7 +110,7 @@ export default {
     this.Popup = Popup;
   },
   watch: {
-    active: async function (val) {
+    activeOrHovering: async function (val) {
       if (!val) {
         this.popup.onRemove();
         return;
@@ -119,7 +133,16 @@ export default {
       this.$emit('close-marker');
     },
     toggleBlockageView: function() {
+      console.log(this.active, this.hovering)
       this.active ? this.closeBlockageView() : this.openBlockageView();
+    },
+    beginHovering: function() {
+      console.log('on')
+      this.hovering = true;
+    },
+    stopHovering: function() {
+      console.log('off')
+      this.hovering = false;
     },
   },
 }
@@ -141,6 +164,7 @@ export default {
   .popup {
     padding: 0px 12px;
     padding-bottom: 10px;
+    pointer-events: none;
   }
 </style>
 
@@ -152,6 +176,7 @@ export default {
 		position: absolute;
 		/* The max width of the info window. */
 		width: 200px;
+    pointer-events: none;
 	}
 	/* The bubble is anchored above the tip. */
 	.popup-bubble-anchor {
@@ -159,6 +184,7 @@ export default {
 		width: 100%;
 		bottom: /* TIP_HEIGHT= */ 8px;
 		left: 0;
+    pointer-events: none;
 	}
 	/* Draw the tip. */
 	.popup-bubble-anchor::after {
@@ -175,6 +201,7 @@ export default {
 		border-left: 6px solid transparent;
 		border-right: 6px solid transparent;
 		border-top: /* TIP_HEIGHT= */ 8px solid white;
+    pointer-events: none;
 	}
 	/* The popup bubble itself. */
 	.popup-bubble-content {
@@ -191,5 +218,6 @@ export default {
 		max-height: 200px;
     max-width: 500px;
 		box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.5);
+    pointer-events: none;
 	}
 </style>
