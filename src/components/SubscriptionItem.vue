@@ -63,6 +63,7 @@ export default {
       eventBus.$emit('delete-subscription', this.subscription);
     },
     updateSubscription() {
+      this.subscription.name = this.subscriptionName;
       eventBus.$emit('update-subscription', this.subscription);
     },
     selectSubscription() {
