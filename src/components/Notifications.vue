@@ -35,11 +35,13 @@ export default {
 
   computed: {
     filteredAlerts () {
-      return this.alerts.blockageAlerts;
+      return this.alerts.blockageAlerts.filter((notif) => {
+        return notif.blockage;
+      });
     },
     filteredSummaryAlerts () {
-      return this.alerts.summaryAlerts.filter((alert) => {
-        return alert.alerts.UNSAFE.length || alert.alerts.BLOCKED.length;
+      return this.alerts.summaryAlerts.filter((sub) => {
+        return sub.alerts.UNSAFE.length || sub.alerts.BLOCKED.length;
       });
     }
   },
