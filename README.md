@@ -127,15 +127,22 @@ then you will find the application at `localhost:8080` in the browser
     - Login.vue
     - Logout.vue
     - Signup.vue
+    - CreateBlockage.vue
     - main.js
+  - src/components
+    - CreateSubscription.vue
   - models:
     - Blockage.js
     - Comment.js
+    - Subscription.js
   - routes:
     - blockages.js
     - index.js
     - middleware.js
     - session.js
     - users.js
+    - subscriptions.js
+  - views
+    - Subscription.vue
   - app.js
   - Other skeleton code files (bin/www etc.)

@@ -1,12 +1,27 @@
 <template>
-  <div class="notification-container" @click="toggleRead">
+  <div 
+    :class="{
+      'notification-container': true,
+      'old': notifType === 'OLD',
+      'current': notifType === 'CURRENT',
+      'pending': notifType === 'PENDING',
+    }" 
+    @click="toggleRead"
+    >
     <div class='top-div'>
     <div class='reporter'>
       <div class='profile'>{{blockage.reporter.username[0].toUpperCase()}}</div>
       <span class='username'>@{{blockage.reporter.username}}</span>
       <span class='level'>(L{{blockage.reporter.activityLevel}})</span>
     </div>
+    <div class='top-right-header'>
+    <div>
+      <div v-if="notifType==='OLD'" class='read-status'>old</div>
+      <div v-else-if="notifType==='CURRENT'" class='read-status'>current</div>
+      <div v-else class='read-status'>pending</div>
+    </div>
     <div v-if='!read' class='notification-circle'></div>
+    </div>
     </div>
     <div>
       <div class='blocked'>{{blockage.status}}</div>
@@ -14,7 +29,8 @@
     </div>
     <router-link
       class='link-alert' 
-      :to="`/?blockage=${blockage._id}`">
+      :to="`/?blockage=${blockage._id}`"
+      @click.native="$event.stopImmediatePropagation()">
       <button class='alert-name'>{{blockage.location.name}}</button>
     </router-link>
     <div>
@@ -45,6 +61,11 @@ export default {
       // list of all names of subscriptions that caused this notification
       // (notifs from two subscriptions are combined if they're at the same time)
       return this.alert.subscriptions.map(s => s.name);
+    },
+    notifType() { // OLD, CURRENT, PENDING
+      if (this.blockage.active) return "CURRENT";
+      if (this.blockage.childBlockage) return "OLD";
+      return "PENDING";
     },
   },
   mounted() {
@@ -80,9 +101,31 @@ export default {
   padding: 10px;
   padding-left: 15px;
   border-radius: 2px;
-  background-color: rgb(195, 159, 254);
   text-align: left;
   margin-top: 6px;
+}
+
+.top-right-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.read-status {
+  font-style: italic;
+  margin-right: 5px;
+  color: purple;
+}
+
+.old {
+  background-color: rgb(210, 210, 210);
+}
+
+.current {
+  background-color: rgb(195, 159, 254);
+}
+
+.pending {
+  background-color: rgb(254, 248, 226);
 }
 
 .top-div {
