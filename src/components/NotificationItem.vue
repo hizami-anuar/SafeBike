@@ -1,5 +1,13 @@
 <template>
-  <div class="notification-container" @click="toggleRead">
+  <div 
+    :class="{
+      'notification-container': true,
+      'old': notifType === 'OLD',
+      'current': notifType === 'CURRENT',
+      'pending': notifType === 'PENDING',
+    }" 
+    @click="toggleRead"
+    >
     <div class='top-div'>
     <div class='reporter'>
       <div class='profile'>{{blockage.reporter.username[0].toUpperCase()}}</div>
@@ -14,7 +22,8 @@
     </div>
     <router-link
       class='link-alert' 
-      :to="`/?blockage=${blockage._id}`">
+      :to="`/?blockage=${blockage._id}`"
+      @click.native="$event.stopImmediatePropagation()">
       <button class='alert-name'>{{blockage.location.name}}</button>
     </router-link>
     <div>
@@ -45,6 +54,11 @@ export default {
       // list of all names of subscriptions that caused this notification
       // (notifs from two subscriptions are combined if they're at the same time)
       return this.alert.subscriptions.map(s => s.name);
+    },
+    notifType() { // OLD, CURRENT, PENDING
+      if (this.blockage.active) return "CURRENT";
+      if (this.blockage.childBlockage) return "OLD";
+      return "PENDING";
     },
   },
   mounted() {
@@ -80,9 +94,20 @@ export default {
   padding: 10px;
   padding-left: 15px;
   border-radius: 2px;
-  background-color: rgb(195, 159, 254);
   text-align: left;
   margin-top: 6px;
+}
+
+.old {
+  background-color: rgb(210, 210, 210);
+}
+
+.current {
+  background-color: rgb(195, 159, 254);
+}
+
+.pending {
+  background-color: rgb(254, 248, 226);
 }
 
 .top-div {
