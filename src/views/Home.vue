@@ -88,6 +88,9 @@ export default {
   },
   mounted() {
     this.getAllBlockages();
+    if (this.$route) {
+      this.currBlockageId = this.$route.query.blockage;
+    }
     eventBus.$on('refresh-blockages', this.refreshBlockages);
     eventBus.$on('updated-status', this.updateStatus);
     eventBus.$on('open-marker', this.displayBlockage);
