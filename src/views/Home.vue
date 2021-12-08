@@ -229,7 +229,7 @@ main {
 
 .blockage-popup {
   position:fixed;
-  top: 20%;
+  top: 16%;
   left: 2%;
 }
 

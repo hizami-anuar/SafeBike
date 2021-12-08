@@ -127,14 +127,14 @@ export default {
   margin-bottom: 16px;
 }
 h1 {
-  color: rgb(69, 38, 118);
+  color: rgb(70, 70, 70);
   font-size: 20px;
 }
 
 h2 {
   color: rgb(69, 38, 118);
   margin-top: 0px;
-  font-size: 28px;
+  font-size: 24px;
   margin-bottom: 5px;
 }
 
@@ -144,6 +144,7 @@ textarea {
   padding: 5px 8px;
   border-radius: 5px;
   height: 40px;
+  width: 90%;
 }
 
 .edit-mode-buttons {

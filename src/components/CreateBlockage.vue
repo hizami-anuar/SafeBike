@@ -2,7 +2,7 @@
   <div>
     <form action="" class="blockage-creator" @submit.prevent=''>
         <h1>Report Blockage</h1>
-            {{ location.name }}
+            <span class='location'>{{ location.name }}</span>
             <h2 v-if='status.length==0'>Status</h2>
             <h2 v-else>Status: {{ status }}</h2>
             <div class="checkboxes">
@@ -104,6 +104,12 @@ h1 {
   color: rgb(60, 60, 60);
 }
 
+.location {
+  font-style: italic;
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+
 .effective-date {
   margin-top: 10px;
   text-align: left;
@@ -120,6 +126,7 @@ h1 {
   padding: 2px 5px;
   border-radius: 4px;
   text-decoration: none;
+  width: 280px;
 }
 
 .checkboxes {
@@ -141,7 +148,7 @@ h2 {
   background-color: rgb(186, 186, 235);
 
   /* max-width: 500px; */
-  width: 250px;
+  width: 300px;
   border: 2px solid rgb(81, 138, 235);
   border-radius: 15px;
   color: black;

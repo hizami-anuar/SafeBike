@@ -5,7 +5,7 @@
       <h1 class='logo-name'>SafeBike</h1>
       <router-link class='link' to="/"><img class='icon' src="@/assets/home.png"/>Home</router-link>
       <router-link class='link' to="/account" v-if="loggedIn"><img class='icon' src="@/assets/profile.png"/>My Reports</router-link> 
-      <router-link class='link' to="/subscription" v-if="loggedIn"><img class='icon' src="@/assets/notification-bell.png"/>My Alerts</router-link> 
+      <router-link class='link' to="/subscription" v-if="loggedIn"><img class='icon' src="@/assets/calendar.png"/>My Subscriptions</router-link> 
     </div>
     <Logout
       :loggedIn='loggedIn'
