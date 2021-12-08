@@ -49,6 +49,11 @@ export default {
     return {
       Popup: undefined,
       popup: undefined,
+      futureFills: {
+        BLOCKED: "#CC000088", 
+        UNSAFE: "#CCCC0088",
+        UNBLOCKED: "#00CC0088",
+      },
       statusFills: {
         BLOCKED: "#FF0000", 
         UNSAFE: "#FFFF00",
@@ -69,6 +74,16 @@ export default {
     activeOrHovering() { 
       return this.active || this.hoverMarker; 
     },
+    futureBlockage() {
+      return this.blockage.time > Date.now();
+    },
+    markerFill () {
+      if (this.futureBlockage) {
+        return this.futureFills[this.blockage.status];
+      } else {
+        return this.statusFills[this.blockage.status];
+      }
+    },
     markerImage () {
       var pinSVGHole = "M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z";
       var labelOriginHole = new this.google.maps.Point(12,15);
@@ -76,7 +91,7 @@ export default {
           path: pinSVGHole,
           anchor: new this.google.maps.Point(12,17),
           fillOpacity: 1,
-          fillColor: this.statusFills[this.blockage.status],
+          fillColor: this.markerFill,
           strokeWeight: 2,
           strokeColor: this.statusOutlines[this.blockage.status],
           scale: 2,
