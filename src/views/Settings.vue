@@ -4,7 +4,19 @@
       <router-link v-if='loggedIn' :to="{name: 'User', params: {username: this.user.username}}">@{{ this.user.username }}</router-link>!
     </h2>
     
-    <hr>
+    <p v-if="user.strikes === 0">Your account is in good standing!</p>
+    <p v-else-if="!user.restricted">
+      You have {{ user.strikes }} recent strike{{ user.strikes > 1 ? "s" : ""}} on your account. 
+      Each strike is a blockage post that is at least 2/3 downvoted, 
+      with a score of -3 or lower.
+      Having three strikes in the last ten blockage posts will send a report to staff,
+      who may restrict your account. 
+      After that, you may contact staff for an appeal of this decision.
+    </p>
+    <p v-else> 
+      Your account is restricted. 
+      Please contact staff if you think this decision was made in error.
+    </p>
 
     <!-- Prompt for Changing the Password -->
     <fieldset>
