@@ -35,7 +35,7 @@
         <SubscriptionItem 
           :DAY_NAMES='DAY_NAMES'
           :subscription='selectedCircle'
-          @cancel='cancelSelect'
+          @cancel='cancelEdit'
           :editable='true'/>
       </template>
       <template v-else>
@@ -194,6 +194,11 @@ export default {
 
     cancelSelect() {
       this.selectedCircleId = undefined;
+    },
+
+    cancelEdit() {
+      this.selectedCircleId = undefined;
+      this.getSubscription();
     },
 
     activateCreateSubscription(data) {

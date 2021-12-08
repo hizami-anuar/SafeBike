@@ -1,6 +1,6 @@
 <template>
   <div :class="containerClass">
-    <h3><input class="subscription-name" type="text" v-model="subscriptionName" :disabled="!editable" /></h3>
+    <h3><input class="subscription-name" type="text" v-model="subscription.name" :disabled="!editable" /></h3>
     <Days 
       :DAY_NAMES="DAY_NAMES"
       :days="subscription.schedule.days"
@@ -52,18 +52,12 @@ export default {
      return this.subscription.schedule.days.some((bool) => bool) && this.subscriptionName;
     }
   },
-  data() {
-    return {
-      subscriptionName: this.subscription.name,
-    }
-  },
   emits: ['cancel'],
   methods: {
     deleteSubscription() {
       eventBus.$emit('delete-subscription', this.subscription);
     },
     updateSubscription() {
-      this.subscription.name = this.subscriptionName;
       eventBus.$emit('update-subscription', this.subscription);
     },
     selectSubscription() {
@@ -71,7 +65,6 @@ export default {
     }, 
     cancelSubscription() {
       this.$emit('cancel');
-      this.subscriptionName = this.subscription.name;
     }
   },
 }
