@@ -17,6 +17,12 @@
       v-for="alert in filteredSummaryAlerts"
       :key="alert._id"
       :alert="alert"/>
+    <div class='loading' v-if="filteredSummaryAlerts === undefined">
+      Loading...
+    </div>
+    <div v-else-if="!filteredSummaryAlerts.length" class='no-alert'>
+      No active alerts to show.
+    </div>
   </div>
 </template>
 
@@ -59,6 +65,10 @@ export default {
   margin: 10px 0;
   text-align: left;
   margin-bottom: -5px;
+}
+
+.no-alert {
+  margin-top: 10px;
 }
 
 .loading {

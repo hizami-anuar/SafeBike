@@ -313,6 +313,7 @@ h1 {
 }
 
 .footer-right {
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -387,8 +388,8 @@ span{
   font-size: 18px;
   font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
-  margin-top: 35px;
-  margin-bottom: 25px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .edit-delete-buttons {
