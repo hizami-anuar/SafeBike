@@ -75,7 +75,7 @@ h1 {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background-color: rgb(169, 138, 218);
+  background-color: rgb(254, 248, 226);
   padding: 10px 15px;
   border-radius: 10px;
   margin-bottom: 10px;
@@ -149,6 +149,7 @@ h1 {
   margin-bottom: -5px;
 }
 .back-button {
-  height: 30px;
+  height: 34px;
+  border: 2px solid purple;
 }
 </style>
