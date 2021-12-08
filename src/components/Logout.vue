@@ -185,7 +185,7 @@ button:disabled {
 
 .popup {
     position: absolute;
-    width: 21%;
+    width: 21.7%;
     right: 33px;
     /* top: 100%; */
     /* left: 88%; */
@@ -194,7 +194,7 @@ button:disabled {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    border-radius: 2px;
+    border-radius: 10px;
     
 }
 
