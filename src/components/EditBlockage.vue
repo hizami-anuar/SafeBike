@@ -76,7 +76,7 @@ export default {
         // updated blockage info: right now can't edit location (to do?)
         let updatedBlockageData = {
           description: this.newDescription,
-          status: this.newStatus
+          status: this.newStatus,
         }
 
         // request to submit edited blockage
@@ -103,6 +103,7 @@ export default {
             longitude: this.blockageData.location.coordinates[1],
           },
           parentBlockage: this.blockageData._id,
+          time: Date.now(),
         };
         axios.post(`/api/blockages/`, fields)
           .then((res) => {
