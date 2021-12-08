@@ -1,6 +1,7 @@
 <template>
   <div class="edit-blockage-content">
-    <h1>{{ this.blockageData.status.toUpperCase() }} ⮕ {{ newStatus.toUpperCase() }}</h1>
+    <h2>{{ modeHeading }}</h2>
+    <h1><s>{{ this.blockageData.status.toUpperCase() }}</s> ⮕ {{ newStatus.toUpperCase() }}</h1>
     <div class="checkboxes">
       <span>
         <input type="radio" id="unblocked" value="UNBLOCKED" v-model="newStatus">
@@ -54,13 +55,24 @@ export default {
   },
   computed: {
     submitDisabled() {
+      if (this.mode === "EDIT") return false;
       return this.blockageData.status === this.newStatus;
-    }
+    },
+    modeHeading() { 
+      return this.mode === "EDIT" 
+        ? "Editing Blockage"
+        : "Proposing Status Update"
+    },
   },
   methods: {
     // submit the edited blockage
     submitEdited() {
       if (this.mode === "EDIT") { // submit edited blockage
+        if (this.blockageData.description === this.newDescription
+            && this.blockageData.status === this.newStatus) {
+          this.$emit('back');
+          return; // no change
+        }
         // updated blockage info: right now can't edit location (to do?)
         let updatedBlockageData = {
           description: this.newDescription,
