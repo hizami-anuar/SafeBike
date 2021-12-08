@@ -48,7 +48,7 @@ export default {
       errorMessage: '',
       status: '',
       description: '',
-      effectiveTime: new Date()
+      effectiveTime: (new Date((new Date()).getTime() - (new Date()).getTimezoneOffset() * 60000).toISOString()).slice(0, -1),
   }
   },
   emits: [
@@ -68,6 +68,7 @@ export default {
           longitude: this.location.lng,
           name: this.location.name, // insecure but whatever for now
         },
+        time: new Date(this.effectiveTime).valueOf(),
       };
       axios.post(`/api/blockages/`, fields).then(() => {
         this.errorMessage = '';

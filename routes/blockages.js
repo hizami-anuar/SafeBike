@@ -20,21 +20,19 @@ router.get("/", async (req, res) => {
   const getSubscription = req.query.subscription == "true";
   delete req.query.subscription;
   let blockages = await Blockages.find(req.query);
-  
+
   if (getSubscription && req.session.user) {
     const subscriptions = await Subscriptions.find({
       user: req.session.user._id,
     });
     blockages = blockages.filter((blockage) => {
-      return subscriptions.some((s) =>
-        s.containsBlockage(blockage)
-      );
+      return subscriptions.some((s) => s.containsBlockage(blockage));
     });
   }
 
   // id or undefined
   const userId = req.session.user && req.session.user._id;
-  
+
   // edit fields of blockage before returning to frontend
   blockages = await Promise.all(
     blockages.map((blockage) => {
@@ -60,13 +58,13 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
   let now = new Date();
   subscriptions = subscriptions.filter((s) => {
     return s.containsTime(now);
-  })
+  });
 
   // let oneWeekAgo = new Date();
   // oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   // oneWeekAgo = oneWeekAgo.valueOf();
   // req.query.time = { $gte: oneWeekAgo }
-  
+
   // id or undefined
   const userId = req.session.user && req.session.user._id;
   blockages = await Blockages.find(req.query);
@@ -113,55 +111,56 @@ router.get("/subscription", [validateThat.userIsLoggedIn], async (req, res) => {
  * @return {Blockage} - the created blockage
  * @throws {403} - if user is not logged in
  */
-router.post("/", [
-    validateThat.userIsLoggedIn,
-    validateThat.statusChangeIfUpdate,
-  ], async (req, res) => {
-  let blockage = {
-    location: {
-      type: "Point",
-      coordinates: [req.body.location.latitude, req.body.location.longitude], // coordinates come from body
-      name: req.body.location.name,
-    },
-    time: Date.now(), // uses current time
-    reporter: req.session.user._id, // reporter is the user currently logged in
-    description: req.body.description, // description comes from body
-    status: req.body.status, // status comes from body
-    voteCount: 1,
-    upvotes: [req.session.user._id],
-    downvotes: [],
-    comments: [],
-  };
-  const parentBlockage = req.body.parentBlockage;
-  if (parentBlockage) {
-    // status update request
-    blockage = {
-      ...blockage,
-      active: false,
-      parentBlockage: parentBlockage,
-      reputation: req.session.user.activityLevel, // starts with user's level
+router.post(
+  "/",
+  [validateThat.userIsLoggedIn, validateThat.statusChangeIfUpdate],
+  async (req, res) => {
+    let blockage = {
+      location: {
+        type: "Point",
+        coordinates: [req.body.location.latitude, req.body.location.longitude], // coordinates come from body
+        name: req.body.location.name,
+      },
+      time: req.body.time, // uses current time
+      reporter: req.session.user._id, // reporter is the user currently logged in
+      description: req.body.description, // description comes from body
+      status: req.body.status, // status comes from body
+      voteCount: 1,
+      upvotes: [req.session.user._id],
+      downvotes: [],
+      comments: [],
     };
-  } else {
-    // new blockage
-    blockage = { ...blockage, active: true };
+    const parentBlockage = req.body.parentBlockage;
+    if (parentBlockage) {
+      // status update request
+      blockage = {
+        ...blockage,
+        active: false,
+        parentBlockage: parentBlockage,
+        reputation: req.session.user.activityLevel, // starts with user's level
+      };
+    } else {
+      // new blockage
+      blockage = { ...blockage, active: true };
+    }
+    let createdBlockage = await Blockages.create(blockage);
+    if (parentBlockage) {
+      await Blockages.findOneAndUpdate(
+        { _id: parentBlockage },
+        {
+          childBlockage: createdBlockage._id,
+        }
+      );
+    }
+    await createdBlockage.checkReputation();
+    await createdBlockage.notify();
+    createdBlockage = await Blockages.findById(createdBlockage._id);
+    res
+      .status(200)
+      .json({ blockageData: createdBlockage })
+      .end();
   }
-  let createdBlockage = await Blockages.create(blockage);
-  if (parentBlockage) {
-    await Blockages.findOneAndUpdate(
-      { _id: parentBlockage },
-      {
-        childBlockage: createdBlockage._id,
-      }
-    );
-  }
-  await createdBlockage.checkReputation();
-  await createdBlockage.notify();
-  createdBlockage = await Blockages.findById(createdBlockage._id);
-  res
-    .status(200)
-    .json({ blockageData: createdBlockage })
-    .end();
-});
+);
 
 /**
  * Update a blockage.
