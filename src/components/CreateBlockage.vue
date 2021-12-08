@@ -20,7 +20,7 @@
             </span>
             <span class='effective-date'>
                 <label for="effectiveTime" class='effective-date-label'>Effective Date (optional):</label>
-                <input type="datetime-local" id="effectiveTime" name="effectiveTime"
+                <input step="0.001" type="datetime-local" id="effectiveTime" name="effectiveTime"
                        required v-model="effectiveTime">            </span>
             </div>
             <h2>Description</h2>
