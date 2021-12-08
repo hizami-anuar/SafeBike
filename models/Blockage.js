@@ -85,7 +85,8 @@ blockageSchema.methods = {
     }
     // deletes this blockage if no reputation
     if (this.reputation <= 0) {
-      this.remove();
+      await this.remove();
+      await this.unnotify();
     }
   },
   calculateVotesAndSave: async function() {
