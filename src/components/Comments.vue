@@ -10,10 +10,11 @@
     <div v-else v-for='comment in comments' v-bind:key='comment._id'>
     <div class='single-comment'>
       <div class='profile'>{{comment.username[0].toUpperCase()}}</div>
+      <div class='middle-div'>
       <p class='username'><b>@{{comment.username}}</b>  {{comment.content}}</p>
       <div class='time'>
-      <span >{{getTime(comment.timeUsec).split(',')[0]}}</span><br>
-      <span >{{getTime(comment.timeUsec).split(',')[1]}}</span>
+      <span >{{getTime(comment.timeUsec)}}</span>
+      </div>
       </div>
       <img v-if='user && user._id === comment.userID' v-on:click='deleteComment(comment._id)' class='icon' src="@/assets/delete.png">
     </div>
@@ -29,6 +30,8 @@
 <script>
 import axios from 'axios';
 import { eventBus } from "@/main";
+var moment = require('moment'); // require
+moment().format(); 
 
 export default {
    name: 'Comments',
@@ -96,7 +99,8 @@ export default {
       getTime(timeUsec) {
         var date = new Date(0); // The 0 there is the key, which sets the date to the epoch
         date.setUTCSeconds(timeUsec/1000);
-        return date.toLocaleString('en-US');
+        return moment(date).fromNow()
+        // return date.toLocaleString('en-US');
       }
    }
 }
@@ -109,11 +113,17 @@ export default {
    margin-right: 5px;
    margin-bottom: 0px;
    margin-top: 0px;
-   width: 100px;
+   width: fit-content;
    font-size: 14px;
    font-style: italic;
    text-align: right;
+   white-space: nowrap;
 }
+
+.middle-div {
+  width: 99%;
+}
+
 .single-comment {
    margin-bottom: 15px;
    display: flex;
