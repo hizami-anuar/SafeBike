@@ -14,7 +14,14 @@
       <span class='username'>@{{blockage.reporter.username}}</span>
       <span class='level'>(L{{blockage.reporter.activityLevel}})</span>
     </div>
+    <div class='top-right-header'>
+    <div>
+      <div v-if="notifType==='OLD'" class='read-status'>old</div>
+      <div v-else-if="notifType==='CURRENT'" class='read-status'>current</div>
+      <div v-else class='read-status'>pending</div>
+    </div>
     <div v-if='!read' class='notification-circle'></div>
+    </div>
     </div>
     <div>
       <div class='blocked'>{{blockage.status}}</div>
@@ -96,6 +103,17 @@ export default {
   border-radius: 2px;
   text-align: left;
   margin-top: 6px;
+}
+
+.top-right-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.read-status {
+  font-style: italic;
+  margin-right: 5px;
+  color: purple;
 }
 
 .old {
