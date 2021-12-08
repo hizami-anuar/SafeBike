@@ -1,12 +1,12 @@
 <template>
   <div class="notification-container" @click="toggleRead">
+    <div class='top-div'>
     <div class='reporter'>
       <div class='profile'>{{blockage.reporter.username[0].toUpperCase()}}</div>
       <span class='username'>@{{blockage.reporter.username}}</span>
       <span class='level'>(L{{blockage.reporter.activityLevel}})</span>
     </div>
-    <div>
-      <span class='regions'>Regions: {{subscriptions.join(', ')}}</span>
+    <div v-if='!read' class='notification-circle'></div>
     </div>
     <div>
       <div class='blocked'>{{blockage.status}}</div>
@@ -17,6 +17,9 @@
       :to="`/?blockage=${blockage._id}`">
       <button class='alert-name'>{{blockage.location.name}}</button>
     </router-link>
+    <div>
+      <span class='regions'>Region(s): {{subscriptions.join(', ')}}</span>
+    </div>
     <div class='date'>{{  date(blockage)  }}</div>
   </div>
 </template>
@@ -82,6 +85,21 @@ export default {
   margin-top: 6px;
 }
 
+.top-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.notification-circle {
+  border-radius: 20px;
+  background:red;
+  /* border: 2px solid purple; */
+  width: 15px;
+  height: 15px;
+  top: 5px;
+  /* margin-left: 10px; */
+}
+
 .profile {
   background-color: rgb(90, 0, 128);
   border-radius: 30px;
@@ -91,7 +109,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 30x;
+  font-size: 23px;
   margin-right: 10px;
   /* font-weight: bold; */
 }
@@ -106,11 +124,11 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
+  width: fit-content;
 }
 
 .alert-name {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: bold;
   padding: 2px 10px;
   width: 100%;
@@ -119,7 +137,8 @@ export default {
   text-align: center;
   border: 3px rgb(122, 17, 187) solid;
   border-radius: 5px;
-  margin-bottom: 10px;
+  margin-bottom: 3px;
+  margin-top: 10px;
 }
 
 .link-alert {
@@ -147,6 +166,7 @@ export default {
   color: rgb(122, 17, 187);
   font-weight: bold;
   text-align: center;
+  padding: 10px;
 }
 
 .unsafe {
@@ -168,7 +188,7 @@ export default {
 .date {
   text-align:right;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: -5px;
   color: rgb(90, 0, 128);
   font-style: italic;
