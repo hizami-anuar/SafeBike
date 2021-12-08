@@ -7,6 +7,12 @@
       :icon="markerImage"
       @click="toggleBlockageView"
     />
+    <GmapMarker v-if="blockage.childBlockage"
+      :clickable="false"
+      :draggable="false"
+      :position="marker.location"
+      :icon="updateImage"
+    />
     <div v-if="active" class='popup' ref="popup">
       <h2>{{blockage.status}}</h2>
       <p>{{blockage.description}}</p>
@@ -52,8 +58,6 @@ export default {
     markerImage () {
       var pinSVGHole = "M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z";
       var labelOriginHole = new this.google.maps.Point(12,15);
-      // var pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
-      // var labelOriginFilled =  new this.google.maps.Point(12,9);
       var markerImage = {
           path: pinSVGHole,
           anchor: new this.google.maps.Point(12,17),
@@ -65,7 +69,24 @@ export default {
           labelOrigin: labelOriginHole
       };
       return markerImage;
-    }
+    },
+    updateImage() {
+      //var pinSVGFilled = "M 12,2 C 8.1340068,2 5,5.1340068 5,9 c 0,5.25 7,13 7,13 0,0 7,-7.75 7,-13 0,-3.8659932 -3.134007,-7 -7,-7 z";
+      var circleSVG = "M 25, 50 a 25,25 0 1,1 50,0 a 25,25 0 1,1 -50,0";
+      var labelOriginFilled =  new this.google.maps.Point(12,15);
+      var updateImage = {
+          path: circleSVG,
+          //anchor: new this.google.maps.Point(50,110),
+          anchor: new this.google.maps.Point(0,150),
+          fillOpacity: 1,
+          fillColor: this.statusFills[this.blockage.childBlockage.status],
+          strokeWeight: 2,
+          strokeColor: this.statusOutlines[this.blockage.childBlockage.status],
+          scale: 0.25,
+          labelOrigin: labelOriginFilled
+      };
+      return updateImage;
+    },
   },
   async mounted() {
     await this.$gmapApiPromiseLazy();
