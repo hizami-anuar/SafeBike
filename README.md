@@ -4,8 +4,6 @@
 
 ### Purpose and Functionality
 
-Describe the purpose and functionality of your application (~50 words)
-
 The purpose of SafeBike Boston is to help bikers in the Boston area feel more certain in the routes they take, and to help local government improve the condition of bike lanes. We do this by allowing users to report blockages for others to plan around, and providing a platform for users to easily share information on which bike lanes are unsafe and in need of repair.
 
 ### Instructions to Run Locally:
