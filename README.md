@@ -1,4 +1,4 @@
-# [SafeBike Boston](https://safebike-boston.herokuapp.com/)
+# [SafeBike Boston]
 
 ## [WAGL]
 
